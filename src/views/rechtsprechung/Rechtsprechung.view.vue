@@ -1,1 +1,1 @@
-<template>Hello World</template>
+<template>Hello DigitalService</template>
