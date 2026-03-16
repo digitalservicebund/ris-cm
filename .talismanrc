@@ -4,17 +4,20 @@ fileignoreconfig:
       - "key: "
       - "password: "
       - TRIVY_PASSWORD
-  - filename: LICENSE
-    allowed_patterns:
-      - "keys"
   - filename: .github/workflows/deploy-staging-job.yml
     allowed_patterns:
       - github_app_private_key
       - GITOPS_NEURIS_APP_PRIVATE_KEY
+  - filename: .github/workflows/scan.yml
+    allowed_patterns:
+      - TRIVY_PASSWORD
   - filename: README.md
     allowed_patterns:
       - secrets
       - Secrets
+  - filename: LICENSE
+    allowed_patterns:
+      - "keys"
 scopeconfig:
   - scope: node
 allowed_patterns:
