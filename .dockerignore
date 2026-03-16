@@ -1,12 +1,14 @@
 *
 !src
+!public
+!nginx
 !package.json
 !package-lock.json
 !index.html
-!public
 !tsconfig.json
+!tsconfig.node.json
 !run.sh
-!nginx
+!vite.config.ts
 **/*.spec.*
 **/*.test.*
 /public/build/
