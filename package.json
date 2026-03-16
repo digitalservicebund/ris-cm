@@ -22,6 +22,10 @@
     "audit:licences": "license-checker-rseidelsohn --production --excludePrivatePackages --onlyAllow ''",
     "check": "tsc --noEmit && npm run style:check && npm test && npm run test:e2e && npm run test:a11y"
   },
+  "dependencies": {
+    "vue": "^3.5.30",
+    "vue-router": "^5.0.3"
+  },
   "devDependencies": {
     "@playwright-testing-library/test": "^4.5.0",
     "@playwright/test": "^1.58.2",
@@ -31,6 +35,7 @@
     "@types/node": "^25.5.0",
     "@typescript-eslint/eslint-plugin": "^8.57.0",
     "@typescript-eslint/parser": "^8.53.1",
+    "@vitejs/plugin-vue": "^6.0.5",
     "axe-playwright": "^2.2.2",
     "eslint": "^8.57.0",
     "eslint-plugin-import": "^2.32.0",
@@ -47,6 +52,7 @@
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
+    "unplugin-icons": "^23.0.1",
     "vite": "^8.0.0"
   },
   "engines": {
