@@ -6,7 +6,13 @@ fileignoreconfig:
   - filename: .github/workflows/scan.yml
     checksum: 0f2da961a10dcf8040894adb65782249b9b3960d69f2dec18bb017067f88f77b
   - filename: .github/workflows/pipeline.yml
-    checksum: d29842978748e1e3eedb51762b04a6a852ed634204bcee0129c38786f005fe04
+    allowed_patterns:
+      - "key: "
+      - "password: "
+      - TRIVY_PASSWORD
+  - filename: LICENSE
+    allowed_patterns:
+      - "keys"
 scopeconfig:
   - scope: node
 allowed_patterns:
