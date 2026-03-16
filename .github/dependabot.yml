@@ -6,11 +6,13 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    # Too much noise with patch releases...
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-patch"]
+    cooldown:
+      default-days: 3
     groups:
+      all-frontend-non-major-dependencies:
+        update-types:
+          - minor
+          - patch
       typescript-eslint:
         patterns:
           - "@typescript-eslint/*"
@@ -18,7 +20,16 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    # Too much noise with patch releases...
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-patch"]
+    cooldown:
+      default-days: 3
+    groups:
+      all-github-actions-non-major-dependencies:
+        update-types:
+          - minor
+          - patch
+  - package-ecosystem: docker
+    directory: "/"
+    schedule:
+      interval: daily
+    cooldown:
+      default-days: 3
