@@ -11,6 +11,10 @@ fileignoreconfig:
     allowed_patterns:
       - github_app_private_key
       - GITOPS_NEURIS_APP_PRIVATE_KEY
+  - filename: README.md
+    allowed_patterns:
+      - secrets
+      - Secrets
 scopeconfig:
   - scope: node
 allowed_patterns:

@@ -4,13 +4,13 @@
 [![Scan](https://github.com/digitalservicebund/ris-cm/actions/workflows/scan.yml/badge.svg)](https://github.com/digitalservicebund/ris-cm/actions/workflows/scan.yml)
 [![Secrets Check](https://github.com/digitalservicebund/ris-cm/actions/workflows/secrets-check.yml/badge.svg)](https://github.com/digitalservicebund/ris-cm/actions/workflows/secrets-check.yml)
 
-Bootstrap a TypeScript application with Vite dev server and Continuous Delivery
+Content Management for the Rechtsinformationssystem
 
 ## Prerequisites
 
 ### Node.js
 
-We aim to use the current active [LTS version of nodejs](https://nodejs.dev/en/about/releases/), which is v20 at the time of writing. There is a `.node-version` file to simplify setup using [nodenv](https://github.com/nodenv/nodenv).
+We aim to use the current active [LTS version of nodejs](https://nodejs.dev/en/about/releases/), which is v24 at the time of writing. There is a `.node-version` file to simplify setup using [nodenv](https://github.com/nodenv/nodenv).
 
 ### Testing
 
@@ -40,15 +40,6 @@ Before pushing, the following checks are additionally ran:
 
 - `licenses-audit` - uses `license-checker-rseidelsohn` to verify depency licenses
 - `secrets-audit` - avoid accidental pushes of [secrets and sensitive information](https://thoughtworks.github.io/talisman/)
-
-### security.txt
-
-This template contains a [security.txt](https://securitytxt.org/), where you probably want to update the expiration date. The following entries may also be added:
-
-```
-Policy: https://raw.githubusercontent.com/digitalservicebund/<<REPO_NAME>>/main/SECURITY.md
-Canonical: https://<<PROJECT_URL>>/.well-known/security.txt
-```
 
 ## Development
 
