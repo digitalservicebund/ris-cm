@@ -1,8 +1,8 @@
-# TypeScript + Vite Application Template
+# RIS Content Mangement
 
-[![Pipeline](https://github.com/digitalservicebund/typescript-vite-application-template/actions/workflows/pipeline.yml/badge.svg)](https://github.com/digitalservicebund/typescript-vite-application-template/actions/workflows/pipeline.yml)
-[![Scan](https://github.com/digitalservicebund/typescript-vite-application-template/actions/workflows/scan.yml/badge.svg)](https://github.com/digitalservicebund/typescript-vite-application-template/actions/workflows/scan.yml)
-[![Secrets Check](https://github.com/digitalservicebund/typescript-vite-application-template/actions/workflows/secrets-check.yml/badge.svg)](https://github.com/digitalservicebund/typescript-vite-application-template/actions/workflows/secrets-check.yml)
+[![Pipeline](https://github.com/digitalservicebund/ris-cm/actions/workflows/pipeline.yml/badge.svg)](https://github.com/digitalservicebund/ris-cm/actions/workflows/pipeline.yml)
+[![Scan](https://github.com/digitalservicebund/ris-cm/actions/workflows/scan.yml/badge.svg)](https://github.com/digitalservicebund/ris-cm/actions/workflows/scan.yml)
+[![Secrets Check](https://github.com/digitalservicebund/ris-cm/actions/workflows/secrets-check.yml/badge.svg)](https://github.com/digitalservicebund/ris-cm/actions/workflows/secrets-check.yml)
 
 Bootstrap a TypeScript application with Vite dev server and Continuous Delivery
 
