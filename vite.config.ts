@@ -1,11 +1,10 @@
-import { sentryVitePlugin } from "@sentry/vite-plugin"
 import vue from "@vitejs/plugin-vue"
 import { fileURLToPath, URL } from "node:url"
 import icons from "unplugin-icons/vite"
 import { defineConfig } from "vite"
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => {
+export default defineConfig(() => {
   return {
     base: "/",
     build: {

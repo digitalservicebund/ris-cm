@@ -1,5 +1,6 @@
 import { test } from "@playwright/test"
-import { chromium, Browser, Page } from "playwright"
+import type { Browser, Page } from "playwright"
+import { chromium } from "playwright"
 import { injectAxe, checkA11y } from "axe-playwright"
 
 let browser: Browser

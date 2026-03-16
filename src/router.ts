@@ -1,6 +1,5 @@
-import type { RouteRecordRaw, NavigationGuardWithThis } from "vue-router"
+import type { RouteRecordRaw } from "vue-router"
 import { createRouter, createWebHistory } from "vue-router"
-import { toValue } from "vue"
 
 const routes: readonly RouteRecordRaw[] = [
   {
