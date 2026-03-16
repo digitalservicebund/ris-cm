@@ -1,1 +1,3 @@
-<template>Hello DigitalService</template>
+<template>
+  <h1>Hello DigitalService</h1>
+</template>
