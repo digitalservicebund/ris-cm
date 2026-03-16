@@ -6,6 +6,7 @@
 !public
 !tsconfig.json
 !run.sh
+!nginx
 **/*.spec.*
 **/*.test.*
 /public/build/

@@ -1,4 +1,4 @@
-FROM node:22-alpine AS build
+FROM node:24-alpine AS build
 
 ARG COMMIT_SHA
 ENV APP_VERSION=$COMMIT_SHA
@@ -9,16 +9,10 @@ WORKDIR /src
 COPY . ./
 RUN npm ci --ignore-scripts && npm run build && npm prune --production
 
-FROM node:22-alpine
+# Copy the static assets to the nginx image
+FROM nginxinc/nginx-unprivileged:1.29-alpine3.22
+COPY --from=build /src/dist /usr/share/nginx/html/
 
-USER node
-ENV NODE_ENV=production
-ARG COMMIT_SHA
-ENV APP_VERSION=$COMMIT_SHA
-
-WORKDIR /home/node/src
-COPY --chown=node:node --from=build /src ./
-
-EXPOSE 3000
-ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD ["sh", "npm run serve"]
+# Replace the default server configuration of the base nginx image.
+COPY nginx /etc/nginx/conf.d/
+EXPOSE 8080
