@@ -10,13 +10,13 @@ on:
 
 env:
   IMAGE_NAME: ${{ github.repository }}
+  CONTAINER_REGISTRY: ghcr.io
+  CONTAINER_IMAGE_NAME: ${{ github.repository }}
+  CONTAINER_IMAGE_VERSION: ${{ github.event.pull_request.head.sha || github.sha }} # Use PR head SHA if available
 
 jobs:
-  build:
+  test-and-lint:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -75,9 +75,14 @@ jobs:
           # Use a different port (from the one used with E2E tests) to workaround problem in CI/GitHub Actions,
           # starting to occur with playwright/test 1.28.0:
           # Error: http://localhost:4173 is already used ...
-          # See https://github.com/digitalservicebund/ris-cm/actions/runs/3486985178/jobs/5834089375
           VITE_PORT: 4183
 
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
       - name: Build an image from Dockerfile
         run: |
           docker build -t ${{ env.IMAGE_NAME }}:${{ github.sha }} . --build-arg COMMIT_SHA=${{ github.sha }}
@@ -98,6 +103,134 @@ jobs:
           image_name: ${{ env.IMAGE_NAME }}:${{ github.sha }}
 
       - name: Send status to Slack
+        uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf # v1.5.0
+        if: ${{ failure() }}
+        with:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  build-image-and-scan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    needs: [test-and-lint, audit-licenses]
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build image
+        run: |
+          docker build \
+            --file ./Dockerfile \
+            --tag ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_IMAGE_NAME }}:${{ env.CONTAINER_IMAGE_VERSION }}
+            .
+      - name: Run Trivy vulnerability image scanner
+        # Third-party action, pin to commit SHA!
+        # See https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1
+        env:
+          TRIVY_DB_REPOSITORY: ghcr.io/aquasecurity/trivy-db,public.ecr.aws/aquasecurity/trivy-db
+          TRIVY_JAVA_DB_REPOSITORY: ghcr.io/aquasecurity/trivy-java-db,public.ecr.aws/aquasecurity/trivy-java-db
+        with:
+          image-ref: ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_IMAGE_NAME }}:${{ env.CONTAINER_IMAGE_VERSION }}
+          format: "sarif"
+          output: "trivy-results.sarif"
+          github-pat: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check trivy results
+        run: |
+          if grep -qE 'HIGH|CRITICAL' trivy-results.sarif; then
+            echo "Vulnerabilities found"
+            exit 1
+          else
+            echo "No significant vulnerabilities found"
+            exit 0
+          fi
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v4
+        if: ${{ always() && github.ref == 'refs/heads/main' }} # Bypass non-zero exit code..
+        with:
+          sarif_file: "trivy-results.sarif"
+      - name: Generate cosign vulnerability scan record
+        # Third-party action, pin to commit SHA!
+        # See https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1
+        env:
+          TRIVY_DB_REPOSITORY: ghcr.io/aquasecurity/trivy-db,public.ecr.aws/aquasecurity/trivy-db
+          TRIVY_JAVA_DB_REPOSITORY: ghcr.io/aquasecurity/trivy-java-db,public.ecr.aws/aquasecurity/trivy-java-db
+        with:
+          image-ref: ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_IMAGE_NAME }}:${{ env.CONTAINER_IMAGE_VERSION }}
+          format: "cosign-vuln"
+          output: "vuln.json"
+      - name: Upload cosign vulnerability scan record
+        uses: actions/upload-artifact@v7
+        with:
+          name: "vuln.json"
+          path: "vuln.json"
+          if-no-files-found: error
+      - name: Save image
+        run: |
+          mkdir /tmp/images
+          docker save -o /tmp/images/image.tar ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_IMAGE_NAME }}:${{ env.CONTAINER_IMAGE_VERSION }}
+      - uses: actions/cache@v5
+        with:
+          path: /tmp/images
+          key: docker-images-cache-${{ env.RUN_ID }}
+          restore-keys: docker-images-cache-${{ env.RUN_ID }}
+      - name: Send status to Slack
+        # Third-party action, pin to commit SHA!
+        # See https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions
+        uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf # v1.5.0
+        if: ${{ failure() && github.ref == 'refs/heads/main' }}
+        with:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  push-image-to-registry:
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' }}
+    needs:
+      - build-image-and-scan
+      - test-and-lint
+      - audit-licenses
+    permissions:
+      contents: read
+      id-token: write # This is used to complete the identity challenge with sigstore/fulcio..
+      packages: write
+    outputs:
+      version: ${{ steps.set-version.outputs.version }}
+    steps:
+      - uses: actions/cache@v5
+        with:
+          path: /tmp/images
+          key: docker-images-cache-${{ env.RUN_ID }}
+          restore-keys: docker-images-cache-${{ env.RUN_ID }}
+      - name: load image
+        shell: bash
+        run: docker load -i /tmp/images/image.tar
+      - name: Log into container registry
+        # Third-party action, pin to commit SHA!
+        # See https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions
+        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2
+        with:
+          registry: ${{ env.CONTAINER_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish backend container image
+        run: docker push ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_IMAGE_NAME }}:${{ env.CONTAINER_IMAGE_VERSION }}
+      - name: Install cosign
+        # Third-party action, pin to commit SHA!
+        # See https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions
+        uses: sigstore/cosign-installer@ba7bc0a3fef59531c69a25acd34668d6d3fe6f22
+      - name: Sign the published Docker image
+        run: cosign sign --yes ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_IMAGE_NAME }}:${{ env.CONTAINER_IMAGE_VERSION }}
+      - name: Download cosign vulnerability scan record
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
+        with:
+          name: "vuln.json"
+      - name: Attest vulnerability scan
+        run: cosign attest --yes --replace --predicate vuln.json --type vuln ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_IMAGE_NAME }}:${{ env.CONTAINER_IMAGE_VERSION }}
+      - id: set-version
+        run: echo "version=$CONTAINER_IMAGE_VERSION" >> "$GITHUB_OUTPUT"
+      - name: Send status to Slack
+        # Third-party action, pin to commit SHA!
+        # See https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions
         uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf # v1.5.0
         if: ${{ failure() }}
         with:
@@ -153,8 +286,9 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
         env:
-          TRIVY_USERNAME: ${{ github.actor }}
-          TRIVY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          ACTIONS_RUNTIME_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TRIVY_DB_REPOSITORY: ghcr.io/aquasecurity/trivy-db,public.ecr.aws/aquasecurity/trivy-db
+          TRIVY_JAVA_DB_REPOSITORY: ghcr.io/aquasecurity/trivy-java-db,public.ecr.aws/aquasecurity/trivy-java-db
         with:
           scan-type: "fs"
           skip-dirs: "node_modules" # See https://github.com/aquasecurity/trivy/issues/1283
@@ -164,14 +298,19 @@ jobs:
           exit-code: "1" # Fail the build!
 
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@b1bff81932f5cdfc8695c7752dcee935dcd061c8 # v4.33.0
-        if: always() # Bypass non-zero exit code..
+        if: ${{ always() && github.ref == 'refs/heads/main' }} # Bypass non-zero exit code..
+        uses: github/codeql-action/upload-sarif@b1bff81932f5cdfc8695c7752dcee935dcd061c8
         with:
           sarif_file: "trivy-results.sarif"
-
+      - name: Upload trivy-results.sarif as an artifact
+        uses: actions/upload-artifact@v7
+        if: ${{ always () }}
+        with:
+          name: trivy-results.sarif
+          path: trivy-results.sarif
       - name: Send status to Slack
         uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf # v1.5.0
-        if: ${{ failure() }}
+        if: ${{ failure() && github.ref == 'refs/heads/main' }}
         with:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 

@@ -4,6 +4,7 @@ fileignoreconfig:
       - "key: "
       - "password: "
       - TRIVY_PASSWORD
+      - restore-keys
   - filename: .github/workflows/deploy-staging-job.yml
     allowed_patterns:
       - github_app_private_key
