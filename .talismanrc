@@ -19,6 +19,9 @@ fileignoreconfig:
   - filename: LICENSE
     allowed_patterns:
       - "keys"
+  - filename: Dockerfile
+    allowed_patterns:
+      - "@sha256:[a-fA-F0-9]{64}"
 scopeconfig:
   - scope: node
 allowed_patterns:

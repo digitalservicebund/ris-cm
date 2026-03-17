@@ -1,18 +1,10 @@
-FROM node:24-alpine AS build
-
-ARG COMMIT_SHA
-ENV APP_VERSION=$COMMIT_SHA
-
-# Create app directory
+FROM node:24.11.1 AS builder
 WORKDIR /src
 # Required files are whitelisted in dockerignore
 COPY . ./
 RUN npm ci --ignore-scripts && npm run build && npm prune --production
 
-# Copy the static assets to the nginx image
-FROM nginxinc/nginx-unprivileged:1.29-alpine3.23
-COPY --from=build /src/dist /usr/share/nginx/html/
-
-# Replace the default server configuration of the base nginx image.
+FROM cgr.dev/chainguard/nginx@sha256:e6654b6c60849adfb20dc1c69c8556c5a4b63afe6930dbf82b45ee3269ede875
+COPY --from=builder /src/dist /usr/share/nginx/html/
 COPY nginx /etc/nginx/conf.d/
 EXPOSE 8080
