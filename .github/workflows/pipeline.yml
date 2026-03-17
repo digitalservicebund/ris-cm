@@ -77,37 +77,6 @@ jobs:
           # Error: http://localhost:4173 is already used ...
           VITE_PORT: 4183
 
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - name: Build an image from Dockerfile
-        run: |
-          docker build -t ${{ env.IMAGE_NAME }}:${{ github.sha }} . --build-arg COMMIT_SHA=${{ github.sha }}
-      - name: Login to container registry
-        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4.0.0
-        with:
-          registry: "ghcr.io"
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Push image
-        run: |
-          docker tag ${{ github.repository }}:${{ github.sha }} ghcr.io/${{ github.repository }}
-          docker tag ${{ github.repository }}:${{ github.sha }} ghcr.io/${{ github.repository }}:${{ github.sha }}
-          docker push --all-tags ghcr.io/${{ github.repository }}
-      - name: Create SBOM
-        uses: digitalservicebund/create-sbom@9535ef832c2895b44b7266f84e16ad7598d1ead9 # v1.2.1
-        with:
-          image_name: ${{ env.IMAGE_NAME }}:${{ github.sha }}
-
-      - name: Send status to Slack
-        uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf # v1.5.0
-        if: ${{ failure() }}
-        with:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
   build-image-and-scan:
     runs-on: ubuntu-latest
     permissions:
@@ -117,11 +86,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - name: Build image
-        run: |
-          docker build \
-            --file ./Dockerfile \
-            --tag ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_IMAGE_NAME }}:${{ env.CONTAINER_IMAGE_VERSION }}
-            .
+        run: docker build --tag ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_IMAGE_NAME }}:${{ env.CONTAINER_IMAGE_VERSION }} .
       - name: Run Trivy vulnerability image scanner
         # Third-party action, pin to commit SHA!
         # See https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions
@@ -317,7 +282,7 @@ jobs:
   deploy-staging-job:
     if: ${{ github.ref == 'refs/heads/main' }}
     needs:
-      - build
+      - build-image-and-scan
       - audit-licenses
       - vulnerability-scan
     permissions:
