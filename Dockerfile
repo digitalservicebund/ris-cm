@@ -10,7 +10,7 @@ COPY . ./
 RUN npm ci --ignore-scripts && npm run build && npm prune --production
 
 # Copy the static assets to the nginx image
-FROM nginxinc/nginx-unprivileged:1.29-alpine3.22
+FROM nginxinc/nginx-unprivileged:1.29-alpine3.23
 COPY --from=build /src/dist /usr/share/nginx/html/
 
 # Replace the default server configuration of the base nginx image.
