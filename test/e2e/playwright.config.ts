@@ -14,6 +14,10 @@ const config: PlaywrightTestConfig = {
     baseURL: `http://localhost:${port}`,
     screenshot: "only-on-failure",
   },
+  reporter:
+    process.env.CI === "true"
+      ? [["dot"], ["blob", { outputFile: "./e2e-test-report/test-report.zip" }]]
+      : "list",
   projects: [
     {
       name: "chromium",

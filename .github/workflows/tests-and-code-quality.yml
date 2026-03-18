@@ -75,13 +75,13 @@ jobs:
       - name: Run E2E tests (chromium)
         run: npm run test:e2e -- --project=chromium
         # TODO: (Malte Laukötter, 2026-03-18) add a e2e-test run for firefox and edge as a daily task
-
-      - uses: actions/upload-artifact@v7
-        if: ${{ failure() }}
+      - name: Upload test result blobs reports
+        uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() }}
         with:
-          name: playwright-test-results
-          path: test-results
-
+          name: e2e-test-report-chromium
+          path: ./e2e-test-report/test-report.zip
+          retention-days: 1
       - name: Send status to Slack
         uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf
         if: ${{ failure() && github.ref == 'refs/heads/main' }}
@@ -126,11 +126,13 @@ jobs:
       - name: Run E2E tests (chromium)
         run: npm run test:a11y -- --project=chromium
 
-      - uses: actions/upload-artifact@v7
-        if: ${{ failure() }}
+      - name: Upload test result blobs reports
+        uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() }}
         with:
-          name: playwright-test-results
-          path: test-results
+          name: a11y-test-report-chromium
+          path: ./a11y-test-report/test-report.zip
+          retention-days: 1
 
       - name: Send status to Slack
         uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf
