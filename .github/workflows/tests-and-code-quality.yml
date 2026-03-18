@@ -72,7 +72,7 @@ jobs:
         run: |
           npx --yes playwright install --with-deps chromium
 
-      - name: Run E2E tests (chromium)
+      - name: Run e2e tests (chromium)
         run: npm run test:e2e -- --project=chromium
         # TODO: (Malte Laukötter, 2026-03-18) add a e2e-test run for firefox and edge as a daily task
       - name: Upload test result blobs reports
@@ -123,7 +123,7 @@ jobs:
         run: |
           npx --yes playwright install --with-deps chromium
 
-      - name: Run E2E tests (chromium)
+      - name: Run a11y tests (chromium)
         run: npm run test:a11y -- --project=chromium
 
       - name: Upload test result blobs reports
