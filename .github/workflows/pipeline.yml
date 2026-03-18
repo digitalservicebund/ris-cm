@@ -209,12 +209,14 @@ jobs:
         working-directory: ./all-e2e-test-reports
         run: |
           for DIR in ./e2e-test-report-*; do
-            echo "unpack $DIR"
-            unzip -o "$DIR/test-report.zip" -d "$DIR"
-            rm "$DIR/test-report.zip"
-            ZIP_FILE="../$(basename "$DIR").zip"
-            (cd "$DIR" && zip -r "$ZIP_FILE" ./*.jsonl)
-            rm -rf "$DIR"
+            if [[ -d $DIR ]]; then
+              echo "unpack report from $DIR/test-report.zip"
+              unzip -o "$DIR/test-report.zip" -d "$DIR"
+              rm "$DIR/test-report.zip"
+              ZIP_FILE="../$(basename "$DIR").zip"
+              (cd "$DIR" && zip -r "$ZIP_FILE" ./*.jsonl)
+              rm -rf "$DIR"
+            fi
           done
         shell: bash
       - name: Merge into html report
