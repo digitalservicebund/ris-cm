@@ -28,6 +28,8 @@ fileignoreconfig:
   - filename: sonar-project.properties
     allowed_patterns:
       - projectKey
+  - filename: nginx/default.conf
+    checksum: bb4892d29fb20d29709f21d0c46c40b9438f05efc7589a26db5679056453540f
 scopeconfig:
   - scope: node
 allowed_patterns:
