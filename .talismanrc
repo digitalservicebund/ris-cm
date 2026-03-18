@@ -12,6 +12,9 @@ fileignoreconfig:
   - filename: .github/workflows/scan.yml
     allowed_patterns:
       - TRIVY_PASSWORD
+  - filename: .github/workflows/tests-and-code-quality.yml
+    allowed_patterns:
+      - "key: "
   - filename: README.md
     allowed_patterns:
       - secrets

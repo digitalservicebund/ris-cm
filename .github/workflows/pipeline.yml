@@ -11,80 +11,24 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: ${{ github.repository }}
   CONTAINER_REGISTRY: ghcr.io
   CONTAINER_IMAGE_NAME: ${{ github.repository }}
-  CONTAINER_IMAGE_VERSION: ${{ github.event.pull_request.head.sha || github.sha }} # Use PR head SHA if available
+  CONTAINER_IMAGE_VERSION: ${{ github.event.pull_request.head.sha || github.sha }}
+  SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+  REPORTS_REPOSITORY: digitalservicebund/ris-reports
 
 jobs:
-  test-and-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: .node-version
-          cache: npm
-
-      - name: Cache npm dependencies
-        id: cache-npm-deps
-        uses: actions/cache@v5
-        with:
-          path: |
-            **/node_modules
-            ~/.cache/Cypress
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: Install dependecies
-        if: steps.cache-npm-deps.outputs.cache-hit != 'true'
-        run: npm ci
-
-      - name: Check build
-        run: npm run build
-
-      - name: Check format
-        run: npm run format:check
-
-      - name: Lint
-        run: npm run lint:check
-
-      - name: Run tests
-        run: npm test
-
-      - name: Install E2E test dependencies
-        run: |
-          npx --yes playwright install-deps
-          npx --yes playwright install
-          npx --yes playwright install msedge
-
-      - name: Run E2E tests
-        run: npm run test:e2e
-
-      - uses: actions/upload-artifact@v7
-        if: ${{ failure() }}
-        with:
-          name: playwright-test-results
-          path: test-results
-
-      - name: Run a11y tests
-        run: npm run test:a11y
-        env:
-          # Use a different port (from the one used with E2E tests) to workaround problem in CI/GitHub Actions,
-          # starting to occur with playwright/test 1.28.0:
-          # Error: http://localhost:4173 is already used ...
-          VITE_PORT: 4183
+  test-and-code-quality:
+    uses: ./.github/workflows/test-and-code-quality.yml
+    secrets: inherit
 
   build-image-and-scan:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       security-events: write
-    needs: [test-and-lint, audit-licenses]
+    needs: [test-and-code-quality, audit-licenses]
     steps:
       - uses: actions/checkout@v6
       - name: Build image
@@ -154,7 +98,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/main' }}
     needs:
       - build-image-and-scan
-      - test-and-lint
+      - test-and-code-quality
       - audit-licenses
     permissions:
       contents: read

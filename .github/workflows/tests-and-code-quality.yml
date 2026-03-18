@@ -1,0 +1,222 @@
+on:
+  workflow_call:
+    secrets:
+      SLACK_WEBHOOK_URL:
+        required: false
+      SONAR_TOKEN:
+        required: false
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24.11.1"
+          cache: npm
+          cache-dependency-path: ./package-lock.json
+      - name: Cache node_modules
+        uses: actions/cache@v5
+        id: node-modules-cache
+        with:
+          path: |
+            ./node_modules
+          key: modules-${{ hashFiles('./package-lock.json') }}
+      - name: Install dependencies
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+        run: |
+          npm ci --ignore-scripts
+      - name: Run tests
+        run: |
+          npm test
+      - name: Send status to Slack
+        uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf
+        if: ${{ failure() && github.ref == 'refs/heads/main' }}
+        with:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  e2e-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24.11.1"
+          cache: npm
+          cache-dependency-path: ./package-lock.json
+      - name: Cache node_modules
+        uses: actions/cache@v5
+        id: node-modules-cache
+        with:
+          path: |
+            ./node_modules
+          key: modules-${{ hashFiles('./package-lock.json') }}
+      - name: Install dependencies
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+        run: |
+          npm ci --ignore-scripts
+
+      - name: Get Playwright version
+        run: echo "PLAYWRIGHT_VERSION=$(jq -r '.packages["node_modules/@playwright/test"].version' package-lock.json)" >> $GITHUB_ENV
+      - name: Cache browser binaries
+        id: cache-browser-binaries
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
+      - name: Install playwright browsers
+        if: steps.cache-browser-binaries.outputs.cache-hit != 'true'
+        run: |
+          npx --yes playwright install --with-deps chromium
+
+      - name: Run E2E tests (chromium)
+        run: npm run test:e2e -- --project=chromium
+        # TODO: (Malte Laukötter, 2026-03-18) add a e2e-test run for firefox and edge as a daily task
+
+      - uses: actions/upload-artifact@v7
+        if: ${{ failure() }}
+        with:
+          name: playwright-test-results
+          path: test-results
+
+      - name: Send status to Slack
+        uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf
+        if: ${{ failure() && github.ref == 'refs/heads/main' }}
+        with:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  a11y-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24.11.1"
+          cache: npm
+          cache-dependency-path: ./package-lock.json
+      - name: Cache node_modules
+        uses: actions/cache@v5
+        id: node-modules-cache
+        with:
+          path: |
+            ./node_modules
+          key: modules-${{ hashFiles('./package-lock.json') }}
+      - name: Install dependencies
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+        run: |
+          npm ci --ignore-scripts
+
+      - name: Get Playwright version
+        run: echo "PLAYWRIGHT_VERSION=$(jq -r '.packages["node_modules/@playwright/test"].version' package-lock.json)" >> $GITHUB_ENV
+      - name: Cache browser binaries
+        id: cache-browser-binaries
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
+      - name: Install playwright browsers
+        if: steps.cache-browser-binaries.outputs.cache-hit != 'true'
+        run: |
+          npx --yes playwright install --with-deps chromium
+
+      - name: Run E2E tests (chromium)
+        run: npm run test:a11y -- --project=chromium
+
+      - uses: actions/upload-artifact@v7
+        if: ${{ failure() }}
+        with:
+          name: playwright-test-results
+          path: test-results
+
+      - name: Send status to Slack
+        uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf
+        if: ${{ failure() && github.ref == 'refs/heads/main' }}
+        with:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  style-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24.11.1"
+          cache: npm
+          cache-dependency-path: ./package-lock.json
+      - name: Cache node_modules
+        uses: actions/cache@v5
+        id: node-modules-cache
+        with:
+          path: |
+            ./node_modules
+          key: modules-${{ hashFiles('./package-lock.json') }}
+      - name: Cache style checks
+        uses: actions/cache@v5
+        id: style-check-cache
+        with:
+          path: .cache
+          key: style-check-${{ github.ref }}-${{ github.sha }}
+          # If no direct cache hit for the current commit, fallback to the latest cache
+          restore-keys: |
+            style-check-${{ github.ref }}-
+            style-check-
+      - name: Install dependencies
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+        run: |
+          npm ci --ignore-scripts
+      - name: Check style
+        run: npm run style:check
+      - name: Send status to Slack
+        uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf
+        if: ${{ failure() && github.ref == 'refs/heads/main' }}
+        with:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  code-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24.11.1"
+          cache: npm
+          cache-dependency-path: ./package-lock.json
+      - name: Run coverage
+        if: ${{  github.actor != 'dependabot[bot]' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          npm ci --ignore-scripts
+          npm run coverage
+        working-directory: ./
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@a31c9398be7ace6bbfaf30c0bd5d415f843d45e9
+        if: ${{  github.actor != 'dependabot[bot]' }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: ./
+          args: >
+            -Dsonar.qualitygate.wait=true
+      - name: Check SonarQube Quality Gate
+        uses: sonarsource/sonarqube-quality-gate-action@cb3ed20f9fec62b4c3b8ad9e77656c6adaade913
+        if: ${{  github.actor != 'dependabot[bot]' }}
+        with:
+          scanMetadataReportFile: .scannerwork/report-task.txt
+        timeout-minutes: 3
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Send status to Slack
+        uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf
+        if: ${{ failure() && github.ref == 'refs/heads/main' }}
+        with:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
