@@ -176,3 +176,63 @@ jobs:
       id-token: write
     uses: ./.github/workflows/deploy-staging-job.yml
     secrets: inherit
+
+  push-reports:
+    runs-on: ubuntu-latest
+    needs:
+      - validate-pinned-github-action-versions
+      - build-and-push-image
+      - vulnerability-scan
+      - audit-licenses
+      - tests-and-code-quality
+    if: ${{ github.ref == 'refs/heads/main' }}
+    steps:
+      # Setup
+      - uses: actions/checkout@v6
+        with:
+          repository: ${{ env.REPORTS_REPOSITORY }}
+          ssh-key: ${{ secrets.REPORTS_DEPLOY_KEY }}
+      - name: Setup git config
+        run: |
+          git config user.name "${{ github.repository }}"
+          # This email identifies the commit as GitHub Actions - see https://github.com/orgs/community/discussions/26560
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Checkout ris-cm repository
+        uses: actions/checkout@v6
+        with:
+          path: ris-cm
+      # Copy ADRs into tmp folder
+      - name: Copy ADRs
+        run: |
+          mkdir -p tmp/adr-source
+          find ris-cm/doc/adr/ -type f -exec cp {} tmp/adr-source/ \;
+          ls -l tmp/adr-source
+      # License reports
+      - name: License reports - Download
+        uses: actions/download-artifact@v8
+        with:
+          name: license-reports
+          path: tmp/license-reports/
+      - name: Frontend license report - git add report
+        uses: digitalservicebund/add-ris-report@c6c8735d23295c36a271c75e7dedc9b6b9a9ef5e
+        with:
+          filePath: tmp/license-reports/license-report.csv
+          destinationDir: license-reports/frontend/ris-cm
+      # ADRs
+      - name: add ADRs to report
+        uses: digitalservicebund/add-ris-report@c6c8735d23295c36a271c75e7dedc9b6b9a9ef5e
+        with:
+          filePath: tmp/adr-source
+          destinationDir: adr/ris-cm
+          reportIsDirectory: true
+          keepAllVersions: false
+      # Push reports
+      - name: Push reports
+        # we use `toJSON(...)` below to escape double quotation marks
+        run: |
+          git diff-index --cached --quiet HEAD ||
+            git commit \
+              -m ${{ toJSON(github.event.head_commit.message) }} \
+              -m "From commit: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}" &&
+            git push origin main &&
+            echo "Pushed reports to ${{ github.server_url }}/${{ env.REPORTS_REPOSITORY }}" >> $GITHUB_STEP_SUMMARY
