@@ -15,7 +15,7 @@
     "test:report": "TZ=UTC vitest run --reporter=html --outputFile=./test-results/unit-tests/report.html",
     "test:e2e": "playwright test --config=test/e2e/playwright.config.ts",
     "test:a11y": "playwright test --config=test/a11y/playwright.config.ts",
-    "coverage": "jest test --coverage",
+    "coverage": "npm run test -- --coverage",
     "lint:check": "oxlint --max-warnings=0",
     "lint:fix": "npm run lint:check -- --fix",
     "format:check": "prettier --check .",
