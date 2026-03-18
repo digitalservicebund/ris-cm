@@ -19,8 +19,8 @@ env:
   REPORTS_REPOSITORY: digitalservicebund/ris-reports
 
 jobs:
-  test-and-code-quality:
-    uses: ./.github/workflows/test-and-code-quality.yml
+  tests-and-code-quality:
+    uses: ./.github/workflows/tests-and-code-quality.yml
     secrets: inherit
 
   build-image-and-scan:
@@ -28,7 +28,7 @@ jobs:
     permissions:
       contents: read
       security-events: write
-    needs: [test-and-code-quality, audit-licenses]
+    needs: [tests-and-code-quality, audit-licenses]
     steps:
       - uses: actions/checkout@v6
       - name: Build image
@@ -98,7 +98,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/main' }}
     needs:
       - build-image-and-scan
-      - test-and-code-quality
+      - tests-and-code-quality
       - audit-licenses
     permissions:
       contents: read
