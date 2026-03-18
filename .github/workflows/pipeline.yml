@@ -20,16 +20,80 @@ env:
   REPORTS_REPOSITORY: digitalservicebund/ris-reports
 
 jobs:
+  validate-pinned-github-action-versions:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: validate github workflow files to have pinned versions
+        uses: digitalservicebund/github-actions-linter@7cb107efafe7cb97a58e685a08a1014744b89f71 # v0.1.15
+      - name: Send status to Slack
+        uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf # v1.5.0
+        if: ${{ failure() && github.ref == 'refs/heads/main' }}
+        with:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
   tests-and-code-quality:
+    needs:
+      - validate-pinned-github-action-versions
     uses: ./.github/workflows/tests-and-code-quality.yml
+    secrets: inherit
+
+  audit-licenses:
+    runs-on: ubuntu-latest
+    needs:
+      - validate-pinned-github-action-versions
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Cache npm dependencies
+        id: cache-npm-deps
+        uses: actions/cache@v5
+        with:
+          path: |
+            **/node_modules
+            ~/.cache/Cypress
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependecies
+        if: steps.cache-npm-deps.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Audit used licences
+        run: npm run audit:licences
+
+      - name: Send status to Slack
+        uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf # v1.5.0
+        if: ${{ failure() }}
+        with:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  vulnerability-scan:
+    needs:
+      - validate-pinned-github-action-versions
+    uses: ./.github/workflows/scan.yml
     secrets: inherit
 
   build-and-push-image:
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' }}
     needs:
+      - validate-pinned-github-action-versions
       - tests-and-code-quality
       - audit-licenses
+      - vulnerability-scan
     permissions:
       contents: read
       id-token: write # Required for identity challenge with sigstore/fulcio
@@ -97,90 +161,10 @@ jobs:
         with:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-  audit-licenses:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
-
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version-file: .node-version
-          cache: npm
-
-      - name: Cache npm dependencies
-        id: cache-npm-deps
-        uses: actions/cache@v5
-        with:
-          path: |
-            **/node_modules
-            ~/.cache/Cypress
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      - name: Install dependecies
-        if: steps.cache-npm-deps.outputs.cache-hit != 'true'
-        run: npm ci
-
-      - name: Audit used licences
-        run: npm run audit:licences
-
-      - name: Send status to Slack
-        uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf # v1.5.0
-        if: ${{ failure() }}
-        with:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-  vulnerability-scan:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
-    steps:
-      - name: validate github workflow files to have pinned versions
-        uses: digitalservicebund/github-actions-linter@7cb107efafe7cb97a58e685a08a1014744b89f71 # v0.1.15
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
-        env:
-          ACTIONS_RUNTIME_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TRIVY_DB_REPOSITORY: ghcr.io/aquasecurity/trivy-db,public.ecr.aws/aquasecurity/trivy-db
-          TRIVY_JAVA_DB_REPOSITORY: ghcr.io/aquasecurity/trivy-java-db,public.ecr.aws/aquasecurity/trivy-java-db
-        with:
-          scan-type: "fs"
-          skip-dirs: "node_modules" # See https://github.com/aquasecurity/trivy/issues/1283
-          format: "sarif"
-          output: "trivy-results.sarif"
-          severity: "CRITICAL,HIGH"
-          exit-code: "1" # Fail the build!
-
-      - name: Upload Trivy scan results to GitHub Security tab
-        if: ${{ always() && github.ref == 'refs/heads/main' }} # Bypass non-zero exit code..
-        uses: github/codeql-action/upload-sarif@b1bff81932f5cdfc8695c7752dcee935dcd061c8
-        with:
-          sarif_file: "trivy-results.sarif"
-      - name: Upload trivy-results.sarif as an artifact
-        uses: actions/upload-artifact@v7
-        if: ${{ always () }}
-        with:
-          name: trivy-results.sarif
-          path: trivy-results.sarif
-      - name: Send status to Slack
-        uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf # v1.5.0
-        if: ${{ failure() && github.ref == 'refs/heads/main' }}
-        with:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
   deploy-staging-job:
     if: ${{ github.ref == 'refs/heads/main' }}
     needs:
       - build-and-push-image
-      - audit-licenses
-      - vulnerability-scan
     permissions:
       id-token: write
     uses: ./.github/workflows/deploy-staging-job.yml
