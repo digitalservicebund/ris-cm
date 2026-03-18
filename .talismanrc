@@ -25,6 +25,9 @@ fileignoreconfig:
   - filename: Dockerfile
     allowed_patterns:
       - "@sha256:[a-fA-F0-9]{64}"
+  - filename: sonar-project.properties
+    allowed_patterns:
+      - projectKey
 scopeconfig:
   - scope: node
 allowed_patterns:
