@@ -208,7 +208,8 @@ jobs:
       - name: Prepare test reports for merge
         working-directory: ./all-e2e-test-reports
         run: |
-          for DIR in e2e-test-report-*; do
+          for DIR in ./e2e-test-report-*; do
+            echo "unpack $DIR"
             unzip -o "$DIR/test-report.zip" -d "$DIR"
             rm "$DIR/test-report.zip"
             ZIP_FILE="../$(basename "$DIR").zip"
