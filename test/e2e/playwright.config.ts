@@ -16,7 +16,7 @@ const config: PlaywrightTestConfig = {
   },
   reporter:
     process.env.CI === "true"
-      ? [["dot"], ["blob", { outputFile: "./e2e-test-report/test-report.zip" }]]
+      ? [["dot"], ["blob", { outputFile: "./test-report.zip" }]]
       : "list",
   projects: [
     {

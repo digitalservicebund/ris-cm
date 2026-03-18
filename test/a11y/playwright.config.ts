@@ -16,10 +16,7 @@ const config: PlaywrightTestConfig = {
   },
   reporter:
     process.env.CI === "true"
-      ? [
-          ["dot"],
-          ["blob", { outputFile: "./a11y-test-report/test-report.zip" }],
-        ]
+      ? [["dot"], ["blob", { outputFile: "./test-report.zip" }]]
       : "list",
   projects: [
     {
