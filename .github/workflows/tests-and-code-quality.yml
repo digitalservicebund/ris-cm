@@ -37,7 +37,7 @@ jobs:
           path: test-results/unit-tests
           if-no-files-found: warn
       - name: Send status to Slack
-        uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf
+        uses: digitalservicebund/notify-on-failure-gha@671832f192aee0a068fd92b2f6deb975df794a84
         if: ${{ failure() && github.ref == 'refs/heads/main' }}
         with:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
@@ -89,7 +89,7 @@ jobs:
           path: ./test/e2e/test-report.zip
           retention-days: 1
       - name: Send status to Slack
-        uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf
+        uses: digitalservicebund/notify-on-failure-gha@671832f192aee0a068fd92b2f6deb975df794a84
         if: ${{ failure() && github.ref == 'refs/heads/main' }}
         with:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
@@ -142,7 +142,7 @@ jobs:
           retention-days: 1
 
       - name: Send status to Slack
-        uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf
+        uses: digitalservicebund/notify-on-failure-gha@671832f192aee0a068fd92b2f6deb975df794a84
         if: ${{ failure() && github.ref == 'refs/heads/main' }}
         with:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
@@ -182,7 +182,7 @@ jobs:
       - name: Check style
         run: npm run style:check
       - name: Send status to Slack
-        uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf
+        uses: digitalservicebund/notify-on-failure-gha@671832f192aee0a068fd92b2f6deb975df794a84
         if: ${{ failure() && github.ref == 'refs/heads/main' }}
         with:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
@@ -227,7 +227,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: Send status to Slack
-        uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf
+        uses: digitalservicebund/notify-on-failure-gha@671832f192aee0a068fd92b2f6deb975df794a84
         if: ${{ failure() && github.ref == 'refs/heads/main' }}
         with:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
