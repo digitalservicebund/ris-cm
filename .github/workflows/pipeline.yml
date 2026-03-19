@@ -319,7 +319,7 @@ jobs:
         uses: digitalservicebund/add-ris-report@c6c8735d23295c36a271c75e7dedc9b6b9a9ef5e
         with:
           filePath: tmp/license-reports/license-report.csv
-          destinationDir: license-reports/frontend/ris-cm
+          destinationDir: licence-reports/frontend/ris-cm
       # ADRs
       - name: add ADRs to report
         uses: digitalservicebund/add-ris-report@c6c8735d23295c36a271c75e7dedc9b6b9a9ef5e
@@ -338,7 +338,7 @@ jobs:
         uses: digitalservicebund/add-ris-report@c6c8735d23295c36a271c75e7dedc9b6b9a9ef5e
         with:
           filePath: tmp/e2e-test-report/
-          destinationDir: ris-reports/test-reports/ris-cm/e2e-tests
+          destinationDir: test-reports/ris-cm/e2e-tests
           reportIsDirectory: true
       # A11y test report
       - name: E2E test reports - Download
@@ -350,7 +350,7 @@ jobs:
         uses: digitalservicebund/add-ris-report@c6c8735d23295c36a271c75e7dedc9b6b9a9ef5e
         with:
           filePath: tmp/a11y-test-report/
-          destinationDir: ris-reports/test-reports/ris-cm/a11y-tests
+          destinationDir: test-reports/ris-cm/a11y-tests
           reportIsDirectory: true
       # Push reports
       - name: Push reports
