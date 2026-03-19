@@ -1,7 +1,7 @@
 on:
   workflow_call:
     secrets:
-      SLACK_WEBHOOK_URL:
+      SLACK_BOT_TOKEN:
         required: false
       SONAR_TOKEN:
         required: false
@@ -40,7 +40,8 @@ jobs:
         uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf
         if: ${{ failure() && github.ref == 'refs/heads/main' }}
         with:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: C0471B2N86L
 
   e2e-tests:
     runs-on: ubuntu-latest
@@ -77,8 +78,8 @@ jobs:
         run: |
           npx --yes playwright install --with-deps chromium
 
-      - name: Run e2e tests (chromium)
-        run: npm run test:e2e -- --project=chromium
+      - name: Run e2e tests
+        run: npm run test:e2e
         # TODO: (Malte Laukötter, 2026-03-18) add a e2e-test run for firefox and edge as a daily task
       - name: Upload test result blobs reports
         uses: actions/upload-artifact@v7
@@ -91,7 +92,8 @@ jobs:
         uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf
         if: ${{ failure() && github.ref == 'refs/heads/main' }}
         with:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: C0471B2N86L
 
   a11y-tests:
     runs-on: ubuntu-latest
@@ -129,7 +131,7 @@ jobs:
           npx --yes playwright install --with-deps chromium
 
       - name: Run a11y tests (chromium)
-        run: npm run test:a11y -- --project=chromium
+        run: npm run test:a11y
 
       - name: Upload test result blobs reports
         uses: actions/upload-artifact@v7
@@ -143,7 +145,8 @@ jobs:
         uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf
         if: ${{ failure() && github.ref == 'refs/heads/main' }}
         with:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: C0471B2N86L
 
   style-check:
     runs-on: ubuntu-latest
@@ -182,7 +185,8 @@ jobs:
         uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf
         if: ${{ failure() && github.ref == 'refs/heads/main' }}
         with:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: C0471B2N86L
 
   code-analysis:
     runs-on: ubuntu-latest
@@ -226,4 +230,5 @@ jobs:
         uses: digitalservicebund/notify-on-failure-gha@814d0c4b2ad6a3443e89c991f8657b10126510bf
         if: ${{ failure() && github.ref == 'refs/heads/main' }}
         with:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          SLACK_CHANNEL_ID: C0471B2N86L

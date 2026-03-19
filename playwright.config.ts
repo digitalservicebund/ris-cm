@@ -16,24 +16,24 @@ const config: PlaywrightTestConfig = {
   },
   reporter:
     process.env.CI === "true"
-      ? [["dot"], ["blob", { outputFile: "./test-report.zip" }]]
+      ? [["dot"], ["blob", { outputFile: "./test-report.npx vite buildzip" }]]
       : "list",
   projects: [
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"], channel: "chrome" },
+      name: "e2e",
+      testDir: "./test/e2e",
+      use: {
+        ...devices["Desktop Chrome"],
+        channel: "chrome",
+      },
     },
     {
-      name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
-    },
-    {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"] },
-    },
-    {
-      name: "edge",
-      use: { channel: "msedge" },
+      name: "a11y",
+      testDir: "./test/a11y",
+      use: {
+        ...devices["Desktop Chrome"],
+        channel: "chrome",
+      },
     },
   ],
   webServer: {

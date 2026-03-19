@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import Button from "primevue/button";
+import Button from "primevue/button"
 import RadioButton from "primevue/radiobutton"
 import InputText from "primevue/inputtext"
 </script>
@@ -7,7 +7,8 @@ import InputText from "primevue/inputtext"
 <template>
   <div class="flex flex-col bg-blue-200">
     <div class="m-24 ris-body1-bold">
-      Welches Dokument wollen Sie zurückziehen? Wählen Sie die Dokumentart und geben Sie die Dokumentnummer ein, um das Dokument zu suchen.
+      Welches Dokument wollen Sie zurückziehen? Wählen Sie die Dokumentart und
+      geben Sie die Dokumentnummer ein, um das Dokument zu suchen.
     </div>
     <div class="flex flex-row mx-24 mt-8">
       <div class="w-160">Dokumentart *</div>
@@ -44,7 +45,13 @@ import InputText from "primevue/inputtext"
     </div>
     <div class="mx-24 mt-32 flex flex-row">
       <div class="w-160">Dokumentnummer *</div>
-      <div class="ml-80"><InputText id="docnumber" aria-label="Dokumentnummer Suche" class="w-[300px]"/></div>
+      <div class="ml-80">
+        <InputText
+          id="docnumber"
+          aria-label="Dokumentnummer Suche"
+          class="w-[300px]"
+        />
+      </div>
     </div>
     <div class="m-24 flex flex-row justify-end">
       <Button label="Suche starten" />

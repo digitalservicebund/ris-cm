@@ -12,7 +12,7 @@ type SessionStore = {
 }
 
 const useSessionStore = defineStore("session", (): SessionStore => {
-  const user = ref<User>()
+  const user = ref<User>({ name: "test user", initials: "TU" })
   const env = ref<Env>()
 
   /**

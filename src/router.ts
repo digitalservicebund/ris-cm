@@ -20,8 +20,7 @@ const routes: readonly RouteRecordRaw[] = [
       {
         path: "",
         name: "Zurueckziehen",
-        component: () =>
-          import("@/views/Withdraw.vue"),
+        component: () => import("@/components/Withdraw.vue"),
       },
     ],
   },
@@ -32,8 +31,7 @@ const routes: readonly RouteRecordRaw[] = [
       {
         path: "",
         name: "UebersetzungenNormen",
-        component: () =>
-          import("@/views/TranslationsNorms.vue"),
+        component: () => import("@/components/TranslationsNorms.vue"),
       },
     ],
   },
@@ -41,7 +39,7 @@ const routes: readonly RouteRecordRaw[] = [
   {
     path: "/:pathMatch(.*)*",
     name: "NotFound",
-    component: () => import("@/views/404/404NotFound.view.vue"),
+    component: () => import("@/components/404/404NotFound.vue"),
   },
 ]
 

@@ -1,6 +1,6 @@
-<script setup>
-import SearchForm from "./SearchForm.vue";
-import ResultList from "./ResultList.vue";
+<script lang="ts" setup>
+import SearchForm from "./SearchForm.vue"
+import ResultList from "./ResultList.vue"
 </script>
 
 <template>

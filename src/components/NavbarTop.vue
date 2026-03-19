@@ -7,7 +7,6 @@ import IconPermIdentity from "~icons/ic/baseline-perm-identity"
 const route = useRoute()
 const session = useSessionStore()
 const fontColor = ref<string>()
-
 </script>
 
 <template>
@@ -32,8 +31,7 @@ const fontColor = ref<string>()
       <router-link
         class="ris-label1-regular p-8 hover:bg-yellow-500 hover:underline"
         :class="{
-          underline:
-            route.path.includes('zurueckziehen'),
+          underline: route.path.includes('zurueckziehen'),
         }"
         :to="{ name: 'Zurueckziehen' }"
         >Zurückziehen
@@ -52,7 +50,7 @@ const fontColor = ref<string>()
       <IconPermIdentity />
       <div class="flex flex-row items-streach justify-start flex-nowrap">
         <div class="flex flex-col">{{ session.user?.name }}</div>
-      </div>          
+      </div>
     </div>
   </nav>
 </template>
