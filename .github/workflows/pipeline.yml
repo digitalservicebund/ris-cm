@@ -352,6 +352,18 @@ jobs:
           filePath: tmp/a11y-test-report/
           destinationDir: test-reports/ris-cm/a11y-tests
           reportIsDirectory: true
+      # Unit test report
+      - name: unit test report - download artifact
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: unit-test-report
+          path: tmp/unit-test-report
+      - name: unit test report - git add report
+        uses: digitalservicebund/add-ris-report@c6c8735d23295c36a271c75e7dedc9b6b9a9ef5e
+        with:
+          filePath: tmp/unit-test-report
+          destinationDir: test-reports/ris-cm/unit-tests
+          reportIsDirectory: true
       # Push reports
       - name: Push reports
         # we use `toJSON(...)` below to escape double quotation marks
