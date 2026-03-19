@@ -341,12 +341,12 @@ jobs:
           destinationDir: test-reports/ris-cm/e2e-tests
           reportIsDirectory: true
       # A11y test report
-      - name: E2E test reports - Download
+      - name: A11y test reports - Download
         uses: actions/download-artifact@v7
         with:
           name: a11y-test-report
           path: tmp/a11y-test-report/
-      - name: E2E test reports - git add report
+      - name: A11y test reports - git add report
         uses: digitalservicebund/add-ris-report@c6c8735d23295c36a271c75e7dedc9b6b9a9ef5e
         with:
           filePath: tmp/a11y-test-report/
