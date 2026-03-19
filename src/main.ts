@@ -1,11 +1,23 @@
 import { createApp } from "vue"
 import App from "./App.vue"
 import router from "./router"
-import "./style.css"
+import "@/styles/global.css"
+import { RisUiLocale } from "@digitalservicebund/ris-ui/primevue"
+import PrimeVue from "primevue/config"
+import { createPinia } from "pinia"
+import "@digitalservicebund/ris-ui/fonts.css"
+import CaselawUiTheme from "@/theme"
 
 try {
   // Initialize Vue application
-  const app = createApp(App).use(router)
+  const app = createApp(App)
+    .use(router)
+    .use(PrimeVue, {
+      unstyled: true,
+      pt: CaselawUiTheme,
+      locale: RisUiLocale.deDE,
+    })
+    .use(createPinia())
 
   // If all initialization succeeds, mount app
   app.mount("#app")

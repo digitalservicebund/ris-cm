@@ -5,17 +5,35 @@ const routes: readonly RouteRecordRaw[] = [
   {
     path: "/",
     name: "Home",
-    redirect: { name: "Rechtsprechung" },
+    redirect: { name: "Zurueckziehen" },
   },
 
   {
-    path: `/rechtsprechung`,
+    path: "/zurueckziehen",
+    name: "Home",
+    redirect: { name: "Zurueckziehen" },
+  },
+
+  {
+    path: "/zurueckziehen/rechtsprechung",
     children: [
       {
         path: "",
-        name: "Rechtsprechung",
+        name: "Zurueckziehen",
         component: () =>
-          import("@/views/rechtsprechung/Rechtsprechung.view.vue"),
+          import("@/views/Withdraw.vue"),
+      },
+    ],
+  },
+
+  {
+    path: "/uebersetzungenNormen",
+    children: [
+      {
+        path: "",
+        name: "UebersetzungenNormen",
+        component: () =>
+          import("@/views/TranslationsNorms.vue"),
       },
     ],
   },
