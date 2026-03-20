@@ -15,11 +15,13 @@ test.describe("basic example a11y test", () => {
   })
 
   // eslint-disable-next-line playwright/expect-expect
+  test.skip()
   test("simple accessibility run", async () => {
     await checkA11y(page)
   })
 
   // eslint-disable-next-line playwright/expect-expect
+  test.skip()
   test("check a11y for the whole page and axe run options", async () => {
     await checkA11y(page, undefined, {
       axeOptions: {

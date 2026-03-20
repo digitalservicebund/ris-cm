@@ -86,7 +86,7 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: e2e-test-report-chromium
-          path: ./test/e2e/test-report.zip
+          path: ./test-results/index.html
           retention-days: 1
       - name: Send status to Slack
         uses: digitalservicebund/notify-on-failure-gha@671832f192aee0a068fd92b2f6deb975df794a84
@@ -138,7 +138,7 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: a11y-test-report-chromium
-          path: ./test/a11y/test-report.zip
+          path: ./test-results/index.html
           retention-days: 1
 
       - name: Send status to Slack

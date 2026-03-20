@@ -1,7 +1,7 @@
 import { useFavicon } from "@vueuse/core"
 import { defineStore } from "pinia"
-import { Ref, ref } from "vue"
-import { Env, User } from "@/scripts/domain"
+import { type Ref, ref } from "vue"
+import type { Env, User } from "@/scripts/domain"
 import { getFavicon } from "@/scripts/getFavicon"
 
 type SessionStore = {

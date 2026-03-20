@@ -8,9 +8,7 @@ import Navbar from "@/components/NavbarTop.vue"
   <div class="flex min-h-screen flex-col">
     <Navbar />
     <Suspense>
-      <main class="flex grow">
-        <router-view class="grow" />
-      </main>
+      <router-view class="grow" />
     </Suspense>
     <Toast position="bottom-right" />
   </div>

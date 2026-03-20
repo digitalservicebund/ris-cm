@@ -1,8 +1,8 @@
 import type { PlaywrightTestConfig } from "@playwright/test"
 import { devices } from "@playwright/test"
 
-const port = parseInt(process.env.VITE_PORT ?? "4173") // Vite's default port when running `vite preview`
-const timeout = parseInt(process.env.WAIT_ON_TIMEOUT ?? `${20 * 1000}`)
+const port = Number.parseInt(process.env.VITE_PORT ?? "4173") // Vite's default port when running `vite preview`
+const timeout = Number.parseInt(process.env.WAIT_ON_TIMEOUT ?? `${20 * 1000}`)
 
 const config: PlaywrightTestConfig = {
   testDir: ".",
@@ -16,7 +16,7 @@ const config: PlaywrightTestConfig = {
   },
   reporter:
     process.env.CI === "true"
-      ? [["dot"], ["blob", { outputFile: "./test-report.npx vite buildzip" }]]
+      ? [["dot"], ["html", { outputFolder: "test-results" }]]
       : "list",
   projects: [
     {

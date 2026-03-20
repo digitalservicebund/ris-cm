@@ -5,21 +5,15 @@ const routes: readonly RouteRecordRaw[] = [
   {
     path: "/",
     name: "Home",
-    redirect: { name: "Zurueckziehen" },
+    redirect: { name: "Withdraw" },
   },
 
   {
     path: "/zurueckziehen",
-    name: "Home",
-    redirect: { name: "Zurueckziehen" },
-  },
-
-  {
-    path: "/zurueckziehen/rechtsprechung",
     children: [
       {
         path: "",
-        name: "Zurueckziehen",
+        name: "Withdraw",
         component: () => import("@/components/Withdraw.vue"),
       },
     ],
