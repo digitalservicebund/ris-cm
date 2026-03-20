@@ -45,6 +45,7 @@ export default defineConfig((context) =>
 
             // Just the init file and global setup, nothing much to test here.
             "src/main.ts",
+            "src/theme.ts",
 
             "src/scripts/getFavicon.ts",
             "src/stores/sessionStore.ts",
