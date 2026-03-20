@@ -1,26 +1,30 @@
-name: Deploy Staging
+name: Deploy
 
 on:
   workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
 
 jobs:
-  deploy-staging:
+  deploy:
     runs-on: ubuntu-latest
     concurrency: deploy
-    environment: staging
+    environment: ${{ inputs.environment }}
     permissions:
       id-token: write # Enable OIDC for gitsign
     steps:
       - name: Deploy new images
         uses: digitalservicebund/argocd-deploy@auth-token
         with:
-          environment: staging
+          environment: ${{ inputs.environment }}
           version: ${{ github.sha }}
           deploying_repo: ris-cm
           infra_repo: ris-cm-infra
           github_app_private_key: ${{ secrets.GITOPS_NEURIS_APP_PRIVATE_KEY }}
           github_app_id: ${{ secrets.GITOPS_NEURIS_APP_ID }}
-          app: ris-cm-staging
+          app: ris-cm-${{ inputs.environment }}
           argocd_auth_token: ${{ secrets.ARGOCD_AUTH_TOKEN }}
           argocd_server: ${{ secrets.ARGOCD_SERVER_STACKIT }}
       - name: Track deploy
@@ -28,6 +32,6 @@ jobs:
         uses: digitalservicebund/track-deployment@5a2815e150e1268983aac5ca04c8c046ed1b614a # v1.0.0
         with:
           project: ris-cm
-          environment: staging
+          environment: ${{ inputs.environment }}
           metrics_deployment_webhook_url: ${{ secrets.METRICS_DEPLOYMENT_WEBHOOK_URL }}
           metrics_webhook_token: ${{ secrets.METRICS_WEBHOOK_TOKEN }}

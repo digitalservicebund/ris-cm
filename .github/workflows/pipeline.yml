@@ -177,8 +177,32 @@ jobs:
       - build-and-push-image
     permissions:
       id-token: write
-    uses: ./.github/workflows/deploy-staging-job.yml
+    uses: ./.github/workflows/deploy-job.yml
     secrets: inherit
+    with:
+      environment: staging
+
+  deploy-uat-job:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    needs:
+      - deploy-staging-job
+    permissions:
+      id-token: write
+    uses: ./.github/workflows/deploy-job.yml
+    secrets: inherit
+    with:
+      environment: uat
+
+  deploy-production-job:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    needs:
+      - deploy-uat-job
+    permissions:
+      id-token: write
+    uses: ./.github/workflows/deploy-job.yml
+    secrets: inherit
+    with:
+      environment: production
 
   push-reports:
     runs-on: ubuntu-latest
