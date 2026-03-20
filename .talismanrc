@@ -29,7 +29,7 @@ fileignoreconfig:
     allowed_patterns:
       - projectKey
   - filename: nginx/default.conf
-    checksum: bb4892d29fb20d29709f21d0c46c40b9438f05efc7589a26db5679056453540f
+    checksum: 4ba1e5322d947b5a852625c4e815b4091792ed0d902b1dde93a1f13673b34ce9
 scopeconfig:
   - scope: node
 allowed_patterns:
