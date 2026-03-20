@@ -188,8 +188,6 @@ jobs:
       - vulnerability-scan
       - audit-licenses
       - tests-and-code-quality
-      - generate-e2e-test-report
-      - generate-a11y-test-report
     if: ${{ github.ref == 'refs/heads/main' }}
     steps:
       # Setup
