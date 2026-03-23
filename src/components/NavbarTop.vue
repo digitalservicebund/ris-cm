@@ -40,15 +40,15 @@ const fontColor = ref<string>()
           >Zurückziehen
         </router-link>
         <router-link
-        class="ris-link1-regular hover:underline"
-        :class="
-          route.path.includes('uebersetzungenNormen')
-            ? 'decoration-3'
-            : 'no-underline'
-        "
-        :to="{ name: 'UebersetzungenNormen' }"
-        >Übersetzungen Normen
-      </router-link>
+          class="ris-link1-regular hover:underline"
+          :class="
+            route.path.includes('uebersetzungenNormen')
+              ? 'decoration-3'
+              : 'no-underline'
+          "
+          :to="{ name: 'UebersetzungenNormen' }"
+          >Übersetzungen Normen
+        </router-link>
       </div>
     </div>
 

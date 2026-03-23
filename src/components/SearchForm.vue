@@ -21,7 +21,9 @@ import InputText from "primevue/inputtext"
             size="small"
             value="caselaw"
           />
-          <label for="caselaw-button" class="ml-12">Gerichtsentscheidungen</label>
+          <label for="caselaw-button" class="ml-12"
+            >Gerichtsentscheidungen</label
+          >
         </div>
         <div class="flex flex-row">
           <RadioButton
@@ -41,7 +43,9 @@ import InputText from "primevue/inputtext"
             size="small"
             value="literature"
           />
-          <label for="literature-button" class="ml-12">Literaturnachweise</label>
+          <label for="literature-button" class="ml-12"
+            >Literaturnachweise</label
+          >
         </div>
       </div>
     </div>
