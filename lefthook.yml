@@ -7,10 +7,10 @@ pre-commit:
   commands:
     lint:
       tags: lint
-      run: npm run lint:fix
-    check-format:
+      run: npm run lint:fix && git add {staged_files}
+    format:
       tags: style
-      run: npm run format:fix
+      run: npm run format:fix && git add {staged_files}
 pre-push:
   parallel: true
   commands:
