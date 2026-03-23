@@ -2,6 +2,30 @@
 import Button from "primevue/button"
 import RadioButton from "primevue/radiobutton"
 import InputText from "primevue/inputtext"
+import { useRouter, useRoute, useLink } from "vue-router"
+import { ref, computed } from "vue"
+
+const router = useRouter()
+const route = useRoute()
+
+const documentType = computed({
+  get: () => route.name,
+  set: (newValue) => {
+    router.push({
+      name: newValue,
+      query: route.query,
+    })
+  },
+})
+
+const documentNumber = computed({
+  get: () => route.query?.dokumentnummer ?? "",
+  set: (newValue) => {
+    router.push({ query: { dokumentnummer: newValue } })
+  },
+})
+
+const handleSearch = () => {}
 </script>
 
 <template>
@@ -19,7 +43,8 @@ import InputText from "primevue/inputtext"
             aria-label="Gerichtsentscheidungen"
             name="kind_of_document"
             size="small"
-            value="caselaw"
+            value="withdraw-caselaw"
+            v-model="documentType"
           />
           <label for="caselaw-button" class="ml-12"
             >Gerichtsentscheidungen</label
@@ -31,7 +56,8 @@ import InputText from "primevue/inputtext"
             aria-label="Verwaltungsvorschriften"
             name="kind_of_document"
             size="small"
-            value="adm"
+            value="withdraw-adm"
+            v-model="documentType"
           />
           <label for="adm-button" class="ml-12">Verwaltungsvorschriften</label>
         </div>
@@ -41,7 +67,8 @@ import InputText from "primevue/inputtext"
             aria-label="Literaturnachweise"
             name="kind_of_document"
             size="small"
-            value="literature"
+            value="withdraw-literature"
+            v-model="documentType"
           />
           <label for="literature-button" class="ml-12"
             >Literaturnachweise</label
@@ -56,11 +83,12 @@ import InputText from "primevue/inputtext"
           id="docnumber"
           aria-label="Dokumentnummer Suche"
           class="w-[300px]"
+          v-model="documentNumber"
         />
       </div>
     </div>
     <div class="m-24 flex flex-row justify-end">
-      <Button label="Suche starten" />
+      <Button label="Suche starten" @click="handleSearch" />
     </div>
   </div>
 </template>

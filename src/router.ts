@@ -5,26 +5,37 @@ const routes: readonly RouteRecordRaw[] = [
   {
     path: "/",
     name: "Home",
-    redirect: { name: "Withdraw" },
+    redirect: { name: "withdraw" },
   },
-
   {
     path: "/zurueckziehen",
+    name: "withdraw",
+    redirect: { name: "withdraw-caselaw" },
     children: [
       {
-        path: "",
-        name: "Withdraw",
+        path: "rechtsprechung",
+        name: "withdraw-caselaw",
+        component: () => import("@/components/Withdraw.vue"),
+      },
+      {
+        path: "literatur",
+        name: "withdraw-literature",
+        component: () => import("@/components/Withdraw.vue"),
+      },
+      {
+        path: "verwaltungsvorschriften",
+        name: "withdraw-adm",
         component: () => import("@/components/Withdraw.vue"),
       },
     ],
   },
 
   {
-    path: "/uebersetzungenNormen",
+    path: "/uebersetzungen-normen",
     children: [
       {
         path: "",
-        name: "UebersetzungenNormen",
+        name: "uebersetzungen-normen",
         component: () => import("@/components/TranslationsNorms.vue"),
       },
     ],
@@ -32,7 +43,7 @@ const routes: readonly RouteRecordRaw[] = [
 
   {
     path: "/:pathMatch(.*)*",
-    name: "NotFound",
+    name: "not-found",
     component: () => import("@/components/404/404NotFound.vue"),
   },
 ]

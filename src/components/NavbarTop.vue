@@ -1,14 +1,12 @@
 <script lang="ts" setup>
 import { ref } from "vue"
-import { useRoute } from "vue-router"
+import { useRoute, RouterLink } from "vue-router"
 import useSessionStore from "@/stores/sessionStore"
 import IconPermIdentity from "~icons/ic/baseline-perm-identity"
 
 const route = useRoute()
 const session = useSessionStore()
 const fontColor = ref<string>()
-
-//@apply ris-link1-regular link-hover flex items-center gap-4 aria-[current=page]:underline aria-[current=page]:decoration-[0.1875rem];
 </script>
 
 <template>
@@ -32,23 +30,14 @@ const fontColor = ref<string>()
 
       <div class="flex gap-48 w-full">
         <router-link
-          class="ris-link1-regular hover:underline"
-          :class="
-            route.path.includes('zurueckziehen')
-              ? 'decoration-3'
-              : 'no-underline'
-          "
-          :to="{ name: 'Withdraw' }"
+          class="ris-link1-regular hover:underline no-underline"
+          active-class="underline decoration-3"
+          :to="{ name: 'withdraw' }"
           >Zurückziehen
         </router-link>
         <router-link
-          class="ris-link1-regular hover:underline"
-          :class="
-            route.path.includes('uebersetzungenNormen')
-              ? 'decoration-3'
-              : 'no-underline'
-          "
-          :to="{ name: 'UebersetzungenNormen' }"
+          class="ris-link1-regular hover:underline no-underline"
+          :to="{ name: 'uebersetzungen-normen' }"
           >Übersetzungen Normen
         </router-link>
       </div>
