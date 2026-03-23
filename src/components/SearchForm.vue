@@ -12,35 +12,37 @@ import InputText from "primevue/inputtext"
     </div>
     <div class="flex flex-row mx-24 mt-8">
       <div class="min-w-160">Dokumentart&#xFEFF;*</div>
-      <div class="flex flex-row ml-80">
-        <RadioButton
-          id="caselaw-button"
-          aria-label="Gerichtsentscheidungen"
-          name="kind_of_document"
-          size="small"
-          value="caselaw"
-        />
-        <label for="caselaw-button" class="ml-12">Gerichtsentscheidungen</label>
-      </div>
-      <div class="flex flex-row ml-48">
-        <RadioButton
-          id="adm-button"
-          aria-label="Verwaltungsvorschriften"
-          name="kind_of_document"
-          size="small"
-          value="adm"
-        />
-        <label for="adm-button" class="ml-12">Verwaltungsvorschriften</label>
-      </div>
-      <div class="flex flex-row ml-48">
-        <RadioButton
-          id="literature-button"
-          aria-label="Literaturnachweise"
-          name="kind_of_document"
-          size="small"
-          value="literature"
-        />
-        <label for="literature-button" class="ml-12">Literaturnachweise</label>
+      <div class="flex flex-col gap-8 lg:flex-row lg:gap-48 ml-80">
+        <div class="flex flex-row">
+          <RadioButton
+            id="caselaw-button"
+            aria-label="Gerichtsentscheidungen"
+            name="kind_of_document"
+            size="small"
+            value="caselaw"
+          />
+          <label for="caselaw-button" class="ml-12">Gerichtsentscheidungen</label>
+        </div>
+        <div class="flex flex-row">
+          <RadioButton
+            id="adm-button"
+            aria-label="Verwaltungsvorschriften"
+            name="kind_of_document"
+            size="small"
+            value="adm"
+          />
+          <label for="adm-button" class="ml-12">Verwaltungsvorschriften</label>
+        </div>
+        <div class="flex flex-row">
+          <RadioButton
+            id="literature-button"
+            aria-label="Literaturnachweise"
+            name="kind_of_document"
+            size="small"
+            value="literature"
+          />
+          <label for="literature-button" class="ml-12">Literaturnachweise</label>
+        </div>
       </div>
     </div>
     <div class="mx-24 mt-32 flex flex-row">
