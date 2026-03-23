@@ -11,7 +11,7 @@ import InputText from "primevue/inputtext"
       geben Sie die Dokumentnummer ein, um das Dokument zu suchen.
     </div>
     <div class="flex flex-row mx-24 mt-8">
-      <div class="w-160">Dokumentart *</div>
+      <div class="min-w-160">Dokumentart&#xFEFF;*</div>
       <div class="flex flex-row ml-80">
         <RadioButton
           id="caselaw-button"
@@ -44,7 +44,7 @@ import InputText from "primevue/inputtext"
       </div>
     </div>
     <div class="mx-24 mt-32 flex flex-row">
-      <div class="w-160">Dokumentnummer *</div>
+      <div class="min-w-160">Dokumentnummer&#xFEFF;*</div>
       <div class="ml-80">
         <InputText
           id="docnumber"
