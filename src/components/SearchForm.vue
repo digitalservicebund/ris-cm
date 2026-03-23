@@ -15,7 +15,7 @@ import InputText from "primevue/inputtext"
       <div class="flex flex-col gap-8 lg:flex-row lg:gap-48 ml-80">
         <div class="flex flex-row">
           <RadioButton
-            id="caselaw-button"
+            input-id="caselaw-button"
             aria-label="Gerichtsentscheidungen"
             name="kind_of_document"
             size="small"
@@ -25,7 +25,7 @@ import InputText from "primevue/inputtext"
         </div>
         <div class="flex flex-row">
           <RadioButton
-            id="adm-button"
+            input-id="adm-button"
             aria-label="Verwaltungsvorschriften"
             name="kind_of_document"
             size="small"
@@ -35,7 +35,7 @@ import InputText from "primevue/inputtext"
         </div>
         <div class="flex flex-row">
           <RadioButton
-            id="literature-button"
+            input-id="literature-button"
             aria-label="Literaturnachweise"
             name="kind_of_document"
             size="small"
