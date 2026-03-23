@@ -8,11 +8,11 @@ function renderComponent() {
     history: createWebHistory(),
     routes: [
       {
-        name: "Withdraw",
+        name: "withdraw",
         components: {},
       },
       {
-        name: "UebersetzungenNormen",
+        name: "uebersetzungen-normen",
         components: {},
       },
     ],

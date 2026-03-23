@@ -3,6 +3,7 @@ import Button from "primevue/button"
 import RadioButton from "primevue/radiobutton"
 import InputText from "primevue/inputtext"
 import { useRouter, useRoute, useLink } from "vue-router"
+import type { ComputedRef } from "vue"
 import { ref, computed } from "vue"
 
 const router = useRouter()
@@ -18,8 +19,14 @@ const documentType = computed({
   },
 })
 
-const documentNumber = computed({
-  get: () => route.query?.dokumentnummer ?? "",
+const documentNumber: ComputedRef<string | null> = computed({
+  get: () => {
+    const dokumentNumberQueryParameter = route.query?.dokumentnummer
+    if (Array.isArray(dokumentNumberQueryParameter)) {
+      return dokumentNumberQueryParameter[0]
+    }
+    return dokumentNumberQueryParameter
+  },
   set: (newValue) => {
     router.push({ query: { dokumentnummer: newValue } })
   },
