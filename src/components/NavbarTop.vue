@@ -34,7 +34,9 @@ const fontColor = ref<string>()
         <router-link
           class="ris-link1-regular hover:underline"
           :class="
-            route.path.includes('zurueckziehen') ? 'decoration-3' : 'no-underline'
+            route.path.includes('zurueckziehen')
+              ? 'decoration-3'
+              : 'no-underline'
           "
           :to="{ name: 'Withdraw' }"
           >Zurückziehen
