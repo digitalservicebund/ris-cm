@@ -37,6 +37,7 @@ const fontColor = ref<string>()
         </router-link>
         <router-link
           class="ris-link1-regular hover:underline no-underline"
+          active-class="underline decoration-3"
           :to="{ name: 'uebersetzungen-normen' }"
           >Übersetzungen Normen
         </router-link>

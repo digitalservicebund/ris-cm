@@ -88,7 +88,7 @@ const handleSearch = () => {}
       <div class="ml-80">
         <InputText
           id="docnumber"
-          aria-label="Dokumentnummer Suche"
+          aria-label="Dokumentnummer"
           class="w-[300px]"
           v-model="documentNumber"
         />
