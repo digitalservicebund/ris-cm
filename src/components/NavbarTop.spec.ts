@@ -10,12 +10,12 @@ const router = createRouter({
   routes: [
     {
       name: "withdraw",
-      path: "withdraw",
+      path: "/withdraw",
       components: {},
     },
     {
       name: "uebersetzungen-normen",
-      path: "uebersetzungen-normen",
+      path: "/uebersetzungen-normen",
       components: {},
     },
   ],
