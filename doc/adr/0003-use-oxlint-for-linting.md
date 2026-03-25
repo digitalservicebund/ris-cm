@@ -1,4 +1,4 @@
-# 20. Use Oxlint for linting
+# 3. Use Oxlint for linting
 
 Date: 2026-03-16
 
