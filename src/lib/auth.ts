@@ -78,6 +78,13 @@ function createAuthentication() {
     return keycloak?.createLogoutUrl()
   }
 
+  /**
+   * Creates a URL to the website to manage the account. Can be undefined if keycloak hasn't been configured yet.
+   */
+  function getAccountLink(): string | undefined {
+    return keycloak?.createAccountUrl()
+  }
+
   let pendingRefresh: Promise<boolean> | null = null
 
   /**
@@ -112,6 +119,7 @@ function createAuthentication() {
     addAuthorizationHeader,
     configure,
     getLogoutLink,
+    getAccountLink,
     getUsername,
     isConfigured,
     tryRefresh,
