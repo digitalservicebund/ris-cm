@@ -25,7 +25,6 @@ try {
 
   const env = await getEnv()
 
-  // TODO: (Malte Laukötter, 2026-03-25) always run this once we have configured it in all envs
   if (env.auth) {
     const auth = useAuthentication()
     await auth.configure(env.auth)

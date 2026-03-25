@@ -1,5 +1,5 @@
 export type Env = {
-  auth: {
+  auth?: {
     url: string
     clientId: string
     realm: string
