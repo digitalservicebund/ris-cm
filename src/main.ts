@@ -7,6 +7,9 @@ import PrimeVue from "primevue/config"
 import { createPinia } from "pinia"
 import "@digitalservicebund/ris-ui/fonts.css"
 import CaselawUiTheme from "@/theme"
+import { getEnv } from "@/lib/env"
+import { useFavicon } from "@vueuse/core"
+import { getFavicon } from "@/scripts/getFavicon"
 
 try {
   // Initialize Vue application
@@ -18,6 +21,9 @@ try {
       locale: RisUiLocale.deDE,
     })
     .use(createPinia())
+
+  const env = await getEnv()
+  useFavicon(getFavicon(env.environment))
 
   // If all initialization succeeds, mount app
   app.mount("#app")

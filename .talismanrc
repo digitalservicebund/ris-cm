@@ -30,6 +30,10 @@ fileignoreconfig:
       - projectKey
   - filename: nginx/default.conf
     checksum: 4ba1e5322d947b5a852625c4e815b4091792ed0d902b1dde93a1f13673b34ce9
+  - filename: public/env.json
+    ignore_detectors: [filename]
+  - filename: src/lib/env.ts
+    ignore_detectors: [filename]
 scopeconfig:
   - scope: node
 allowed_patterns:
