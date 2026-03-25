@@ -8,7 +8,7 @@ export type Env = {
 }
 
 export const getEnv: () => Promise<Env> = async () => {
-  const response = await fetch("/env.json")
+  const response = await fetch("/config/env.json")
   const data: Env = await response.json()
   return data
 }
