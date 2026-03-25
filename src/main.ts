@@ -7,6 +7,7 @@ import PrimeVue from "primevue/config"
 import { createPinia } from "pinia"
 import "@digitalservicebund/ris-ui/fonts.css"
 import CaselawUiTheme from "@/theme"
+import { useAuthentication } from "./lib/auth"
 import { getEnv } from "@/lib/env"
 import { useFavicon } from "@vueuse/core"
 import { getFavicon } from "@/scripts/getFavicon"
@@ -23,6 +24,13 @@ try {
     .use(createPinia())
 
   const env = await getEnv()
+
+  // TODO: (Malte Laukötter, 2026-03-25) always run this once we have configured it in all envs
+  if (env.auth) {
+    const auth = useAuthentication()
+    await auth.configure(env.auth)
+  }
+
   useFavicon(getFavicon(env.environment))
 
   // If all initialization succeeds, mount app

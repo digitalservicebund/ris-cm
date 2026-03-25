@@ -30,15 +30,16 @@
     "@digitalservicebund/ris-ui": "^3.21.3",
     "@tailwindcss/postcss": "^4.2.1",
     "@vueuse/core": "^14.2.1",
+    "keycloak-js": "^26.2.3",
     "pinia": "^3.0.4",
     "vue": "^3.5.30",
     "vue-router": "^5.0.3"
   },
   "devDependencies": {
     "@iconify-json/ic": "^1.2.4",
+    "@pinia/testing": "^1.0.3",
     "@playwright-testing-library/test": "^4.5.0",
     "@playwright/test": "^1.58.2",
-    "@pinia/testing": "^1.0.3",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/user-event": "^14.6.1",

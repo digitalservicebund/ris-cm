@@ -1,12 +1,15 @@
 <script lang="ts" setup>
 import { ref } from "vue"
 import { useRoute, RouterLink } from "vue-router"
-import useSessionStore from "@/stores/sessionStore"
 import IconPermIdentity from "~icons/ic/baseline-perm-identity"
+import { useAuthentication } from "@/lib/auth"
 
 const route = useRoute()
-const session = useSessionStore()
 const fontColor = ref<string>()
+
+const { getUsername, getLogoutLink } = useAuthentication()
+const logoutLink = getLogoutLink()
+const username = getUsername()
 </script>
 
 <template>
@@ -44,11 +47,14 @@ const fontColor = ref<string>()
       </div>
     </div>
 
-    <div v-if="session.user" class="flex gap-8 pr-16">
+    <div v-if="username" class="flex gap-8 pr-16">
       <IconPermIdentity />
       <div class="flex flex-row items-streach justify-start flex-nowrap">
-        {{ session.user?.name }}
+        {{ username }}
       </div>
+      <a :href="logoutLink" class="ris-link2-regular underline-offset-2">
+        Abmelden
+      </a>
     </div>
   </nav>
 </template>
