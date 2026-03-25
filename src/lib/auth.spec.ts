@@ -26,13 +26,13 @@ describe("auth", () => {
     await configure({
       clientId: "test-client",
       realm: "test-realm",
-      url: "http://test.url",
+      url: "https://oauth-url.test",
     })
 
     expect(Keycloak.default).toHaveBeenCalledExactlyOnceWith({
       clientId: "test-client",
       realm: "test-realm",
-      url: "http://test.url",
+      url: "https://oauth-url.test",
     })
 
     expect(Keycloak.default.prototype.init).toHaveBeenCalled()
@@ -45,13 +45,13 @@ describe("auth", () => {
     await configure({
       clientId: "test-client-1",
       realm: "test-realm-1",
-      url: "http://test.url/1",
+      url: "https://oauth-url.test/1",
     })
 
     await configure({
       clientId: "test-client-2",
       realm: "test-realm-2",
-      url: "http://test.url/2",
+      url: "https://oauth-url.test/2",
     })
 
     expect(Keycloak.default).toHaveBeenNthCalledWith(
@@ -75,7 +75,7 @@ describe("auth", () => {
       configure({
         clientId: "test-client",
         realm: "test-realm",
-        url: "http://test.url",
+        url: "https://oauth-url.test",
       }),
     ).rejects.toThrow(expect.objectContaining({ cause: "Error" }))
   })
@@ -87,7 +87,7 @@ describe("auth", () => {
     await configure({
       clientId: "test-client",
       realm: "test-realm",
-      url: "http://test.url",
+      url: "https://oauth-url.test",
     })
 
     expect(isConfigured()).toBe(false)
@@ -108,7 +108,7 @@ describe("auth", () => {
     await configure({
       clientId: "test-client",
       realm: "test-realm",
-      url: "http://test.url",
+      url: "https://oauth-url.test",
     })
 
     const headers = addAuthorizationHeader()
@@ -138,7 +138,7 @@ describe("auth", () => {
     await configure({
       clientId: "test-client",
       realm: "test-realm",
-      url: "http://test.url",
+      url: "https://oauth-url.test",
     })
 
     const headers = addAuthorizationHeader({ test: "true" })
@@ -159,7 +159,7 @@ describe("auth", () => {
     await configure({
       clientId: "test-client",
       realm: "test-realm",
-      url: "http://test.url",
+      url: "https://oauth-url.test",
     })
 
     const username = getUsername()
@@ -179,7 +179,7 @@ describe("auth", () => {
     await configure({
       clientId: "test-client",
       realm: "test-realm",
-      url: "http://test.url",
+      url: "https://oauth-url.test",
     })
 
     const username = getUsername()
@@ -198,7 +198,7 @@ describe("auth", () => {
     await configure({
       clientId: "test-client",
       realm: "test-realm",
-      url: "http://test.url",
+      url: "https://oauth-url.test",
     })
 
     const logoutLink = getLogoutLink()
@@ -228,7 +228,7 @@ describe("auth", () => {
     await configure({
       clientId: "test-client",
       realm: "test-realm",
-      url: "http://test.url",
+      url: "https://oauth-url.test",
     })
 
     const result = await tryRefresh()
@@ -244,7 +244,7 @@ describe("auth", () => {
     await configure({
       clientId: "test-client",
       realm: "test-realm",
-      url: "http://test.url",
+      url: "https://oauth-url.test",
     })
 
     const result = await tryRefresh()
@@ -260,7 +260,7 @@ describe("auth", () => {
     await configure({
       clientId: "test-client",
       realm: "test-realm",
-      url: "http://test.url",
+      url: "https://oauth-url.test",
     })
 
     const result = await tryRefresh()
@@ -277,7 +277,7 @@ describe("auth", () => {
     await configure({
       clientId: "test-client",
       realm: "test-realm",
-      url: "http://test.url",
+      url: "https://oauth-url.test",
     })
 
     const result1 = tryRefresh()
@@ -297,7 +297,7 @@ describe("auth", () => {
     await configure({
       clientId: "test-client",
       realm: "test-realm",
-      url: "http://test.url",
+      url: "https://oauth-url.test",
     })
 
     const result1 = tryRefresh()
