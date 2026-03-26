@@ -29,7 +29,7 @@ fileignoreconfig:
     allowed_patterns:
       - projectKey
   - filename: nginx/default.conf
-    checksum: 98aac2a77fa6b7248c2a68e776dee802b1ff33199bf1f83aef633bcf1dc03e58
+    checksum: 734a6a75350c4804a69ffddffd91507f790a3011a6f7ef488ddd958932ee21bc
   - filename: public/config/env.json
     ignore_detectors: [filename]
   - filename: src/lib/env.ts
