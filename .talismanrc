@@ -25,6 +25,7 @@ fileignoreconfig:
   - filename: Dockerfile
     allowed_patterns:
       - "@sha256:[a-fA-F0-9]{64}"
+      - "--mount=type=secret,id=SENTRY_AUTH_TOKEN"
   - filename: sonar-project.properties
     allowed_patterns:
       - projectKey
