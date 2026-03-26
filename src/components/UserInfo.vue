@@ -13,6 +13,7 @@ const userMenu = ref<any>()
 
 function toggleUserMenu(event: MouseEvent) {
   userMenu.value?.toggle(event)
+  throw new Error("SENTRY TEST ERROR")
 }
 
 const userMenuIcons = computed<MenuItem[]>(() => [
