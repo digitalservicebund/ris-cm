@@ -11,8 +11,11 @@ import { useAuthentication } from "./lib/auth"
 import { getEnv } from "@/lib/env"
 import { useFavicon } from "@vueuse/core"
 import { getFavicon } from "@/scripts/getFavicon"
+import { Sentry } from "@/lib/sentry"
 
 try {
+  const env = await getEnv()
+
   // Initialize Vue application
   const app = createApp(App)
     .use(router)
@@ -22,8 +25,7 @@ try {
       locale: RisUiLocale.deDE,
     })
     .use(createPinia())
-
-  const env = await getEnv()
+    .use(Sentry, { env, router })
 
   if (env.auth) {
     const auth = useAuthentication()

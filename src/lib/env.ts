@@ -1,3 +1,5 @@
+import type { BrowserOptions } from "@sentry/vue"
+
 export type Env = {
   auth?: {
     url: string
@@ -5,6 +7,7 @@ export type Env = {
     realm: string
   }
   environment: "local" | "staging" | "uat" | "production"
+  sentry?: BrowserOptions
 }
 
 export const getEnv: () => Promise<Env> = async () => {
