@@ -131,6 +131,8 @@ jobs:
             ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_IMAGE_NAME }}:${{ env.CONTAINER_IMAGE_VERSION }}
           secrets: |
             "SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}"
+          build-args: |
+            SENTRY_RELEASE=ris-cm@${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           sbom: true

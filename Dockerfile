@@ -2,6 +2,8 @@ FROM node:24.11.1 AS builder
 WORKDIR /src
 # Required files are whitelisted in dockerignore
 COPY . ./
+ARG SENTRY_RELEASE="no-release-information"
+ENV SENTRY_RELEASE=$SENTRY_RELEASE
 RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN \
     if [ -f /run/secrets/SENTRY_AUTH_TOKEN ]; then \
         export SENTRY_AUTH_TOKEN=$(cat /run/secrets/SENTRY_AUTH_TOKEN); \
