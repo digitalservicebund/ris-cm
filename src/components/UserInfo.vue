@@ -28,7 +28,13 @@ const userMenuIcons = computed<MenuItem[]>(() => [
 </script>
 
 <template>
-  <Button text v-if="isConfigured()" @click="toggleUserMenu" :label="username">
+  <Button
+    text
+    v-if="isConfigured()"
+    @click="toggleUserMenu"
+    :label="username"
+    style="text-decoration-line: none"
+  >
     <template #icon><IconPermIdentity /></template>
   </Button>
   <Menu ref="userMenu" :model="userMenuIcons" popup />
