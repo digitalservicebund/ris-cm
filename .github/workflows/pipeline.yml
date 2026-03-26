@@ -47,17 +47,17 @@ jobs:
       contents: read
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f
         with:
           node-version-file: .node-version
           cache: npm
 
       - name: Cache npm dependencies
         id: cache-npm-deps
-        uses: actions/cache@v5
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7
         with:
           path: |
             **/node_modules
@@ -74,7 +74,7 @@ jobs:
         run: npm run audit:licenses -- --csv --out ./license-report.csv
 
       - name: Upload license report
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
         with:
           name: license-reports
           retention-days: 3
@@ -109,7 +109,7 @@ jobs:
       PACKAGE_NAME: ris-cm
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3.6.0
@@ -147,7 +147,7 @@ jobs:
           output: "${{ env.PACKAGE_NAME }}-vulnerabilities.json"
 
       - name: Upload cosign vulnerability scan record
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
         with:
           name: "${{ env.PACKAGE_NAME }}-vulnerabilities.json"
           path: "${{ env.PACKAGE_NAME }}-vulnerabilities.json"
@@ -217,7 +217,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/main' }}
     steps:
       # Setup
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           repository: ${{ env.REPORTS_REPOSITORY }}
           ssh-key: ${{ secrets.REPORTS_DEPLOY_KEY }}
@@ -227,7 +227,7 @@ jobs:
           # This email identifies the commit as GitHub Actions - see https://github.com/orgs/community/discussions/26560
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
       - name: Checkout ris-cm repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           path: ris-cm
       # Copy ADRs into tmp folder
@@ -238,7 +238,7 @@ jobs:
           ls -l tmp/adr-source
       # License reports
       - name: License reports - Download
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
           name: license-reports
           path: tmp/license-reports/
@@ -257,7 +257,7 @@ jobs:
           keepAllVersions: false
       # E2E test report
       - name: E2E test reports - Download
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
           name: e2e-test-report-chromium
           path: tmp/e2e-test-report/
@@ -269,7 +269,7 @@ jobs:
           reportIsDirectory: true
       # A11y test report
       - name: A11y test reports - Download
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
           name: a11y-test-report-chromium
           path: tmp/a11y-test-report/
