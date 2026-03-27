@@ -1,5 +1,4 @@
 import { render, screen } from "@testing-library/vue"
-import { createTestingPinia } from "@pinia/testing"
 import { createRouter, createWebHistory } from "vue-router"
 import Navbar from "@/components/NavbarTop.vue"
 import { userEvent } from "@testing-library/user-event"
@@ -25,16 +24,7 @@ function renderComponent() {
   return {
     ...render(Navbar, {
       global: {
-        plugins: [
-          router,
-          createTestingPinia({
-            initialState: {
-              session: {
-                user: { name: "test user" },
-              },
-            },
-          }),
-        ],
+        plugins: [router],
       },
     }),
   }
