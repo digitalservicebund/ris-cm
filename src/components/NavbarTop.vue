@@ -1,11 +1,6 @@
 <script lang="ts" setup>
-import { ref, computed } from "vue"
-import { useRoute, RouterLink } from "vue-router"
-import { getEnv } from "@/lib/env"
+import { RouterLink } from "vue-router"
 import UserInfo from "./UserInfo.vue"
-
-const route = useRoute()
-const fontColor = ref<string>()
 </script>
 
 <template>
@@ -14,11 +9,7 @@ const fontColor = ref<string>()
   >
     <div class="flex items-center gap-[80px]">
       <div class="flex flex-col">
-        <span
-          aria-hidden="true"
-          class="ris-body1-bold"
-          :style="{ color: fontColor }"
-        >
+        <span aria-hidden="true" class="ris-body1-bold">
           Rechtsinformationen</span
         >
 
