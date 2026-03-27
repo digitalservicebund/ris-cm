@@ -5,16 +5,3 @@
 body {
   @apply ris-body1-regular;
 }
-
-.ris-dialog-content[data-pc-section="content"] {
-  /* Setting overflow to visible allows absolutely positioned children (e.g. combobox) 
-       to render outside the content area without being clipped. */
-  overflow: visible !important;
-}
-
-@theme {
-  --border-1: 1px;
-  --shadow-blue: inset 0 0 0 2px rgba(0, 75, 118, 1);
-  --shadow-focus: inset 0 0 0 4px rgba(0, 75, 118, 1);
-  --shadow-hover: inset 0 0 0 4px rgba(0, 75, 118, 1);
-}
