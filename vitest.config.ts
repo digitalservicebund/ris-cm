@@ -49,7 +49,6 @@ export default defineConfig((context) =>
             "src/theme.ts",
 
             "src/scripts/getFavicon.ts",
-            "src/stores/sessionStore.ts",
           ],
         },
       },

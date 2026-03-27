@@ -4,7 +4,6 @@ import router from "./router"
 import "@/styles/global.css"
 import { RisUiLocale } from "@digitalservicebund/ris-ui/primevue"
 import PrimeVue from "primevue/config"
-import { createPinia } from "pinia"
 import "@digitalservicebund/ris-ui/fonts.css"
 import CaselawUiTheme from "@/theme"
 import { useAuthentication } from "./lib/auth"
@@ -24,7 +23,6 @@ try {
       pt: CaselawUiTheme,
       locale: RisUiLocale.deDE,
     })
-    .use(createPinia())
     .use(Sentry, { env, router })
 
   if (env.auth) {
