@@ -2,10 +2,9 @@ import { createApp } from "vue"
 import App from "./App.vue"
 import router from "./router"
 import "@/styles/global.css"
-import { RisUiLocale } from "@digitalservicebund/ris-ui/primevue"
+import { RisUiLocale, RisUiTheme } from "@digitalservicebund/ris-ui/primevue"
 import PrimeVue from "primevue/config"
 import "@digitalservicebund/ris-ui/fonts.css"
-import CaselawUiTheme from "@/theme"
 import { useAuthentication } from "./lib/auth"
 import { getEnv } from "@/lib/env"
 import { useFavicon } from "@vueuse/core"
@@ -20,7 +19,7 @@ try {
     .use(router)
     .use(PrimeVue, {
       unstyled: true,
-      pt: CaselawUiTheme,
+      pt: RisUiTheme,
       locale: RisUiLocale.deDE,
     })
     .use(Sentry, { env, router })
