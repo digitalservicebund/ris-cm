@@ -16,6 +16,7 @@ env:
   CONTAINER_IMAGE_NAME: ${{ github.repository }}
   CONTAINER_IMAGE_VERSION: ${{ github.event.pull_request.head.sha || github.sha }}
   REPORTS_REPOSITORY: digitalservicebund/ris-reports
+  SLACK_CHANNEL_ID: C0471B2N86L
 
 jobs:
   validate-pinned-github-action-versions:
@@ -27,11 +28,11 @@ jobs:
       - name: validate github workflow files to have pinned versions
         uses: digitalservicebund/github-actions-linter@7cb107efafe7cb97a58e685a08a1014744b89f71 # v0.1.15
       - name: Send status to Slack
-        uses: digitalservicebund/notify-on-failure-gha@671832f192aee0a068fd92b2f6deb975df794a84 # v1.5.0
+        uses: digitalservicebund/notify-on-failure-gha@671832f192aee0a068fd92b2f6deb975df794a84 # v1.6.1
         if: ${{ failure() && github.ref == 'refs/heads/main' }}
         with:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-          SLACK_CHANNEL_ID: C0471B2N86L
+          SLACK_CHANNEL_ID: ${{ env.SLACK_CHANNEL_ID }}
 
   tests-and-code-quality:
     needs:
@@ -81,11 +82,11 @@ jobs:
           path: license-report.csv
 
       - name: Send status to Slack
-        uses: digitalservicebund/notify-on-failure-gha@671832f192aee0a068fd92b2f6deb975df794a84 # v1.5.0
+        uses: digitalservicebund/notify-on-failure-gha@671832f192aee0a068fd92b2f6deb975df794a84 # v1.6.1
         if: ${{ failure() }}
         with:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-          SLACK_CHANNEL_ID: C0471B2N86L
+          SLACK_CHANNEL_ID: ${{ env.SLACK_CHANNEL_ID }}
 
   vulnerability-scan:
     needs:
@@ -167,11 +168,11 @@ jobs:
         run: cosign attest --yes --replace --predicate ${{ env.PACKAGE_NAME }}-vulnerabilities.json --type vuln ${{ env.CONTAINER_REGISTRY }}/${{ env.CONTAINER_IMAGE_NAME }}:${{ env.CONTAINER_IMAGE_VERSION }}
 
       - name: Send failure to Slack
-        uses: digitalservicebund/notify-on-failure-gha@671832f192aee0a068fd92b2f6deb975df794a84 # v1.5.0
+        uses: digitalservicebund/notify-on-failure-gha@671832f192aee0a068fd92b2f6deb975df794a84 # v1.6.1
         if: failure()
         with:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-          SLACK_CHANNEL_ID: C0471B2N86L
+          SLACK_CHANNEL_ID: ${{ env.SLACK_CHANNEL_ID }}
 
   deploy-staging-job:
     if: ${{ github.ref == 'refs/heads/main' }}

@@ -37,11 +37,11 @@ jobs:
           path: test-results/unit-tests
           if-no-files-found: warn
       - name: Send status to Slack
-        uses: digitalservicebund/notify-on-failure-gha@671832f192aee0a068fd92b2f6deb975df794a84
+        uses: digitalservicebund/notify-on-failure-gha@671832f192aee0a068fd92b2f6deb975df794a84 # v1.6.1
         if: ${{ failure() && github.ref == 'refs/heads/main' }}
         with:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-          SLACK_CHANNEL_ID: C0471B2N86L
+          SLACK_CHANNEL_ID: ${{ env.SLACK_CHANNEL_ID }}
 
   e2e-tests:
     runs-on: ubuntu-latest
@@ -89,11 +89,11 @@ jobs:
           path: ./test-results/index.html
           retention-days: 1
       - name: Send status to Slack
-        uses: digitalservicebund/notify-on-failure-gha@671832f192aee0a068fd92b2f6deb975df794a84
+        uses: digitalservicebund/notify-on-failure-gha@671832f192aee0a068fd92b2f6deb975df794a84 # v1.6.1
         if: ${{ failure() && github.ref == 'refs/heads/main' }}
         with:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-          SLACK_CHANNEL_ID: C0471B2N86L
+          SLACK_CHANNEL_ID: ${{ env.SLACK_CHANNEL_ID }}
 
   a11y-tests:
     runs-on: ubuntu-latest
@@ -142,11 +142,11 @@ jobs:
           retention-days: 1
 
       - name: Send status to Slack
-        uses: digitalservicebund/notify-on-failure-gha@671832f192aee0a068fd92b2f6deb975df794a84
+        uses: digitalservicebund/notify-on-failure-gha@671832f192aee0a068fd92b2f6deb975df794a84 # v1.6.1
         if: ${{ failure() && github.ref == 'refs/heads/main' }}
         with:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-          SLACK_CHANNEL_ID: C0471B2N86L
+          SLACK_CHANNEL_ID: ${{ env.SLACK_CHANNEL_ID }}
 
   style-check:
     runs-on: ubuntu-latest
@@ -182,11 +182,11 @@ jobs:
       - name: Check style
         run: npm run style:check
       - name: Send status to Slack
-        uses: digitalservicebund/notify-on-failure-gha@671832f192aee0a068fd92b2f6deb975df794a84
+        uses: digitalservicebund/notify-on-failure-gha@671832f192aee0a068fd92b2f6deb975df794a84 # v1.6.1
         if: ${{ failure() && github.ref == 'refs/heads/main' }}
         with:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-          SLACK_CHANNEL_ID: C0471B2N86L
+          SLACK_CHANNEL_ID: ${{ env.SLACK_CHANNEL_ID }}
 
   code-analysis:
     runs-on: ubuntu-latest
@@ -227,8 +227,8 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: Send status to Slack
-        uses: digitalservicebund/notify-on-failure-gha@671832f192aee0a068fd92b2f6deb975df794a84
+        uses: digitalservicebund/notify-on-failure-gha@671832f192aee0a068fd92b2f6deb975df794a84 # v1.6.1
         if: ${{ failure() && github.ref == 'refs/heads/main' }}
         with:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-          SLACK_CHANNEL_ID: C0471B2N86L
+          SLACK_CHANNEL_ID: ${{ env.SLACK_CHANNEL_ID }}
