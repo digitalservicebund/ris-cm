@@ -9,7 +9,7 @@ import CaselawUiTheme from "@/theme"
 import { useAuthentication } from "./lib/auth"
 import { getEnv } from "@/lib/env"
 import { useFavicon } from "@vueuse/core"
-import { getFavicon } from "@/scripts/getFavicon"
+import { getFavicon } from "@/lib/favicon"
 import { Sentry } from "@/lib/sentry"
 
 try {
