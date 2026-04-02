@@ -32,7 +32,7 @@
     "@tailwindcss/postcss": "^4.2.2",
     "@vueuse/core": "^14.2.1",
     "keycloak-js": "^26.2.3",
-    "vue": "^3.5.30",
+    "vue": "^3.5.31",
     "vue-router": "^5.0.4"
   },
   "devDependencies": {
@@ -46,13 +46,13 @@
     "@testing-library/vue": "^8.1.0",
     "@types/node": "^25.5.0",
     "@vitejs/plugin-vue": "^6.0.5",
-    "@vitest/coverage-istanbul": "^4.1.1",
+    "@vitest/coverage-istanbul": "^4.1.2",
     "@vitest/ui": "^4.0.18",
     "autoprefixer": "^10.4.27",
     "axe-playwright": "^2.2.2",
     "jsdom": "^29.0.1",
     "license-checker-rseidelsohn": "^4.4.2",
-    "oxlint": "^1.56.0",
+    "oxlint": "^1.57.0",
     "playwright": "^1.58.2",
     "postcss": "^8.5.8",
     "prettier": "3.8.1",
@@ -61,7 +61,7 @@
     "ts-node": "^10.9.2",
     "typescript": "^6.0.2",
     "unplugin-icons": "^23.0.1",
-    "vite": "^8.0.2",
+    "vite": "^8.0.3",
     "vitest": "^4.0.18",
     "vue-tsc": "^3.2.6"
   },
