@@ -6,6 +6,9 @@ on:
       SONAR_TOKEN:
         required: false
 
+permissions:
+  contents: read
+
 jobs:
   unit-tests:
     runs-on: ubuntu-latest
