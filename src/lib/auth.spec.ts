@@ -1,14 +1,20 @@
-import * as Keycloak from "keycloak-js"
+import Keycloak from "keycloak-js"
 import { afterEach, describe, expect, it, vi } from "vitest"
 
 vi.mock("keycloak-js", () => {
-  const MockKeycloak = vi.fn()
-  MockKeycloak.prototype.init = vi.fn().mockResolvedValue(true)
+  const MockKeycloak = vi.fn<() => Keycloak>()
+  MockKeycloak.prototype.init = vi
+    .fn<() => Promise<boolean>>()
+    .mockResolvedValue(true)
   MockKeycloak.prototype.didInitialize = false
   MockKeycloak.prototype.token = undefined
   MockKeycloak.prototype.idTokenParsed = undefined
-  MockKeycloak.prototype.createLogoutUrl = vi.fn().mockReturnValue(undefined)
-  MockKeycloak.prototype.updateToken = vi.fn().mockResolvedValue(true)
+  MockKeycloak.prototype.createLogoutUrl = vi
+    .fn<() => string>()
+    .mockReturnValue("/logout")
+  MockKeycloak.prototype.updateToken = vi
+    .fn<() => Promise<boolean>>()
+    .mockResolvedValue(true)
 
   return { default: MockKeycloak }
 })
@@ -29,13 +35,13 @@ describe("auth", () => {
       url: "https://oauth-url.test",
     })
 
-    expect(Keycloak.default).toHaveBeenCalledExactlyOnceWith({
+    expect(Keycloak).toHaveBeenCalledExactlyOnceWith({
       clientId: "test-client",
       realm: "test-realm",
       url: "https://oauth-url.test",
     })
 
-    expect(Keycloak.default.prototype.init).toHaveBeenCalled()
+    expect(Keycloak.prototype.init).toHaveBeenCalled()
   })
 
   it("replaces an existing instance when configuring again", async () => {
@@ -54,20 +60,20 @@ describe("auth", () => {
       url: "https://oauth-url.test/2",
     })
 
-    expect(Keycloak.default).toHaveBeenNthCalledWith(
+    expect(Keycloak).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({ clientId: "test-client-1" }),
     )
-    expect(Keycloak.default).toHaveBeenNthCalledWith(
+    expect(Keycloak).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({ clientId: "test-client-2" }),
     )
 
-    expect(Keycloak.default.prototype.init).toHaveBeenCalledTimes(2)
+    expect(Keycloak.prototype.init).toHaveBeenCalledTimes(2)
   })
 
   it("throws an error when configuration fails", async () => {
-    vi.spyOn(Keycloak.default.prototype, "init").mockRejectedValueOnce("Error")
+    vi.spyOn(Keycloak.prototype, "init").mockRejectedValueOnce("Error")
     const { useAuthentication } = await import("./auth")
     const { configure } = useAuthentication()
 
@@ -101,7 +107,7 @@ describe("auth", () => {
   })
 
   it("adds an authorization header when a token is available", async () => {
-    vi.spyOn(Keycloak.default.prototype, "token", "get").mockReturnValue("1234")
+    vi.spyOn(Keycloak.prototype, "token", "get").mockReturnValue("1234")
     const { useAuthentication } = await import("./auth")
     const { configure, addAuthorizationHeader } = useAuthentication()
 
@@ -118,9 +124,7 @@ describe("auth", () => {
   })
 
   it("doesn't add an authorization header when no token is available", async () => {
-    vi.spyOn(Keycloak.default.prototype, "token", "get").mockReturnValue(
-      undefined,
-    )
+    vi.spyOn(Keycloak.prototype, "token", "get").mockReturnValue(undefined)
     const { useAuthentication } = await import("./auth")
     const { addAuthorizationHeader } = useAuthentication()
 
@@ -131,7 +135,7 @@ describe("auth", () => {
   })
 
   it("includes the original headers when adding an authorization header", async () => {
-    vi.spyOn(Keycloak.default.prototype, "token", "get").mockReturnValue("1234")
+    vi.spyOn(Keycloak.prototype, "token", "get").mockReturnValue("1234")
     const { useAuthentication } = await import("./auth")
     const { configure, addAuthorizationHeader } = useAuthentication()
 
@@ -148,11 +152,9 @@ describe("auth", () => {
   })
 
   it("returns the username", async () => {
-    vi.spyOn(
-      Keycloak.default.prototype,
-      "idTokenParsed",
-      "get",
-    ).mockReturnValue({ name: "Jane Doe" })
+    vi.spyOn(Keycloak.prototype, "idTokenParsed", "get").mockReturnValue({
+      name: "Jane Doe",
+    })
     const { useAuthentication } = await import("./auth")
     const { configure, getUsername } = useAuthentication()
 
@@ -168,11 +170,9 @@ describe("auth", () => {
   })
 
   it("returns undefined as the username if no token exists", async () => {
-    vi.spyOn(
-      Keycloak.default.prototype,
-      "idTokenParsed",
-      "get",
-    ).mockReturnValue(undefined)
+    vi.spyOn(Keycloak.prototype, "idTokenParsed", "get").mockReturnValue(
+      undefined,
+    )
     const { useAuthentication } = await import("./auth")
     const { configure, getUsername } = useAuthentication()
 
@@ -188,7 +188,7 @@ describe("auth", () => {
   })
 
   it("returns a logout link", async () => {
-    vi.spyOn(Keycloak.default.prototype, "createLogoutUrl").mockReturnValue(
+    vi.spyOn(Keycloak.prototype, "createLogoutUrl").mockReturnValue(
       "http://example.com",
     )
 
@@ -216,11 +216,9 @@ describe("auth", () => {
   })
 
   it("returns false when the token refresh throws", async () => {
-    vi.spyOn(Keycloak.default.prototype, "updateToken").mockImplementation(
-      () => {
-        throw new Error()
-      },
-    )
+    vi.spyOn(Keycloak.prototype, "updateToken").mockImplementation(() => {
+      throw new Error()
+    })
 
     const { useAuthentication } = await import("./auth")
     const { tryRefresh, configure } = useAuthentication()
@@ -237,7 +235,7 @@ describe("auth", () => {
   })
 
   it("returns true when the token refresh succeeds", async () => {
-    vi.spyOn(Keycloak.default.prototype, "updateToken").mockResolvedValue(true)
+    vi.spyOn(Keycloak.prototype, "updateToken").mockResolvedValue(true)
     const { useAuthentication } = await import("./auth")
     const { tryRefresh, configure } = useAuthentication()
 
@@ -253,7 +251,7 @@ describe("auth", () => {
   })
 
   it("returns true when the token doesn't need refreshing", async () => {
-    vi.spyOn(Keycloak.default.prototype, "updateToken").mockResolvedValue(false)
+    vi.spyOn(Keycloak.prototype, "updateToken").mockResolvedValue(false)
     const { useAuthentication } = await import("./auth")
     const { tryRefresh, configure } = useAuthentication()
 
@@ -269,7 +267,7 @@ describe("auth", () => {
   })
 
   it("doesn't run multiple token refresh requests at the same time", async () => {
-    vi.spyOn(Keycloak.default.prototype, "updateToken").mockResolvedValue(true)
+    vi.spyOn(Keycloak.prototype, "updateToken").mockResolvedValue(true)
 
     const { useAuthentication } = await import("./auth")
     const { tryRefresh, configure } = useAuthentication()
@@ -285,11 +283,11 @@ describe("auth", () => {
 
     await expect(result1).resolves.toBe(true)
     await expect(result2).resolves.toBe(true)
-    expect(Keycloak.default.prototype.updateToken).toHaveBeenCalledTimes(1)
+    expect(Keycloak.prototype.updateToken).toHaveBeenCalledTimes(1)
   })
 
   it("runs multiple token refresh requests sequentially", async () => {
-    vi.spyOn(Keycloak.default.prototype, "updateToken").mockResolvedValue(true)
+    vi.spyOn(Keycloak.prototype, "updateToken").mockResolvedValue(true)
 
     const { useAuthentication } = await import("./auth")
     const { tryRefresh, configure } = useAuthentication()
@@ -302,10 +300,10 @@ describe("auth", () => {
 
     const result1 = tryRefresh()
     await expect(result1).resolves.toBe(true)
-    expect(Keycloak.default.prototype.updateToken).toHaveBeenCalledTimes(1)
+    expect(Keycloak.prototype.updateToken).toHaveBeenCalledTimes(1)
 
     const result2 = tryRefresh()
     await expect(result2).resolves.toBe(true)
-    expect(Keycloak.default.prototype.updateToken).toHaveBeenCalledTimes(2)
+    expect(Keycloak.prototype.updateToken).toHaveBeenCalledTimes(2)
   })
 })
