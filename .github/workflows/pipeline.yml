@@ -234,7 +234,7 @@ jobs:
           filePath: tmp/license-reports/license-report.csv
           destinationDir: licence-reports/frontend/ris-cm
       - name: Frontend license report - git add report
-        uses: digitalservicebund/add-ris-report@f5f0c5d001b082175488f2b01b598812fb571300
+        uses: digitalservicebund/add-ris-report@8671c0d259eee9bab46c833ac4b92808ee16cab5
         with:
           filePath: tmp/license-reports/license-report.csv
           destinationDir: licence-reports/frontend/ris-cm
@@ -249,7 +249,7 @@ jobs:
           reportIsDirectory: true
           keepAllVersions: false
       - name: add ADRs to report
-        uses: digitalservicebund/add-ris-report@f5f0c5d001b082175488f2b01b598812fb571300
+        uses: digitalservicebund/add-ris-report@8671c0d259eee9bab46c833ac4b92808ee16cab5
         with:
           filePath: tmp/adr-source
           destinationDir: adr/ris-cm
