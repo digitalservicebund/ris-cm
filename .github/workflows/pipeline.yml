@@ -234,7 +234,7 @@ jobs:
           filePath: tmp/license-reports/license-report.csv
           destinationDir: licence-reports/frontend/ris-cm
       - name: Frontend license report - git add report
-        uses: digitalservicebund/add-ris-report@c597c540625d36ca9925770696c75dbb38faad70
+        uses: digitalservicebund/add-ris-report@f5f0c5d001b082175488f2b01b598812fb571300
         with:
           filePath: tmp/license-reports/license-report.csv
           destinationDir: licence-reports/frontend/ris-cm
@@ -248,6 +248,15 @@ jobs:
           destinationDir: adr/ris-cm
           reportIsDirectory: true
           keepAllVersions: false
+      - name: add ADRs to report
+        uses: digitalservicebund/add-ris-report@f5f0c5d001b082175488f2b01b598812fb571300
+        with:
+          filePath: tmp/adr-source
+          destinationDir: adr/ris-cm
+          reportIsDirectory: true
+          keepAllVersions: false
+          BUCKET_ACCESS_KEY_ID: ${{ secrets.REPORTS_BUCKET_ACCESS_KEY_ID }}
+          BUCKET_SECRET_ACCESS_KEY: ${{ secrets.REPORTS_BUCKET_SECRET_ACCESS_KEY }}
       # E2E test report
       - name: E2E test reports - Download
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
