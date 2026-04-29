@@ -233,6 +233,13 @@ jobs:
         with:
           filePath: tmp/license-reports/license-report.csv
           destinationDir: licence-reports/frontend/ris-cm
+      - name: Frontend license report - git add report
+        uses: digitalservicebund/add-ris-report@3d9fc4623a9e73b532619666fde95ca35c96584c
+        with:
+          filePath: tmp/license-reports/license-report.csv
+          destinationDir: licence-reports/frontend/ris-cm
+          BUCKET_ACCESS_KEY_ID: ${{ secrets.REPORTS_BUCKET_ACCESS_KEY_ID }}
+          BUCKET_SECRET_ACCESS_KEY: ${{ secrets.REPORTS_BUCKET_SECRET_ACCESS_KEY }}
       # ADRs
       - name: add ADRs to report
         uses: digitalservicebund/add-ris-report@c6c8735d23295c36a271c75e7dedc9b6b9a9ef5e

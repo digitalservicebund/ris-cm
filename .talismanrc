@@ -44,3 +44,7 @@ allowed_patterns:
   - "secrets: inherit"
   - Keycloak
   - keycloak
+  - BUCKET_ACCESS_KEY_ID
+  - secrets.REPORTS_BUCKET_ACCESS_KEY_ID
+  - BUCKET_SECRET_ACCESS_KEY
+  - secrets.REPORTS_BUCKET_SECRET_ACCESS_KEY
