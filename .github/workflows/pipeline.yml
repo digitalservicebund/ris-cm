@@ -234,7 +234,7 @@ jobs:
           filePath: tmp/license-reports/license-report.csv
           destinationDir: licence-reports/frontend/ris-cm
       - name: Frontend license report - git add report
-        uses: digitalservicebund/add-ris-report@2e99d3e2dc729882c591c67c8d0c41e5348d1547
+        uses: digitalservicebund/add-ris-report@39ce468cfd81a2a952e9a7010996889ddd41036c
         with:
           filePath: tmp/license-reports/license-report.csv
           destinationDir: licence-reports/frontend/ris-cm
