@@ -202,16 +202,6 @@ jobs:
     permissions:
       contents: read
     steps:
-      # Setup
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-        with:
-          repository: ${{ env.REPORTS_REPOSITORY }}
-          ssh-key: ${{ secrets.REPORTS_DEPLOY_KEY }}
-      - name: Setup git config
-        run: |
-          git config user.name "${{ github.repository }}"
-          # This email identifies the commit as GitHub Actions - see https://github.com/orgs/community/discussions/26560
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
       - name: Checkout ris-cm repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
@@ -229,12 +219,7 @@ jobs:
           name: license-reports
           path: tmp/license-reports/
       - name: Frontend license report - git add report
-        uses: digitalservicebund/add-ris-report@c6c8735d23295c36a271c75e7dedc9b6b9a9ef5e
-        with:
-          filePath: tmp/license-reports/license-report.csv
-          destinationDir: licence-reports/frontend/ris-cm
-      - name: Frontend license report - git add report
-        uses: digitalservicebund/add-ris-report@b77e0c7a0b87e2ead62a77fd87b7c0370b15d0a8
+        uses: digitalservicebund/add-ris-report@e27536b108fb812d2c7e6932baef75e5164b44b4
         with:
           filePath: tmp/license-reports/license-report.csv
           destinationDir: licence-reports/frontend/ris-cm
@@ -242,14 +227,7 @@ jobs:
           BUCKET_SECRET_ACCESS_KEY: ${{ secrets.REPORTS_BUCKET_SECRET_ACCESS_KEY }}
       # ADRs
       - name: add ADRs to report
-        uses: digitalservicebund/add-ris-report@c6c8735d23295c36a271c75e7dedc9b6b9a9ef5e
-        with:
-          filePath: tmp/adr-source
-          destinationDir: adr/ris-cm
-          reportIsDirectory: true
-          keepAllVersions: false
-      - name: add ADRs to report
-        uses: digitalservicebund/add-ris-report@b77e0c7a0b87e2ead62a77fd87b7c0370b15d0a8
+        uses: digitalservicebund/add-ris-report@e27536b108fb812d2c7e6932baef75e5164b44b4
         with:
           filePath: tmp/adr-source
           destinationDir: adr/ris-cm
@@ -264,11 +242,13 @@ jobs:
           name: e2e-test-report-chromium
           path: tmp/e2e-test-report/
       - name: E2E test reports - git add report
-        uses: digitalservicebund/add-ris-report@c6c8735d23295c36a271c75e7dedc9b6b9a9ef5e
+        uses: digitalservicebund/add-ris-report@e27536b108fb812d2c7e6932baef75e5164b44b4
         with:
           filePath: tmp/e2e-test-report/
           destinationDir: test-reports/ris-cm/e2e-tests
           reportIsDirectory: true
+          BUCKET_ACCESS_KEY_ID: ${{ secrets.REPORTS_BUCKET_ACCESS_KEY_ID }}
+          BUCKET_SECRET_ACCESS_KEY: ${{ secrets.REPORTS_BUCKET_SECRET_ACCESS_KEY }}
       # A11y test report
       - name: A11y test reports - Download
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
@@ -276,11 +256,13 @@ jobs:
           name: a11y-test-report-chromium
           path: tmp/a11y-test-report/
       - name: A11y test reports - git add report
-        uses: digitalservicebund/add-ris-report@c6c8735d23295c36a271c75e7dedc9b6b9a9ef5e
+        uses: digitalservicebund/add-ris-report@e27536b108fb812d2c7e6932baef75e5164b44b4
         with:
           filePath: tmp/a11y-test-report/
           destinationDir: test-reports/ris-cm/a11y-tests
           reportIsDirectory: true
+          BUCKET_ACCESS_KEY_ID: ${{ secrets.REPORTS_BUCKET_ACCESS_KEY_ID }}
+          BUCKET_SECRET_ACCESS_KEY: ${{ secrets.REPORTS_BUCKET_SECRET_ACCESS_KEY }}
       # Unit test report
       - name: unit test report - download artifact
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
@@ -288,18 +270,10 @@ jobs:
           name: unit-test-report
           path: tmp/unit-test-report
       - name: unit test report - git add report
-        uses: digitalservicebund/add-ris-report@c6c8735d23295c36a271c75e7dedc9b6b9a9ef5e
+        uses: digitalservicebund/add-ris-report@e27536b108fb812d2c7e6932baef75e5164b44b4
         with:
           filePath: tmp/unit-test-report
           destinationDir: test-reports/ris-cm/unit-tests
           reportIsDirectory: true
-      # Push reports
-      - name: Push reports
-        # we use `toJSON(...)` below to escape double quotation marks
-        run: |
-          git diff-index --cached --quiet HEAD ||
-            git commit \
-              -m "Update from ${{ github.repository }}" \
-              -m "From commit: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}" &&
-            git push origin main &&
-            echo "Pushed reports to ${{ github.server_url }}/${{ env.REPORTS_REPOSITORY }}" >> $GITHUB_STEP_SUMMARY
+          BUCKET_ACCESS_KEY_ID: ${{ secrets.REPORTS_BUCKET_ACCESS_KEY_ID }}
+          BUCKET_SECRET_ACCESS_KEY: ${{ secrets.REPORTS_BUCKET_SECRET_ACCESS_KEY }}
