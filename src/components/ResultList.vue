@@ -22,42 +22,19 @@ interface CaselawEntry {
   visibleInPortal: boolean
 }
 
-const entries: CaselawEntry[] = [
-  {
-    documentNumber: "KORE123456789",
-    court: "Bundesgerichtshof",
-    typ: "Urteil",
-    decisionDate: "15.03.2024",
-    fileNumber: "VI ZR 12/23",
-    visibleInPortal: true,
-  },
-  {
-    documentNumber: "KVRE987654321",
-    court: "Bundesverwaltungsgericht",
-    typ: "Beschluss",
-    decisionDate: "22.07.2023",
-    fileNumber: "BVerwG 4 C 3.22",
-    visibleInPortal: false,
-  },
-  {
-    documentNumber: "BSGE112233445",
-    court: "Bundessozialgericht",
-    typ: "Urteil",
-    decisionDate: "08.11.2023",
-    fileNumber: "B 3 KR 7/22 R",
-    visibleInPortal: true,
-  },
-]
+const props = defineProps<{
+  entries: CaselawEntry[]
+}>()
 </script>
 
 <template>
   <div
-    v-if="entries == null"
+    v-if="props.entries == null"
     class="grid items-center justify-items-center bg-white grow"
   >
     Starten Sie die Suche.
   </div>
-  <DataTable v-if="entries" :value="entries" class="w-full">
+  <DataTable v-if="props.entries" :value="props.entries" class="w-full">
     <Column field="documentNumber" header="Dokumentnummer" />
     <Column field="court" header="Gericht" />
     <Column field="typ" header="Typ" />
