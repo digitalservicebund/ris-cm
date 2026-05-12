@@ -96,3 +96,15 @@ test("verlinkt auf Portal-Seite der jeweiligen Dokumentnummer", () => {
     "https://portal.example.com/case-law/BSGE112233445",
   )
 })
+
+test("zeigt 'Starten Sie die Suche.' an, wenn entries undefined ist", () => {
+  render(ResultList, { props: { entries: undefined } })
+
+  expect(screen.getByText("Starten Sie die Suche.")).toBeInTheDocument()
+})
+
+test("zeigt 'Starten Sie die Suche.' an, wenn entries leer ist", () => {
+  render(ResultList, { props: { entries: [] } })
+
+  expect(screen.getByText("Starten Sie die Suche.")).toBeInTheDocument()
+})

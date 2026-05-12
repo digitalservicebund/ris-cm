@@ -23,18 +23,18 @@ interface CaselawEntry {
 }
 
 const props = defineProps<{
-  entries: CaselawEntry[]
+  entries?: CaselawEntry[]
 }>()
 </script>
 
 <template>
   <div
-    v-if="props.entries == null"
+    v-if="props.entries == null || props.entries.length == 0"
     class="grid items-center justify-items-center bg-white grow"
   >
     Starten Sie die Suche.
   </div>
-  <DataTable v-if="props.entries" :value="props.entries" class="w-full">
+  <DataTable v-else :value="props.entries" class="w-full">
     <Column field="documentNumber" header="Dokumentnummer" />
     <Column field="court" header="Gericht" />
     <Column field="typ" header="Typ" />
