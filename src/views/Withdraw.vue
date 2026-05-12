@@ -31,7 +31,7 @@ const entries = [
 </script>
 
 <template>
-  <div class="flex flex-col m-24">
+  <div class="flex flex-col m-24 gap-8">
     <SearchForm></SearchForm>
     <ResultList :entries="entries"></ResultList>
   </div>
