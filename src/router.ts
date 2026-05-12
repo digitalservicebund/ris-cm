@@ -15,7 +15,7 @@ const routes: readonly RouteRecordRaw[] = [
       {
         path: "rechtsprechung",
         name: "withdraw-caselaw",
-        component: () => import("@/views/Withdraw.vue"),
+        component: () => import("@/views/WithdrawCaselaw.vue"),
       },
       {
         path: "literatur",

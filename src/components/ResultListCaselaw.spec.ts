@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/vue"
 import { test, expect, vi } from "vitest"
-import ResultList from "@/components/ResultList.vue"
+import ResultListCaselaw from "./ResultListCaselaw.vue"
 import { ref } from "vue"
 import type { CaselawDocument } from "@/lib/caselaw"
 
@@ -41,7 +41,7 @@ const sampleEntries: CaselawDocument[] = [
 ]
 
 function renderComponent() {
-  return render(ResultList, { props: { entries: sampleEntries } })
+  return render(ResultListCaselaw, { props: { entries: sampleEntries } })
 }
 
 test("zeigt Spaltenheader an", () => {
@@ -99,13 +99,13 @@ test("verlinkt auf Portal-Seite der jeweiligen Dokumentnummer", () => {
 })
 
 test("zeigt 'Starten Sie die Suche.' an, wenn entries undefined ist", () => {
-  render(ResultList, { props: { entries: undefined } })
+  render(ResultListCaselaw, { props: { entries: undefined } })
 
   expect(screen.getByText("Starten Sie die Suche.")).toBeInTheDocument()
 })
 
 test("zeigt 'Starten Sie die Suche.' an, wenn entries leer ist", () => {
-  render(ResultList, { props: { entries: [] } })
+  render(ResultListCaselaw, { props: { entries: [] } })
 
   expect(screen.getByText("Starten Sie die Suche.")).toBeInTheDocument()
 })
