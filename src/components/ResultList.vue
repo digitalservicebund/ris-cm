@@ -49,7 +49,7 @@ const props = defineProps<{
       <template #body="{ data }">
         <div class="flex flex-row justify-end gap-8">
           <Button
-            v-tooltip="'Aus Portal entfernen'"
+            v-tooltip.bottom="'Aus Portal entfernen'"
             aria-label="Zurückziehen"
             label="Zurückziehen"
             severity="secondary"
@@ -60,7 +60,7 @@ const props = defineProps<{
             </template>
           </Button>
           <Button
-            v-tooltip="'Portal'"
+            v-tooltip.bottom="'Portal'"
             aria-label="Portal"
             as="a"
             :href="portalUrl(data.documentNumber)"
