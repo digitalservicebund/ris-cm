@@ -5,6 +5,7 @@ import DataTable from "primevue/datatable"
 import IconOpenInNew from "~icons/ic/baseline-open-in-new"
 import IconVisibilityOff from "~icons/ic/baseline-visibility-off"
 import { useEnv } from "@/lib/env"
+import { CaselawDocument } from "@/lib/caselaw"
 
 const { env } = useEnv()
 
@@ -13,17 +14,8 @@ function portalUrl(documentNumber: string): string | undefined {
   return `${env.value.portalBaseUrl}/case-law/${documentNumber}`
 }
 
-interface CaselawEntry {
-  documentNumber: string
-  court: string
-  typ: string
-  decisionDate: string
-  fileNumber: string
-  visibleInPortal: boolean
-}
-
 const props = defineProps<{
-  entries?: CaselawEntry[]
+  entries?: CaselawDocument[]
 }>()
 </script>
 
