@@ -35,6 +35,7 @@ describe("searchCaselaw", () => {
 
     expect(fetch).toHaveBeenCalledWith(
       "https://example.com/api/v1/search?document-number=KORE500102022",
+      expect.anything(),
     )
     expect(results).toEqual(mockResults)
   })

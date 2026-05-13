@@ -1,3 +1,4 @@
+import { useAuthentication } from "@/lib/auth"
 import { getEnv } from "@/lib/env"
 
 export interface CaselawDocument {
@@ -14,8 +15,12 @@ export async function searchCaselaw(
 ): Promise<CaselawDocument[]> {
   const env = await getEnv()
 
+  const auth = useAuthentication()
+  await auth.tryRefresh()
+
   const response = await fetch(
     `${env.caselawSearchUrl}?document-number=${encodeURIComponent(documentNumber)}`,
+    { headers: auth.addAuthorizationHeader() },
   )
 
   if (!response.ok) {
