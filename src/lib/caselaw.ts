@@ -13,9 +13,6 @@ export async function searchCaselaw(
   documentNumber: string,
 ): Promise<CaselawDocument[]> {
   const env = await getEnv()
-  if (!env.caselawSearchUrl) {
-    throw new Error("caselawSearchUrl is not configured")
-  }
 
   const response = await fetch(
     `${env.caselawSearchUrl}?document-number=${encodeURIComponent(documentNumber)}`,

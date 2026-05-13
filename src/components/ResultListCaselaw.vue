@@ -10,7 +10,7 @@ import { CaselawDocument } from "@/lib/caselaw"
 const { env } = useEnv()
 
 function portalUrl(documentNumber: string): string | undefined {
-  if (!env.value?.portalBaseUrl) return undefined
+  if (!env.value) return undefined
   return `${env.value.portalBaseUrl}/case-law/${documentNumber}`
 }
 

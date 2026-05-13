@@ -8,15 +8,33 @@ export type Env = {
     realm: string
   }
   environment: "local" | "staging" | "uat" | "production"
-  portalBaseUrl?: string
-  caselawSearchUrl?: string
+  portalBaseUrl: string
+  caselawSearchUrl: string
   sentry?: BrowserOptions
 }
 
 let envCache: Promise<Env> | undefined
-export const getEnv: () => Promise<Env> = () => {
-  envCache ??= fetch("/config/env.json").then((response) => response.json())
-  return envCache
+export const getEnv: () => Promise<Env> = async () => {
+  if (envCache) {
+    return envCache
+  }
+
+  const response = await fetch("/config/env.json")
+  const env = await response.json()
+
+  if (!env.environment) {
+    throw new Error("Missing required config field: environment")
+  }
+  if (!env.portalBaseUrl) {
+    throw new Error("Missing required config field: portalBaseUrl")
+  }
+  if (!env.caselawSearchUrl) {
+    throw new Error("Missing required config field: caselawSearchUrl")
+  }
+
+  envCache = env
+
+  return env
 }
 
 export function useEnv() {

@@ -5,6 +5,7 @@ import type { Env } from "@/lib/env"
 vi.mock("@/lib/env", () => ({
   getEnv: vi.fn<() => Promise<Env>>().mockResolvedValue({
     environment: "local",
+    portalBaseUrl: "https://example.com",
     caselawSearchUrl: "https://example.com/api/v1/search",
   }),
 }))
@@ -46,17 +47,6 @@ describe("searchCaselaw", () => {
 
     await expect(searchCaselaw("KORE500102022")).rejects.toThrow(
       "Search failed: 500",
-    )
-  })
-
-  test("throws when caselawSearchUrl is not configured", async () => {
-    const { getEnv } = await import("@/lib/env")
-    vi.mocked(getEnv).mockResolvedValueOnce({
-      environment: "local",
-    })
-
-    await expect(searchCaselaw("KORE500102022")).rejects.toThrow(
-      "caselawSearchUrl is not configured",
     )
   })
 })
