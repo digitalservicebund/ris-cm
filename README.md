@@ -82,3 +82,11 @@ For adding new records the [adr-tools](https://github.com/npryce/adr-tools) comm
 ```bash
 brew install adr-tools
 ```
+
+## Local OAuth Setup
+
+You can run the application locally without any authentication.
+
+To test the auth-flow you can use the keycloak defined in `docker-compose.yml` to start a local keycloak instance.
+You then also need to configure the `env.json` to authenticate against the keycloak instance. An example for this is provided in the `public/config/README.md`.
+The username is `jane.doe` and the password `test`.
