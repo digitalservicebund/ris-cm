@@ -82,6 +82,19 @@ test("update navigation when inputting search params", async () => {
   )
 })
 
+test("emits search event with document number when button is clicked", async () => {
+  await router.push(
+    "/zurueckziehen/rechtsprechung?dokumentnummer=KORE500102022",
+  )
+  const { emitted } = renderComponent()
+  const user = userEvent.setup()
+
+  await user.click(screen.getByRole("button", { name: "Suche starten" }))
+
+  expect(emitted().search).toBeDefined()
+  expect(emitted().search[0]).toEqual(["KORE500102022"])
+})
+
 test("prefilling the inputs with the values from the route", async () => {
   await router.push("/zurueckziehen/literatur?dokumentnummer=XXRE000714526")
 

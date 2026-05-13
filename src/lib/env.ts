@@ -9,6 +9,7 @@ export type Env = {
   }
   environment: "local" | "staging" | "uat" | "production"
   portalBaseUrl?: string
+  caselawSearchUrl?: string
   sentry?: BrowserOptions
 }
 
