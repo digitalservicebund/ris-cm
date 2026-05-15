@@ -14,6 +14,7 @@ const errorMessage = ref<ErrorMessage | null>(null)
 
 async function handleSearch(documentNumber: string) {
   errorMessage.value = null
+  entries.value = []
 
   if (!documentNumber) {
     errorMessage.value = {
@@ -32,9 +33,10 @@ async function handleSearch(documentNumber: string) {
         detail:
           "Die Suche hat keinen Treffer erzielt. Überprüfen Sie Ihre Eingaben.",
       }
-    } else {
-      entries.value = results
+      return
     }
+
+    entries.value = results
   } catch (error) {
     errorMessage.value = {
       title: "Fehler.",

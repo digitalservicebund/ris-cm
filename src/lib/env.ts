@@ -14,27 +14,27 @@ export type Env = {
 }
 
 let envCache: Promise<Env> | undefined
-export const getEnv: () => Promise<Env> = async () => {
-  if (envCache) {
-    return envCache
-  }
+export const getEnv: () => Promise<Env> = () => {
+  envCache ??= fetch("/config/env.json")
+    .then((response) => response.json())
+    .then((env) => {
+      if (!env.environment) {
+        throw new Error("Missing required config field: environment")
+      }
+      if (!env.portalBaseUrl) {
+        throw new Error("Missing required config field: portalBaseUrl")
+      }
+      if (!env.caselawSearchUrl) {
+        throw new Error("Missing required config field: caselawSearchUrl")
+      }
+      return env as Env
+    })
+    .catch((error) => {
+      envCache = undefined
+      throw error
+    })
 
-  const response = await fetch("/config/env.json")
-  const env = await response.json()
-
-  if (!env.environment) {
-    throw new Error("Missing required config field: environment")
-  }
-  if (!env.portalBaseUrl) {
-    throw new Error("Missing required config field: portalBaseUrl")
-  }
-  if (!env.caselawSearchUrl) {
-    throw new Error("Missing required config field: caselawSearchUrl")
-  }
-
-  envCache = env
-
-  return env
+  return envCache
 }
 
 export function useEnv() {

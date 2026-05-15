@@ -57,6 +57,7 @@ const props = defineProps<{
             as="a"
             :href="portalUrl(data.documentNumber)"
             target="_blank"
+            rel="noopener"
             severity="secondary"
             size="small"
           >
