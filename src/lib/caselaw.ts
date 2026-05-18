@@ -23,9 +23,14 @@ export async function searchCaselaw(
     { headers: auth.addAuthorizationHeader() },
   )
 
+  if (response.status === 404) {
+    return []
+  }
+
   if (!response.ok) {
     throw new Error(`Search failed: ${response.status}`)
   }
 
-  return response.json()
+  const result: CaselawDocument = await response.json()
+  return [result]
 }
