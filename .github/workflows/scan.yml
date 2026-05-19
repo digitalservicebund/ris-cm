@@ -32,7 +32,7 @@ jobs:
           exit-code: "1" # Fail the build!
       - name: Upload Trivy scan results to GitHub Security tab
         if: ${{ always() && github.ref == 'refs/heads/main' }} # Bypass non-zero exit code..
-        uses: github/codeql-action/upload-sarif@68bde559dea0fdcac2102bfdf6230c5f70eb485e
+        uses: github/codeql-action/upload-sarif@9e0d7b8d25671d64c341c19c0152d693099fb5ba
         with:
           sarif_file: "trivy-results.sarif"
       - name: Upload trivy-results.sarif as an artifact
