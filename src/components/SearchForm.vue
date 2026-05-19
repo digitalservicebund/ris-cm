@@ -40,7 +40,7 @@ const handleSearch = () => {
 </script>
 
 <template>
-  <div class="flex flex-col bg-blue-200">
+  <form class="flex flex-col bg-blue-200" @submit.prevent="handleSearch">
     <div class="m-24 ris-body1-bold">
       Welches Dokument wollen Sie zurückziehen? Wählen Sie die Dokumentart und
       geben Sie die Dokumentnummer ein, um das Dokument zu suchen.
@@ -99,7 +99,7 @@ const handleSearch = () => {
       </div>
     </div>
     <div class="m-24 flex flex-row justify-end">
-      <Button label="Suche starten" @click="handleSearch" />
+      <Button label="Suche starten" type="submit" />
     </div>
-  </div>
+  </form>
 </template>

@@ -106,6 +106,20 @@ test("emits search event with empty string when no document number is entered", 
   expect(emitted().search[0]).toEqual([""])
 })
 
+test("emits search event when pressing Enter in the document number input", async () => {
+  await router.push("/zurueckziehen/rechtsprechung")
+  const { emitted } = renderComponent()
+  const user = userEvent.setup()
+
+  await user.type(
+    screen.getByRole("textbox", { name: "Dokumentnummer" }),
+    "KORE500102022{Enter}",
+  )
+
+  expect(emitted().search).toBeDefined()
+  expect(emitted().search[0]).toEqual(["KORE500102022"])
+})
+
 test("prefilling the inputs with the values from the route", async () => {
   await router.push("/zurueckziehen/literatur?dokumentnummer=XXRE000714526")
 
