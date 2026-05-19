@@ -32,7 +32,11 @@ const documentNumber: ComputedRef<string | null> = computed({
   },
 })
 
-const handleSearch = () => {}
+const emit = defineEmits<{ search: [documentNumber: string] }>()
+
+const handleSearch = () => {
+  emit("search", documentNumber.value ?? "")
+}
 </script>
 
 <template>

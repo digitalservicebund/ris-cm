@@ -35,6 +35,8 @@ fileignoreconfig:
     ignore_detectors: [filename]
   - filename: src/lib/env.ts
     ignore_detectors: [filename]
+  - filename: src/lib/env.spec.ts
+    ignore_detectors: [filename]
   - filename: doc/adr/0004-environment-specific-configuration.md
     ignore_detectors: [filename]
 scopeconfig:
