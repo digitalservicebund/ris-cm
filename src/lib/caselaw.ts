@@ -103,3 +103,22 @@ export async function searchCaselaw(
     },
   ]
 }
+
+export async function withdrawDocument(documentNumber: string): Promise<void> {
+  const env = await getEnv()
+  const auth = useAuthentication()
+  await auth.tryRefresh()
+
+  const response = await fetch(env.caselawWithdrawUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...auth.addAuthorizationHeader(),
+    },
+    body: documentNumber,
+  })
+
+  if (!response.ok) {
+    throw new Error(`Withdraw failed: ${response.status}`)
+  }
+}

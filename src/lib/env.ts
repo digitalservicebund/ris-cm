@@ -10,6 +10,7 @@ export type Env = {
   environment: "local" | "staging" | "uat" | "production"
   portalBaseUrl: string
   caselawSearchUrl: string
+  caselawWithdrawUrl: string
   sentry?: BrowserOptions
 }
 
@@ -26,6 +27,9 @@ export const getEnv: () => Promise<Env> = () => {
       }
       if (!env.caselawSearchUrl) {
         throw new Error("Missing required config field: caselawSearchUrl")
+      }
+      if (!env.caselawWithdrawUrl) {
+        throw new Error("Missing required config field: caselawWithdrawUrl")
       }
       return env as Env
     })

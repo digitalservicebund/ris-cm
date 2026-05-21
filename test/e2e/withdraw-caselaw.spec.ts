@@ -2,6 +2,7 @@ import type { Page } from "@playwright/test"
 import { test, expect } from "@playwright/test"
 
 const CASELAW_SEARCH_URL = "http://localhost:9000/api/v1/search"
+const CASELAW_WITHDRAW_URL = "http://localhost:9000/api/v1/withdraw"
 const PORTAL_BASE_URL = "https://testphase.rechtsinformationen.bund.de"
 
 const mockDocument = {
@@ -29,6 +30,7 @@ async function mockEnv(page: Page): Promise<void> {
         environment: "local",
         portalBaseUrl: PORTAL_BASE_URL,
         caselawSearchUrl: CASELAW_SEARCH_URL,
+        caselawWithdrawUrl: CASELAW_WITHDRAW_URL,
       }),
     }),
   )
@@ -198,5 +200,123 @@ test.describe("Withdraw caselaw – search", () => {
     await expect(page.getByText("Urteil")).toBeVisible()
     await expect(page.getByText("IV ZR 123/23")).toBeVisible()
     await expect(page.getByText("Ja")).toBeVisible()
+  })
+})
+
+test.describe("Withdraw caselaw – withdraw action", () => {
+  test.beforeEach(async ({ page }) => {
+    await mockEnv(page)
+    await page.route(
+      `${CASELAW_SEARCH_URL}?document-number=KORE123456789`,
+      (route) =>
+        route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify(mockDocument),
+        }),
+    )
+    await page.route(`${PORTAL_BASE_URL}/v1/case-law/KORE123456789`, (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(mockPortalDocument),
+      }),
+    )
+  })
+
+  test("clicking Zurückziehen opens a confirmation dialog", async ({
+    page,
+  }) => {
+    await page.goto("/zurueckziehen/rechtsprechung")
+    await page
+      .getByRole("textbox", { name: "Dokumentnummer" })
+      .fill("KORE123456789")
+    await page.getByRole("button", { name: "Suche starten" }).click()
+    await expect(page.getByText("KORE123456789")).toBeVisible()
+
+    await page.getByRole("button", { name: "Zurückziehen" }).click()
+
+    await expect(
+      page.getByRole("alertdialog", { name: "Dokument zurückziehen" }),
+    ).toBeVisible()
+    await expect(
+      page.getByText(
+        "Sind Sie sicher, dass Sie dieses Dokument zurückziehen wollen?",
+      ),
+    ).toBeVisible()
+    await expect(
+      page.getByText(/Das Dokument wird aus dem Portal entfernt/),
+    ).toBeVisible()
+  })
+
+  test("clicking Abbrechen closes the dialog without withdrawing", async ({
+    page,
+  }) => {
+    await page.goto("/zurueckziehen/rechtsprechung")
+    await page
+      .getByRole("textbox", { name: "Dokumentnummer" })
+      .fill("KORE123456789")
+    await page.getByRole("button", { name: "Suche starten" }).click()
+    await expect(page.getByText("KORE123456789")).toBeVisible()
+
+    await page.getByRole("button", { name: "Zurückziehen" }).click()
+    await expect(
+      page.getByRole("alertdialog", { name: "Dokument zurückziehen" }),
+    ).toBeVisible()
+
+    await page.getByRole("button", { name: "Abbrechen" }).click()
+
+    await expect(
+      page.getByRole("alertdialog", { name: "Dokument zurückziehen" }),
+    ).not.toBeVisible()
+    await expect(page.getByText("KORE123456789")).toBeVisible()
+  })
+
+  test("confirming withdraw calls the withdraw endpoint and shows success message", async ({
+    page,
+  }) => {
+    await page.route(CASELAW_WITHDRAW_URL, (route) =>
+      route.fulfill({ status: 200 }),
+    )
+
+    await page.goto("/zurueckziehen/rechtsprechung")
+    await page
+      .getByRole("textbox", { name: "Dokumentnummer" })
+      .fill("KORE123456789")
+    await page.getByRole("button", { name: "Suche starten" }).click()
+    await expect(page.getByText("KORE123456789")).toBeVisible()
+
+    await page.getByRole("button", { name: "Zurückziehen" }).click()
+    await page.getByRole("button", { name: "Dokument zurückziehen" }).click()
+
+    await expect(page.getByRole("alert")).toContainText(
+      "Erfolgreich zurückgezogen.",
+    )
+    await expect(page.getByRole("alert")).toContainText(
+      "Das Dokument wurde erfolgreich aus dem Portal entfernt.",
+    )
+  })
+
+  test("confirming withdraw shows error message when endpoint fails", async ({
+    page,
+  }) => {
+    await page.route(CASELAW_WITHDRAW_URL, (route) =>
+      route.fulfill({ status: 500 }),
+    )
+
+    await page.goto("/zurueckziehen/rechtsprechung")
+    await page
+      .getByRole("textbox", { name: "Dokumentnummer" })
+      .fill("KORE123456789")
+    await page.getByRole("button", { name: "Suche starten" }).click()
+    await expect(page.getByText("KORE123456789")).toBeVisible()
+
+    await page.getByRole("button", { name: "Zurückziehen" }).click()
+    await page.getByRole("button", { name: "Dokument zurückziehen" }).click()
+
+    await expect(page.getByRole("alert")).toContainText("Fehler.")
+    await expect(page.getByRole("alert")).toContainText(
+      "Beim Zurückziehen des Dokuments ist ein Fehler aufgetreten",
+    )
   })
 })

@@ -6,6 +6,8 @@ import WithdrawCaselaw from "@/views/WithdrawCaselaw.vue"
 import { userEvent } from "@testing-library/user-event"
 import type { CaselawSearchResult } from "@/lib/caselaw"
 import type { useEnv } from "@/lib/env"
+import PrimeVue from "primevue/config"
+import ConfirmationService from "primevue/confirmationservice"
 
 vi.mock("@/lib/caselaw", () => ({
   searchCaselaw: vi
@@ -20,6 +22,7 @@ vi.mock("@/lib/caselaw", () => ({
         visibleInPortal: true,
       },
     ]),
+  withdrawDocument: vi.fn<() => Promise<void>>().mockResolvedValue(undefined),
 }))
 
 vi.mock("@/lib/env", () => ({
@@ -41,7 +44,7 @@ const router = createRouter({
 
 function renderComponent() {
   return render(WithdrawCaselaw, {
-    global: { plugins: [router] },
+    global: { plugins: [router, PrimeVue, ConfirmationService] },
   })
 }
 
@@ -134,6 +137,95 @@ describe("WithdrawCaselaw", () => {
       expect(
         screen.getByText(
           "Um die Suche starten zu können, müssen Sie eine Dokumentnummer eingeben.",
+        ),
+      ).toBeInTheDocument()
+    })
+  })
+
+  test("calls withdrawDocument when withdraw is confirmed", async () => {
+    const { withdrawDocument, searchCaselaw } = await import("@/lib/caselaw")
+    vi.mocked(searchCaselaw).mockClear()
+    const user = userEvent.setup()
+    renderComponent()
+
+    await user.type(
+      screen.getByRole("textbox", { name: "Dokumentnummer" }),
+      "KORE500102022",
+    )
+    await user.click(screen.getByRole("button", { name: "Suche starten" }))
+
+    await waitFor(() => {
+      expect(screen.getByText("KORE500102022")).toBeInTheDocument()
+    })
+
+    await user.click(screen.getByRole("button", { name: "Zurückziehen" }))
+    await user.click(
+      screen.getByRole("button", { name: "Dokument zurückziehen" }),
+    )
+
+    await waitFor(() => {
+      expect(withdrawDocument).toHaveBeenCalledWith("KORE500102022")
+    })
+  })
+
+  test("shows success message after successful withdraw", async () => {
+    const { searchCaselaw } = await import("@/lib/caselaw")
+    vi.mocked(searchCaselaw).mockClear()
+    const user = userEvent.setup()
+    renderComponent()
+
+    await user.type(
+      screen.getByRole("textbox", { name: "Dokumentnummer" }),
+      "KORE500102022",
+    )
+    await user.click(screen.getByRole("button", { name: "Suche starten" }))
+
+    await waitFor(() => {
+      expect(screen.getByText("KORE500102022")).toBeInTheDocument()
+    })
+
+    await user.click(screen.getByRole("button", { name: "Zurückziehen" }))
+    await user.click(
+      screen.getByRole("button", { name: "Dokument zurückziehen" }),
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText("Erfolgreich zurückgezogen.")).toBeInTheDocument()
+      expect(
+        screen.getByText(
+          "Das Dokument wurde erfolgreich aus dem Portal entfernt.",
+        ),
+      ).toBeInTheDocument()
+    })
+  })
+
+  test("shows error message when withdraw fails", async () => {
+    const { withdrawDocument, searchCaselaw } = await import("@/lib/caselaw")
+    vi.mocked(searchCaselaw).mockClear()
+    vi.mocked(withdrawDocument).mockRejectedValueOnce(new Error("500"))
+    const user = userEvent.setup()
+    renderComponent()
+
+    await user.type(
+      screen.getByRole("textbox", { name: "Dokumentnummer" }),
+      "KORE500102022",
+    )
+    await user.click(screen.getByRole("button", { name: "Suche starten" }))
+
+    await waitFor(() => {
+      expect(screen.getByText("KORE500102022")).toBeInTheDocument()
+    })
+
+    await user.click(screen.getByRole("button", { name: "Zurückziehen" }))
+    await user.click(
+      screen.getByRole("button", { name: "Dokument zurückziehen" }),
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText("Fehler.")).toBeInTheDocument()
+      expect(
+        screen.getByText(
+          /Beim Zurückziehen des Dokuments ist ein Fehler aufgetreten/,
         ),
       ).toBeInTheDocument()
     })

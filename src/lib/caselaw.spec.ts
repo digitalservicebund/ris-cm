@@ -1,5 +1,5 @@
 import { describe, test, expect, vi, beforeEach } from "vitest"
-import { searchCaselaw } from "@/lib/caselaw"
+import { searchCaselaw, withdrawDocument } from "@/lib/caselaw"
 import type { Env } from "@/lib/env"
 
 vi.mock("@/lib/env", () => ({
@@ -7,6 +7,7 @@ vi.mock("@/lib/env", () => ({
     environment: "local",
     portalBaseUrl: "https://portal.example.com",
     caselawSearchUrl: "https://example.com/api/v1/search",
+    caselawWithdrawUrl: "https://example.com/api/v1/withdraw",
   }),
 }))
 
@@ -139,6 +140,34 @@ describe("searchCaselaw", () => {
 
     await expect(searchCaselaw("KORE500102022")).rejects.toThrow(
       "Search failed (portal): 500",
+    )
+  })
+})
+
+describe("withdrawDocument", () => {
+  beforeEach(() => {
+    vi.stubGlobal("fetch", vi.fn())
+  })
+
+  test("POSTs to the withdraw URL with document number in body", async () => {
+    vi.mocked(fetch).mockResolvedValue({ ok: true, status: 200 } as Response)
+
+    await withdrawDocument("KORE500102022")
+
+    expect(fetch).toHaveBeenCalledWith(
+      "https://example.com/api/v1/withdraw",
+      expect.objectContaining({
+        method: "POST",
+        body: "KORE500102022",
+      }),
+    )
+  })
+
+  test("throws when response is not ok", async () => {
+    vi.mocked(fetch).mockResolvedValue({ ok: false, status: 500 } as Response)
+
+    await expect(withdrawDocument("KORE500102022")).rejects.toThrow(
+      "Withdraw failed: 500",
     )
   })
 })

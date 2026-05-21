@@ -22,6 +22,7 @@ const validEnv: Env = {
   environment: "local" as const,
   portalBaseUrl: "https://portal.example.com",
   caselawSearchUrl: "https://search.example.com",
+  caselawWithdrawUrl: "https://withdraw.example.com",
 }
 
 describe("getEnv", () => {
@@ -62,6 +63,18 @@ describe("getEnv", () => {
     const { getEnv } = await import("@/lib/env")
     await expect(getEnv()).rejects.toThrow(
       "Missing required config field: caselawSearchUrl",
+    )
+  })
+
+  test("throws when caselawWithdrawUrl field is missing", async () => {
+    mockFetch({
+      environment: "local",
+      portalBaseUrl: "https://portal.example.com",
+      caselawSearchUrl: "https://search.example.com",
+    })
+    const { getEnv } = await import("@/lib/env")
+    await expect(getEnv()).rejects.toThrow(
+      "Missing required config field: caselawWithdrawUrl",
     )
   })
 
