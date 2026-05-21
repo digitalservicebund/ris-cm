@@ -13,7 +13,7 @@ vi.mock("@/lib/env", () => ({
   }),
 }))
 
-const sampleEntries: CaselawDocument[] = [
+const sampleEntries: (CaselawDocument & { visibleInPortal: boolean })[] = [
   {
     documentNumber: "KORE123456789",
     court: "Bundesgerichtshof",

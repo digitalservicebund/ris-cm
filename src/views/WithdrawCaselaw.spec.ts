@@ -8,16 +8,18 @@ import type { CaselawDocument } from "@/lib/caselaw"
 import type { useEnv } from "@/lib/env"
 
 vi.mock("@/lib/caselaw", () => ({
-  searchCaselaw: vi.fn<() => Promise<CaselawDocument[]>>().mockResolvedValue([
-    {
-      documentNumber: "KORE500102022",
-      court: "BGH",
-      typ: "Urteil",
-      decisionDate: "2022-01-01",
-      fileNumber: "IX ZR 1/22",
-      visibleInPortal: true,
-    },
-  ]),
+  searchCaselaw: vi
+    .fn<() => Promise<(CaselawDocument & { visibleInPortal: boolean })[]>>()
+    .mockResolvedValue([
+      {
+        documentNumber: "KORE500102022",
+        court: "BGH",
+        typ: "Urteil",
+        decisionDate: "2022-01-01",
+        fileNumber: "IX ZR 1/22",
+        visibleInPortal: true,
+      },
+    ]),
 }))
 
 vi.mock("@/lib/env", () => ({

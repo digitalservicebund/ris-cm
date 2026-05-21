@@ -7,7 +7,7 @@ import ResultListCaselaw from "@/components/ResultListCaselaw.vue"
 import { type CaselawDocument, searchCaselaw } from "@/lib/caselaw"
 
 const route = useRoute()
-const entries = ref<CaselawDocument[]>([])
+const entries = ref<(CaselawDocument & { visibleInPortal: boolean })[]>([])
 
 type ErrorMessage = { title: string; detail: string }
 const errorMessage = ref<ErrorMessage | null>(null)
