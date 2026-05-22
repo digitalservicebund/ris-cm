@@ -34,7 +34,7 @@ async function fetchFromCaselawBackendApi(
   }
 
   if (!response.ok) {
-    throw new Error(`Search failed: ${response.status}`)
+    throw new Error(`Search failed (caselaw backend): ${response.status}`)
   }
 
   return response.json()
@@ -44,26 +44,26 @@ async function fetchFromPortalApi(
   documentNumber: string,
 ): Promise<CaselawDocument | null> {
   const env = await getEnv()
-  try {
-    const response = await fetch(
-      `${env.portalBaseUrl}/v1/case-law/${encodeURIComponent(documentNumber)}`,
-    )
+  const response = await fetch(
+    `${env.portalBaseUrl}/v1/case-law/${encodeURIComponent(documentNumber)}`,
+  )
 
-    if (!response.ok) {
-      return null
-    }
-
-    const result: PortalApiResponse = await response.json()
-
-    return {
-      documentNumber: result.documentNumber ?? documentNumber,
-      court: result.courtName ?? "",
-      typ: result.documentType ?? "",
-      decisionDate: result.decisionDate ?? "",
-      fileNumber: result.fileNumbers?.[0] ?? "",
-    }
-  } catch {
+  if (response.status === 404) {
     return null
+  }
+
+  if (!response.ok) {
+    throw new Error(`Search failed (portal): ${response.status}`)
+  }
+
+  const result: PortalApiResponse = await response.json()
+
+  return {
+    documentNumber: result.documentNumber ?? documentNumber,
+    court: result.courtName ?? "",
+    typ: result.documentType ?? "",
+    decisionDate: result.decisionDate ?? "",
+    fileNumber: result.fileNumbers?.[0] ?? "",
   }
 }
 
@@ -81,8 +81,10 @@ export async function searchCaselaw(
 
   return [
     {
-      ...caselawBackendResult!,
-      ...portalResult!, // trick typescript into not forgetting that at least one of the two results exists
+      ...({
+        ...caselawBackendResult,
+        ...portalResult,
+      } as CaselawDocument),
       visibleInPortal: portalResult != null,
     },
   ]

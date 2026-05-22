@@ -125,7 +125,20 @@ describe("searchCaselaw", () => {
     })
 
     await expect(searchCaselaw("KORE500102022")).rejects.toThrow(
-      "Search failed: 500",
+      "Search failed (caselaw backend): 500",
+    )
+  })
+
+  test("throws when portal response is not ok (non-404)", async () => {
+    vi.mocked(fetch).mockImplementation((url) => {
+      if (String(url).includes("portal.example.com")) {
+        return Promise.resolve({ ok: false, status: 500 } as Response)
+      }
+      return Promise.resolve({ ok: false, status: 404 } as Response)
+    })
+
+    await expect(searchCaselaw("KORE500102022")).rejects.toThrow(
+      "Search failed (portal): 500",
     )
   })
 })
