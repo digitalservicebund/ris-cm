@@ -5,7 +5,7 @@ import DataTable from "primevue/datatable"
 import IconOpenInNew from "~icons/ic/baseline-open-in-new"
 import IconVisibilityOff from "~icons/ic/baseline-visibility-off"
 import { useEnv } from "@/lib/env"
-import { CaselawDocument } from "@/lib/caselaw"
+import { CaselawSearchResult } from "@/lib/caselaw"
 
 const { env } = useEnv()
 
@@ -15,7 +15,7 @@ function portalUrl(documentNumber: string): string | undefined {
 }
 
 const props = defineProps<{
-  entries?: CaselawDocument[]
+  entries?: CaselawSearchResult[]
 }>()
 </script>
 

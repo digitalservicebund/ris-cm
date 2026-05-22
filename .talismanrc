@@ -39,6 +39,8 @@ fileignoreconfig:
     ignore_detectors: [filename]
   - filename: doc/adr/0004-environment-specific-configuration.md
     ignore_detectors: [filename]
+  - filename: src/vite-env.d.ts
+    ignore_detectors: [filename]
 scopeconfig:
   - scope: node
 allowed_patterns:

@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/vue"
 import { test, expect, vi } from "vitest"
 import ResultListCaselaw from "./ResultListCaselaw.vue"
 import { ref } from "vue"
-import type { CaselawDocument } from "@/lib/caselaw"
+import type { CaselawSearchResult } from "@/lib/caselaw"
 
 vi.mock("@/lib/env", () => ({
   useEnv: () => ({
@@ -13,7 +13,7 @@ vi.mock("@/lib/env", () => ({
   }),
 }))
 
-const sampleEntries: CaselawDocument[] = [
+const sampleEntries: CaselawSearchResult[] = [
   {
     documentNumber: "KORE123456789",
     court: "Bundesgerichtshof",
