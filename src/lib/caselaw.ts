@@ -26,46 +26,58 @@ async function fetchFromCaselawBackendApi(
   const auth = useAuthentication()
   await auth.tryRefresh()
 
-  const response = await fetch(
-    `${env.caselawSearchUrl}?document-number=${encodeURIComponent(documentNumber)}`,
-    { headers: auth.addAuthorizationHeader() },
-  )
+  try {
+    const response = await fetch(
+      `${env.caselawSearchUrl}?document-number=${encodeURIComponent(documentNumber)}`,
+      { headers: auth.addAuthorizationHeader() },
+    )
 
-  if (response.status === 404) {
-    return null
+    if (response.status === 404) {
+      return null
+    }
+
+    if (!response.ok) {
+      throw new Error(`Search failed (caselaw backend): ${response.status}`)
+    }
+
+    return response.json()
+  } catch (error) {
+    throw new Error(`Search failed (caselaw backend): ${error}`, {
+      cause: error,
+    })
   }
-
-  if (!response.ok) {
-    throw new Error(`Search failed (caselaw backend): ${response.status}`)
-  }
-
-  return response.json()
 }
 
 async function fetchFromPortalApi(
   documentNumber: string,
 ): Promise<CaselawDocument | null> {
   const env = await getEnv()
-  const response = await fetch(
-    `${env.portalBaseUrl}/v1/case-law/${encodeURIComponent(documentNumber)}`,
-  )
 
-  if (response.status === 404) {
-    return null
-  }
+  try {
+    const response = await fetch(
+      `${env.portalBaseUrl}/v1/case-law/${encodeURIComponent(documentNumber)}`,
+    )
+    if (response.status === 404) {
+      return null
+    }
 
-  if (!response.ok) {
-    throw new Error(`Search failed (portal): ${response.status}`)
-  }
+    if (!response.ok) {
+      throw new Error(`Search failed (portal): ${response.status}`)
+    }
 
-  const result: PortalApiResponse = await response.json()
+    const result: PortalApiResponse = await response.json()
 
-  return {
-    documentNumber: result.documentNumber ?? documentNumber,
-    court: result.courtName ?? "",
-    typ: result.documentType ?? "",
-    decisionDate: result.decisionDate ?? "",
-    fileNumber: result.fileNumbers?.[0] ?? "",
+    return {
+      documentNumber: result.documentNumber ?? documentNumber,
+      court: result.courtName ?? "",
+      typ: result.documentType ?? "",
+      decisionDate: result.decisionDate ?? "",
+      fileNumber: result.fileNumbers?.[0] ?? "",
+    }
+  } catch (error) {
+    throw new Error(`Search failed (caselaw backend): ${error}`, {
+      cause: error,
+    })
   }
 }
 
