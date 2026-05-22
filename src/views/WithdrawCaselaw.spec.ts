@@ -4,12 +4,12 @@ import { createRouter, createWebHistory } from "vue-router"
 import { describe, test, expect, vi, beforeEach } from "vitest"
 import WithdrawCaselaw from "@/views/WithdrawCaselaw.vue"
 import { userEvent } from "@testing-library/user-event"
-import type { CaselawDocument } from "@/lib/caselaw"
+import type { CaselawSearchResult } from "@/lib/caselaw"
 import type { useEnv } from "@/lib/env"
 
 vi.mock("@/lib/caselaw", () => ({
   searchCaselaw: vi
-    .fn<() => Promise<(CaselawDocument & { visibleInPortal: boolean })[]>>()
+    .fn<() => Promise<CaselawSearchResult[]>>()
     .mockResolvedValue([
       {
         documentNumber: "KORE500102022",

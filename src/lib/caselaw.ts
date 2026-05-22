@@ -1,7 +1,7 @@
 import { useAuthentication } from "@/lib/auth"
 import { getEnv } from "@/lib/env"
 
-export interface CaselawDocument {
+interface CaselawDocument {
   documentNumber: string
   court: string
   typ: string
@@ -16,6 +16,8 @@ interface PortalApiResponse {
   decisionDate?: string
   fileNumbers?: string[]
 }
+
+export type CaselawSearchResult = CaselawDocument & { visibleInPortal: boolean }
 
 async function fetchFromCaselawBackendApi(
   documentNumber: string,
@@ -69,7 +71,7 @@ async function fetchFromPortalApi(
 
 export async function searchCaselaw(
   documentNumber: string,
-): Promise<(CaselawDocument & { visibleInPortal: boolean })[]> {
+): Promise<CaselawSearchResult[]> {
   const [caselawBackendResult, portalResult] = await Promise.all([
     fetchFromCaselawBackendApi(documentNumber),
     fetchFromPortalApi(documentNumber),
