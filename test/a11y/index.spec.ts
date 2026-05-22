@@ -1,24 +1,19 @@
 import { test } from "@playwright/test"
-import type { Browser, Page } from "playwright"
-import { chromium } from "playwright"
 import { injectAxe, checkA11y } from "axe-playwright"
 
-let browser: Browser
-let page: Page
-
 test.describe("basic a11y test (index page)", () => {
-  test.beforeAll(async () => {
-    browser = await chromium.launch()
-    page = await browser.newPage()
+  test.beforeEach(async ({ page }) => {
     await page.goto("/")
     await injectAxe(page)
   })
 
-  test("simple accessibility run", async () => {
+  test("simple accessibility run", async ({ page }) => {
     await checkA11y(page)
   })
 
-  test("check a11y for the whole page and axe run options", async () => {
+  test("check a11y for the whole page and axe run options", async ({
+    page,
+  }) => {
     await checkA11y(page, undefined, {
       axeOptions: {
         runOnly: {
@@ -27,9 +22,5 @@ test.describe("basic a11y test (index page)", () => {
         },
       },
     })
-  })
-
-  test.afterAll(async () => {
-    await browser.close()
   })
 })
