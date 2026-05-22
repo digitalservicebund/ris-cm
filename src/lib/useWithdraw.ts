@@ -59,6 +59,8 @@ export function useWithdraw<T>({ search, withdraw }: UseWithdrawOptions<T>) {
         title: "Erfolgreich zurückgezogen.",
         detail: "Das Dokument wurde erfolgreich aus dem Portal entfernt.",
       }
+
+      entries.value = await search(documentNumber)
     } catch (error) {
       statusMessage.value = {
         severity: "error",

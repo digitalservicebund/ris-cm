@@ -99,6 +99,8 @@ describe("useWithdraw", () => {
       expect(statusMessage.value?.detail).toBe(
         "Das Dokument wurde erfolgreich aus dem Portal entfernt.",
       )
+
+      expect(mockSearch).toHaveBeenCalledTimes(1)
     })
 
     test("shows error message when withdraw throws", async () => {
