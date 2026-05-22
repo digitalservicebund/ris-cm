@@ -112,7 +112,7 @@ export async function withdrawDocument(documentNumber: string): Promise<void> {
   const response = await fetch(env.caselawWithdrawUrl, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "text/plain",
       ...auth.addAuthorizationHeader(),
     },
     body: documentNumber,
