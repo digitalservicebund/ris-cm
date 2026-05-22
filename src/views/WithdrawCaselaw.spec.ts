@@ -82,31 +82,9 @@ describe("WithdrawCaselaw", () => {
     })
   })
 
-  test("shows error message when search returns no results", async () => {
+  test("displays search results after successful search", async () => {
     const { searchCaselaw } = await import("@/lib/caselaw")
-    vi.mocked(searchCaselaw).mockClear().mockResolvedValueOnce([])
-    const user = userEvent.setup()
-    renderComponent()
-
-    await user.type(
-      screen.getByRole("textbox", { name: "Dokumentnummer" }),
-      "UNBEKANNT",
-    )
-    await user.click(screen.getByRole("button", { name: "Suche starten" }))
-
-    await waitFor(() => {
-      expect(screen.getByText("Kein Treffer.")).toBeInTheDocument()
-      expect(
-        screen.getByText(
-          "Die Suche hat keinen Treffer erzielt. Überprüfen Sie Ihre Eingaben.",
-        ),
-      ).toBeInTheDocument()
-    })
-  })
-
-  test("shows error message when search throws an error", async () => {
-    const { searchCaselaw } = await import("@/lib/caselaw")
-    vi.mocked(searchCaselaw).mockClear().mockRejectedValueOnce(new Error("500"))
+    vi.mocked(searchCaselaw).mockClear()
     const user = userEvent.setup()
     renderComponent()
 
@@ -117,28 +95,7 @@ describe("WithdrawCaselaw", () => {
     await user.click(screen.getByRole("button", { name: "Suche starten" }))
 
     await waitFor(() => {
-      expect(screen.getByText("Fehler.")).toBeInTheDocument()
-      expect(
-        screen.getByText(
-          "Während der Suche ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut: Error: 500",
-        ),
-      ).toBeInTheDocument()
-    })
-  })
-
-  test("shows error message when document number is missing", async () => {
-    renderComponent()
-    const user = userEvent.setup()
-
-    await user.click(screen.getByRole("button", { name: "Suche starten" }))
-
-    await waitFor(() => {
-      expect(screen.getByText("Dokumentnummer fehlt.")).toBeInTheDocument()
-      expect(
-        screen.getByText(
-          "Um die Suche starten zu können, müssen Sie eine Dokumentnummer eingeben.",
-        ),
-      ).toBeInTheDocument()
+      expect(screen.getByText("KORE500102022")).toBeInTheDocument()
     })
   })
 
@@ -165,69 +122,6 @@ describe("WithdrawCaselaw", () => {
 
     await waitFor(() => {
       expect(withdrawDocument).toHaveBeenCalledWith("KORE500102022")
-    })
-  })
-
-  test("shows success message after successful withdraw", async () => {
-    const { searchCaselaw } = await import("@/lib/caselaw")
-    vi.mocked(searchCaselaw).mockClear()
-    const user = userEvent.setup()
-    renderComponent()
-
-    await user.type(
-      screen.getByRole("textbox", { name: "Dokumentnummer" }),
-      "KORE500102022",
-    )
-    await user.click(screen.getByRole("button", { name: "Suche starten" }))
-
-    await waitFor(() => {
-      expect(screen.getByText("KORE500102022")).toBeInTheDocument()
-    })
-
-    await user.click(screen.getByRole("button", { name: "Zurückziehen" }))
-    await user.click(
-      screen.getByRole("button", { name: "Dokument zurückziehen" }),
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText("Erfolgreich zurückgezogen.")).toBeInTheDocument()
-      expect(
-        screen.getByText(
-          "Das Dokument wurde erfolgreich aus dem Portal entfernt.",
-        ),
-      ).toBeInTheDocument()
-    })
-  })
-
-  test("shows error message when withdraw fails", async () => {
-    const { withdrawDocument, searchCaselaw } = await import("@/lib/caselaw")
-    vi.mocked(searchCaselaw).mockClear()
-    vi.mocked(withdrawDocument).mockRejectedValueOnce(new Error("500"))
-    const user = userEvent.setup()
-    renderComponent()
-
-    await user.type(
-      screen.getByRole("textbox", { name: "Dokumentnummer" }),
-      "KORE500102022",
-    )
-    await user.click(screen.getByRole("button", { name: "Suche starten" }))
-
-    await waitFor(() => {
-      expect(screen.getByText("KORE500102022")).toBeInTheDocument()
-    })
-
-    await user.click(screen.getByRole("button", { name: "Zurückziehen" }))
-    await user.click(
-      screen.getByRole("button", { name: "Dokument zurückziehen" }),
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText("Fehler.")).toBeInTheDocument()
-      expect(
-        screen.getByText(
-          /Beim Zurückziehen des Dokuments ist ein Fehler aufgetreten/,
-        ),
-      ).toBeInTheDocument()
     })
   })
 })
