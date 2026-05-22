@@ -25,6 +25,7 @@ onMounted(() => {
 
 <template>
   <div class="flex flex-col m-24 gap-8">
+    <h1 class="sr-only">Zurückziehen</h1>
     <Message v-if="statusMessage" :severity="statusMessage.severity">
       <p class="ris-body1-bold">{{ statusMessage.title }}</p>
       {{ statusMessage.detail }}

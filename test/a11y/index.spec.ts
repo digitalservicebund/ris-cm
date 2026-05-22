@@ -6,7 +6,7 @@ import { injectAxe, checkA11y } from "axe-playwright"
 let browser: Browser
 let page: Page
 
-test.describe("basic example a11y test", () => {
+test.describe("basic a11y test (index page)", () => {
   test.beforeAll(async () => {
     browser = await chromium.launch()
     page = await browser.newPage()
@@ -14,14 +14,10 @@ test.describe("basic example a11y test", () => {
     await injectAxe(page)
   })
 
-  // eslint-disable-next-line playwright/expect-expect
-  test.skip()
   test("simple accessibility run", async () => {
     await checkA11y(page)
   })
 
-  // eslint-disable-next-line playwright/expect-expect
-  test.skip()
   test("check a11y for the whole page and axe run options", async () => {
     await checkA11y(page, undefined, {
       axeOptions: {
