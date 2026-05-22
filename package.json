@@ -44,7 +44,7 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/user-event": "^14.6.1",
     "@testing-library/vue": "^8.1.0",
-    "@types/node": "^25.9.0",
+    "@types/node": "^25.9.1",
     "@vitejs/plugin-vue": "^6.0.7",
     "@vitest/coverage-istanbul": "^4.1.6",
     "@vitest/ui": "^4.0.18",
@@ -52,9 +52,9 @@
     "axe-playwright": "^2.2.2",
     "jsdom": "^29.1.1",
     "license-checker-rseidelsohn": "^4.4.2",
-    "oxlint": "^1.65.0",
+    "oxlint": "^1.66.0",
     "playwright": "^1.58.2",
-    "postcss": "^8.5.12",
+    "postcss": "^8.5.15",
     "prettier": "3.8.3",
     "prettier-plugin-sh": "^0.18.1",
     "tailwindcss": "^4.2.1",
@@ -63,7 +63,7 @@
     "unplugin-icons": "^23.0.1",
     "vite": "^8.0.13",
     "vitest": "^4.0.18",
-    "vue-tsc": "^3.3.0"
+    "vue-tsc": "^3.3.1"
   },
   "engines": {
     "node": "24.11.1",
