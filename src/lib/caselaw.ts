@@ -96,8 +96,8 @@ export async function searchCaselaw(
   return [
     {
       ...({
-        ...caselawBackendResult,
         ...portalResult,
+        ...caselawBackendResult,
       } as CaselawDocument),
       visibleInPortal: portalResult != null,
     },
