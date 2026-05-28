@@ -5,11 +5,11 @@ import IconFile from "~icons/ic/baseline-insert-drive-file"
 </script>
 
 <template>
-  <ConfirmDialog group="withdraw">
+  <ConfirmDialog group="withdraw" class="max-w-[37rem]">
     <template #message="{ message }">
-      <div class="flex flex-col gap-4">
+      <div>
         <p>Sind Sie sicher, dass Sie dieses Dokument zurückziehen wollen?</p>
-        <Chip :label="message.message">
+        <Chip class="w-fit my-4" :label="message.message">
           <template #icon>
             <IconFile />
           </template>
