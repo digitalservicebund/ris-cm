@@ -19,6 +19,7 @@ function portalUrl(documentNumber: string): string | undefined {
 
 const props = defineProps<{
   entries?: CaselawSearchResult[]
+  readonly?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -61,6 +62,7 @@ function confirmWithdraw(documentNumber: string) {
       <template #body="{ data }">
         <div class="flex flex-row justify-end gap-8">
           <Button
+            v-if="!props.readonly"
             v-tooltip.bottom="'Aus Portal entfernen'"
             aria-label="Zurückziehen"
             label="Zurückziehen"

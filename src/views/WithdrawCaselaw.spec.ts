@@ -22,7 +22,12 @@ vi.mock("@/lib/caselaw", () => ({
         visibleInPortal: true,
       },
     ]),
-  withdrawDocument: vi.fn<() => Promise<void>>().mockResolvedValue(undefined),
+  withdrawDocument: vi
+    .fn<() => Promise<{ status: string; documentNumber: string }>>()
+    .mockResolvedValue({
+      status: "WITHDRAWN",
+      documentNumber: "KORE500102022",
+    }),
 }))
 
 vi.mock("@/lib/env", () => ({
@@ -38,6 +43,11 @@ const router = createRouter({
       path: "/zurueckziehen/rechtsprechung",
       name: "withdraw-caselaw",
       component: WithdrawCaselaw,
+    },
+    {
+      path: "/zurueckziehen/rechtsprechung/ergebnis",
+      name: "withdraw-caselaw-result",
+      component: { template: "<div>Result</div>" },
     },
   ],
 })
@@ -122,6 +132,65 @@ describe("WithdrawCaselaw", () => {
 
     await waitFor(() => {
       expect(withdrawDocument).toHaveBeenCalledWith("KORE500102022")
+    })
+  })
+
+  test("navigates to result page with withdrawResult in history state after successful withdraw", async () => {
+    const { searchCaselaw } = await import("@/lib/caselaw")
+    vi.mocked(searchCaselaw).mockClear()
+    const user = userEvent.setup()
+    renderComponent()
+
+    await user.type(
+      screen.getByRole("textbox", { name: "Dokumentnummer" }),
+      "KORE500102022",
+    )
+    await user.click(screen.getByRole("button", { name: "Suche starten" }))
+    await waitFor(() =>
+      expect(screen.getByText("KORE500102022")).toBeInTheDocument(),
+    )
+
+    await user.click(screen.getByRole("button", { name: "Zurückziehen" }))
+    await user.click(
+      screen.getByRole("button", { name: "Dokument zurückziehen" }),
+    )
+
+    await waitFor(() => {
+      expect(router.currentRoute.value.name).toBe("withdraw-caselaw-result")
+      const state = globalThis.history.state as { withdrawResult?: string }
+      const parsed = state.withdrawResult
+        ? JSON.parse(state.withdrawResult)
+        : null
+      expect(parsed?.status).toBe("WITHDRAWN")
+      expect(parsed?.documentNumber).toBe("KORE500102022")
+    })
+  })
+
+  test("navigates to result page with withdrawError flag when withdraw fails", async () => {
+    const { withdrawDocument, searchCaselaw } = await import("@/lib/caselaw")
+    vi.mocked(searchCaselaw).mockClear()
+    vi.mocked(withdrawDocument).mockRejectedValueOnce(new Error("500"))
+    const user = userEvent.setup()
+    renderComponent()
+
+    await user.type(
+      screen.getByRole("textbox", { name: "Dokumentnummer" }),
+      "KORE500102022",
+    )
+    await user.click(screen.getByRole("button", { name: "Suche starten" }))
+    await waitFor(() =>
+      expect(screen.getByText("KORE500102022")).toBeInTheDocument(),
+    )
+
+    await user.click(screen.getByRole("button", { name: "Zurückziehen" }))
+    await user.click(
+      screen.getByRole("button", { name: "Dokument zurückziehen" }),
+    )
+
+    await waitFor(() => {
+      expect(router.currentRoute.value.name).toBe("withdraw-caselaw-result")
+      const state = globalThis.history.state as { withdrawError?: boolean }
+      expect(state.withdrawError).toBe(true)
     })
   })
 })

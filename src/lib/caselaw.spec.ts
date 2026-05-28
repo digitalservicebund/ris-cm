@@ -150,9 +150,17 @@ describe("withdrawDocument", () => {
   })
 
   test("POSTs to the withdraw URL with document number in body", async () => {
-    vi.mocked(fetch).mockResolvedValue({ ok: true, status: 200 } as Response)
+    vi.mocked(fetch).mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: () =>
+        Promise.resolve({
+          status: "WITHDRAWN",
+          documentNumber: "KORE500102022",
+        }),
+    } as unknown as Response)
 
-    await withdrawDocument("KORE500102022")
+    const result = await withdrawDocument("KORE500102022")
 
     expect(fetch).toHaveBeenCalledWith(
       "https://example.com/api/v1/withdraw",
@@ -161,6 +169,8 @@ describe("withdrawDocument", () => {
         body: "KORE500102022",
       }),
     )
+    expect(result.status).toEqual("WITHDRAWN")
+    expect(result.documentNumber).toEqual("KORE500102022")
   })
 
   test("throws when response is not ok", async () => {

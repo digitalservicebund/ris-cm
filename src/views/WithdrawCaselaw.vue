@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { onMounted } from "vue"
-import { useRoute } from "vue-router"
+import { onMounted, watch } from "vue"
+import { useRoute, useRouter } from "vue-router"
 import Message from "primevue/message"
 import SearchForm from "@/components/SearchForm.vue"
 import ResultListCaselaw from "@/components/ResultListCaselaw.vue"
@@ -8,10 +8,36 @@ import { searchCaselaw, withdrawDocument } from "@/lib/caselaw"
 import { useWithdraw } from "@/lib/useWithdraw"
 
 const route = useRoute()
+const router = useRouter()
 
-const { entries, statusMessage, handleSearch, handleWithdraw } = useWithdraw({
+const {
+  entries,
+  searchStatusMessage,
+  withdrawResult,
+  withdrawError,
+  handleSearch,
+  handleWithdraw,
+} = useWithdraw({
   search: searchCaselaw,
   withdraw: withdrawDocument,
+})
+
+function navigateToResult(result: typeof withdrawResult.value) {
+  router.push({
+    name: "withdraw-caselaw-result",
+    state: {
+      withdrawResult: result ? JSON.stringify(result) : null,
+      withdrawError: withdrawError.value,
+    },
+  })
+}
+
+watch(withdrawResult, (result) => {
+  if (result) navigateToResult(result)
+})
+
+watch(withdrawError, (hasError) => {
+  if (hasError) navigateToResult(null)
 })
 
 onMounted(() => {
@@ -26,9 +52,12 @@ onMounted(() => {
 <template>
   <div class="flex flex-col m-24 gap-8">
     <h1 class="sr-only">Zurückziehen</h1>
-    <Message v-if="statusMessage" :severity="statusMessage.severity">
-      <p class="ris-body1-bold">{{ statusMessage.title }}</p>
-      {{ statusMessage.detail }}
+    <Message
+      v-if="searchStatusMessage"
+      :severity="searchStatusMessage.severity"
+    >
+      <p class="ris-body1-bold">{{ searchStatusMessage.title }}</p>
+      {{ searchStatusMessage.detail }}
     </Message>
     <SearchForm @search="handleSearch"></SearchForm>
     <ResultListCaselaw

@@ -272,51 +272,159 @@ test.describe("Withdraw caselaw – withdraw action", () => {
     await expect(page.getByText("KORE123456789")).toBeVisible()
   })
 
-  test("confirming withdraw calls the withdraw endpoint and shows success message", async ({
+  test("confirming withdraw calls the withdraw endpoint and shows success message on WITHDRAWN status", async ({
     page,
   }) => {
     await page.route(CASELAW_WITHDRAW_URL, (route) =>
-      route.fulfill({ status: 200 }),
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          status: "WITHDRAWN",
+          documentNumber: "KORE123456789",
+        }),
+      }),
     )
 
-    await page.goto("/zurueckziehen/rechtsprechung")
-    await page
-      .getByRole("textbox", { name: "Dokumentnummer" })
-      .fill("KORE123456789")
-    await page.getByRole("button", { name: "Suche starten" }).click()
-    await expect(page.getByText("KORE123456789")).toBeVisible()
-
+    await page.goto(
+      "/zurueckziehen/rechtsprechung?dokumentnummer=KORE123456789",
+    )
     await page.getByRole("button", { name: "Zurückziehen" }).click()
     await page.getByRole("button", { name: "Dokument zurückziehen" }).click()
 
     await expect(page.getByRole("alert")).toContainText(
       "Erfolgreich zurückgezogen.",
     )
+    await expect(page.getByText("KORE123456789")).toBeVisible()
+    await expect(page.getByRole("button", { name: "Startseite" })).toBeVisible()
+    await expect(page.getByRole("button", { name: "Zurück" })).not.toBeVisible()
+
+    await page.getByRole("button", { name: "Startseite" }).click()
+
+    await expect(page).toHaveURL(/\/zurueckziehen\/rechtsprechung$/)
+    await expect(
+      page.getByRole("textbox", { name: "Dokumentnummer" }),
+    ).toBeVisible()
+  })
+
+  test("withdraw shows success message on NOT_FOUND_IN_DATABASE_BUT_WITHDRAWN_FROM_BUCKET status", async ({
+    page,
+  }) => {
+    await page.route(CASELAW_WITHDRAW_URL, (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          status: "NOT_FOUND_IN_DATABASE_BUT_WITHDRAWN_FROM_BUCKET",
+          documentNumber: "KORE123456789",
+        }),
+      }),
+    )
+    await page.goto(
+      "/zurueckziehen/rechtsprechung?dokumentnummer=KORE123456789",
+    )
+    await page.getByRole("button", { name: "Zurückziehen" }).click()
+    await page.getByRole("button", { name: "Dokument zurückziehen" }).click()
+
     await expect(page.getByRole("alert")).toContainText(
-      "Das Dokument wurde erfolgreich aus dem Portal entfernt.",
+      "Erfolgreich zurückgezogen.",
+    )
+    await expect(page.getByText("KORE123456789")).toBeVisible()
+    await expect(page.getByRole("button", { name: "Startseite" })).toBeVisible()
+    await expect(page.getByRole("button", { name: "Zurück" })).not.toBeVisible()
+  })
+
+  test("withdraw shows info message on NOT_PUBLISHED status", async ({
+    page,
+  }) => {
+    await page.route(CASELAW_WITHDRAW_URL, (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          status: "NOT_PUBLISHED",
+          documentNumber: "KORE123456789",
+        }),
+      }),
+    )
+    await page.goto(
+      "/zurueckziehen/rechtsprechung?dokumentnummer=KORE123456789",
+    )
+    await page.getByRole("button", { name: "Zurückziehen" }).click()
+    await page.getByRole("button", { name: "Dokument zurückziehen" }).click()
+
+    await expect(page.getByRole("alert")).toContainText("Nicht veröffentlicht")
+    await expect(page.getByRole("alert")).toContainText(
+      "Das Dokument ist aktuell bereits nicht im Portal sichtbar.",
+    )
+    await expect(
+      page.getByText("Folgendes Dokument konnte nicht zurückgezogen werden:"),
+    ).toBeVisible()
+    await expect(page.getByText("KORE123456789")).toBeVisible()
+    await expect(page.getByRole("button", { name: "Zurück" })).toBeVisible()
+    await expect(
+      page.getByRole("button", { name: "Startseite" }),
+    ).not.toBeVisible()
+
+    await page.getByRole("button", { name: "Zurück" }).click()
+
+    await expect(page).toHaveURL(
+      /\/zurueckziehen\/rechtsprechung\?dokumentnummer=KORE123456789$/,
     )
   })
 
-  test("confirming withdraw shows error message when endpoint fails", async ({
-    page,
-  }) => {
+  test("withdraw shows info message on NOT_FOUND status", async ({ page }) => {
+    await page.route(CASELAW_WITHDRAW_URL, (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          status: "NOT_FOUND",
+          documentNumber: "KORE123456789",
+        }),
+      }),
+    )
+
+    await page.goto(
+      "/zurueckziehen/rechtsprechung?dokumentnummer=KORE123456789",
+    )
+    await page.getByRole("button", { name: "Zurückziehen" }).click()
+    await page.getByRole("button", { name: "Dokument zurückziehen" }).click()
+
+    await expect(page.getByRole("alert")).toContainText("Nicht gefunden")
+    await expect(page.getByRole("alert")).toContainText(
+      "Das Dokument konnte nicht gefunden werden.",
+    )
+    await expect(page.getByRole("button", { name: "Zurück" })).toBeVisible()
+  })
+
+  test("withdraw shows error message on 500 error", async ({ page }) => {
     await page.route(CASELAW_WITHDRAW_URL, (route) =>
       route.fulfill({ status: 500 }),
     )
 
-    await page.goto("/zurueckziehen/rechtsprechung")
-    await page
-      .getByRole("textbox", { name: "Dokumentnummer" })
-      .fill("KORE123456789")
-    await page.getByRole("button", { name: "Suche starten" }).click()
-    await expect(page.getByText("KORE123456789")).toBeVisible()
-
+    await page.goto(
+      "/zurueckziehen/rechtsprechung?dokumentnummer=KORE123456789",
+    )
     await page.getByRole("button", { name: "Zurückziehen" }).click()
     await page.getByRole("button", { name: "Dokument zurückziehen" }).click()
 
-    await expect(page.getByRole("alert")).toContainText("Fehler.")
     await expect(page.getByRole("alert")).toContainText(
-      "Beim Zurückziehen des Dokuments ist ein Fehler aufgetreten",
+      "Zurückziehen nicht erfolgreich.",
     )
+    await expect(page.getByRole("alert")).toContainText(
+      "Das Dokument konnte nicht aus dem Portal entfernt werden.",
+    )
+    await expect(page.getByRole("button", { name: "Zurück" })).toBeVisible()
+  })
+
+  test("result page is not reachable by direct URL navigation", async ({
+    page,
+  }) => {
+    await page.goto("/zurueckziehen/rechtsprechung/ergebnis")
+
+    // Should be redirected away from the result page since there's no state
+    await expect(page).toHaveURL(/\/zurueckziehen/)
+    await expect(page).not.toHaveURL(/ergebnis/)
   })
 })

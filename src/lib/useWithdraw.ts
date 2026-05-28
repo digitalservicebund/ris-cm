@@ -1,26 +1,39 @@
 import { ref } from "vue"
 
+export type WithdrawStatus =
+  | "WITHDRAWN"
+  | "NOT_FOUND_IN_DATABASE_BUT_WITHDRAWN_FROM_BUCKET"
+  | "NOT_PUBLISHED"
+  | "NOT_FOUND"
+
+export interface WithdrawResult {
+  status: WithdrawStatus
+  documentNumber: string
+}
+
 export type StatusMessage = {
   title: string
   detail: string
-  severity: "error" | "success"
+  severity: "error" | "success" | "info" | "warning"
 }
 
 export interface UseWithdrawOptions<T> {
   search: (query: string) => Promise<T[]>
-  withdraw: (documentNumber: string) => Promise<void>
+  withdraw: (documentNumber: string) => Promise<WithdrawResult>
 }
 
 export function useWithdraw<T>({ search, withdraw }: UseWithdrawOptions<T>) {
   const entries = ref<T[]>([])
-  const statusMessage = ref<StatusMessage | null>(null)
+  const searchStatusMessage = ref<StatusMessage | null>(null)
+  const withdrawResult = ref<WithdrawResult | null>(null)
+  const withdrawError = ref(false)
 
   async function handleSearch(query: string) {
-    statusMessage.value = null
+    searchStatusMessage.value = null
     entries.value = []
 
     if (!query) {
-      statusMessage.value = {
+      searchStatusMessage.value = {
         severity: "error",
         title: "Dokumentnummer fehlt.",
         detail:
@@ -32,7 +45,7 @@ export function useWithdraw<T>({ search, withdraw }: UseWithdrawOptions<T>) {
     try {
       const results = await search(query)
       if (results.length === 0) {
-        statusMessage.value = {
+        searchStatusMessage.value = {
           severity: "error",
           title: "Kein Treffer.",
           detail:
@@ -43,7 +56,7 @@ export function useWithdraw<T>({ search, withdraw }: UseWithdrawOptions<T>) {
 
       entries.value = results
     } catch (error) {
-      statusMessage.value = {
+      searchStatusMessage.value = {
         severity: "error",
         title: "Fehler.",
         detail: `Während der Suche ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut: ${error}`,
@@ -52,23 +65,22 @@ export function useWithdraw<T>({ search, withdraw }: UseWithdrawOptions<T>) {
   }
 
   async function handleWithdraw(documentNumber: string) {
+    withdrawError.value = false
+    withdrawResult.value = null
     try {
-      await withdraw(documentNumber)
-      statusMessage.value = {
-        severity: "success",
-        title: "Erfolgreich zurückgezogen.",
-        detail: "Das Dokument wurde erfolgreich aus dem Portal entfernt.",
-      }
-
-      entries.value = await search(documentNumber)
+      withdrawResult.value = await withdraw(documentNumber)
     } catch (error) {
-      statusMessage.value = {
-        severity: "error",
-        title: "Fehler.",
-        detail: `Beim Zurückziehen des Dokuments ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut: ${error}`,
-      }
+      console.error("Error during withdraw", error)
+      withdrawError.value = true
     }
   }
 
-  return { entries, statusMessage, handleSearch, handleWithdraw }
+  return {
+    entries,
+    searchStatusMessage,
+    withdrawResult,
+    withdrawError,
+    handleSearch,
+    handleWithdraw,
+  }
 }
