@@ -151,7 +151,7 @@ test("erzeugt withdraw-Event beim Bestätigen des Dialogs", async () => {
   )
 
   expect(emitted("withdraw")).toBeTruthy()
-  expect(emitted("withdraw")![0]).toEqual(["KORE123456789"])
+  expect(emitted("withdraw")[0]).toEqual(["KORE123456789"])
 })
 
 test("schließt Dialog ohne Aktion beim Klick auf Abbrechen", async () => {
