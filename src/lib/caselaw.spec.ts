@@ -78,15 +78,7 @@ describe("searchCaselaw", () => {
     expect(results[0].visibleInPortal).toBe(false)
   })
 
-  test("uses fields from portal when search result is missing them", async () => {
-    const partialSearchResult = {
-      documentNumber: "KORE500102022",
-      court: "",
-      typ: "",
-      decisionDate: "",
-      fileNumber: "",
-      visibleInPortal: false,
-    }
+  test("uses fields from portal when search result is missing", async () => {
     vi.mocked(fetch).mockImplementation((url) => {
       if (String(url).includes("portal.example.com")) {
         return Promise.resolve({
@@ -95,11 +87,7 @@ describe("searchCaselaw", () => {
           json: () => Promise.resolve(portalResult),
         } as Response)
       }
-      return Promise.resolve({
-        ok: true,
-        status: 200,
-        json: () => Promise.resolve(partialSearchResult),
-      } as Response)
+      return Promise.resolve({ ok: false, status: 404 } as Response)
     })
 
     const results = await searchCaselaw("KORE500102022")
