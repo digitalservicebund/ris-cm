@@ -3,9 +3,8 @@ import { computed, ref, watch, onMounted } from "vue"
 import { useRouter } from "vue-router"
 import Message from "primevue/message"
 import Button from "primevue/button"
-import { getCurrentScope } from "@sentry/vue"
 import ResultListCaselaw from "@/components/ResultListCaselaw.vue"
-import type { WithdrawResult } from "@/lib/useWithdraw"
+import type { WithdrawError, WithdrawResult } from "@/lib/useWithdraw"
 import type { CaselawSearchResult } from "@/lib/caselaw"
 import { searchCaselaw } from "@/lib/caselaw"
 import IconArrowBack from "~icons/ic/baseline-arrow-back"
@@ -15,12 +14,16 @@ const router = useRouter()
 
 const state = globalThis.history.state as {
   withdrawResult?: string
-  withdrawError?: boolean
+  withdrawError?: string
 }
 
 const withdrawResult = computed<WithdrawResult | null>(() => {
   if (!state.withdrawResult) return null
   return JSON.parse(state.withdrawResult) as WithdrawResult
+})
+const withdrawError = computed<WithdrawError | null>(() => {
+  if (!state.withdrawError) return null
+  return JSON.parse(state.withdrawError) as WithdrawError
 })
 
 const entries = ref<CaselawSearchResult[]>([])
@@ -46,14 +49,6 @@ watch(
 onMounted(() => {
   if (!state.withdrawResult && !state.withdrawError) {
     router.replace({ name: "withdraw" })
-  }
-})
-
-const sentryTraceId = computed<string>(() => {
-  try {
-    return getCurrentScope().getPropagationContext().traceId ?? ""
-  } catch {
-    return ""
   }
 })
 
@@ -90,7 +85,7 @@ const statusMessage = computed<{
       return {
         severity: "error",
         title: "Zurückziehen nicht erfolgreich.",
-        detail: `Das Dokument konnte nicht aus dem Portal entfernt werden. Trace-ID: ${sentryTraceId.value}`,
+        detail: `Das Dokument konnte nicht aus dem Portal entfernt werden: ${withdrawError.value?.detail}`,
       }
   }
 })

@@ -20,12 +20,6 @@ vi.mock("@/lib/env", () => ({
     .mockReturnValue({ env: ref(undefined) }),
 }))
 
-vi.mock("@sentry/vue", () => ({
-  getCurrentScope: () => ({
-    getPropagationContext: () => ({ traceId: "test-trace-id-123" }),
-  }),
-}))
-
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -79,7 +73,12 @@ describe("WithdrawCaselawResult", () => {
     })
 
     test("does not redirect when withdrawError is set", async () => {
-      renderWithState({ withdrawError: true })
+      renderWithState({
+        withdrawError: JSON.stringify({
+          error: true,
+          detail: "Error during publishing",
+        }),
+      })
 
       expect(router.currentRoute.value.name).toBe("withdraw-caselaw-result")
     })
@@ -230,13 +229,21 @@ describe("WithdrawCaselawResult", () => {
   test("shows error message and does not call searchCaselaw when only withdrawError is set", async () => {
     vi.mocked(searchCaselaw).mockClear()
     renderWithState({
-      withdrawError: true,
+      withdrawError: JSON.stringify({
+        error: true,
+        detail: "Withdraw Error",
+      }),
       withdrawResult: null,
     })
 
     expect(router.currentRoute.value.name).toBe("withdraw-caselaw-result")
     expect(
       screen.getByText("Zurückziehen nicht erfolgreich."),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        "Das Dokument konnte nicht aus dem Portal entfernt werden: Withdraw Error",
+      ),
     ).toBeInTheDocument()
 
     expect(

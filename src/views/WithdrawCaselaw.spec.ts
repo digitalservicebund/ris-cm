@@ -169,7 +169,10 @@ describe("WithdrawCaselaw", () => {
   test("navigates to result page with withdrawError flag when withdraw fails", async () => {
     const { withdrawDocument, searchCaselaw } = await import("@/lib/caselaw")
     vi.mocked(searchCaselaw).mockClear()
-    vi.mocked(withdrawDocument).mockRejectedValueOnce(new Error("500"))
+    vi.mocked(withdrawDocument).mockResolvedValueOnce({
+      error: true,
+      detail: "Fehler vom Server.",
+    })
     const user = userEvent.setup()
     renderComponent()
 
@@ -189,8 +192,10 @@ describe("WithdrawCaselaw", () => {
 
     await waitFor(() => {
       expect(router.currentRoute.value.name).toBe("withdraw-caselaw-result")
-      const state = globalThis.history.state as { withdrawError?: boolean }
-      expect(state.withdrawError).toBe(true)
+      const state = globalThis.history.state as { withdrawError?: string }
+      expect(state.withdrawError).toBe(
+        JSON.stringify({ error: true, detail: "Fehler vom Server." }),
+      )
     })
   })
 })

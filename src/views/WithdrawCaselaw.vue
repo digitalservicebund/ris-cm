@@ -22,22 +22,25 @@ const {
   withdraw: withdrawDocument,
 })
 
-function navigateToResult(result: typeof withdrawResult.value) {
+function navigateToResult(
+  result: typeof withdrawResult.value,
+  error: typeof withdrawError.value,
+) {
   router.push({
     name: "withdraw-caselaw-result",
     state: {
       withdrawResult: result ? JSON.stringify(result) : null,
-      withdrawError: withdrawError.value,
+      withdrawError: error ? JSON.stringify(error) : null,
     },
   })
 }
 
 watch(withdrawResult, (result) => {
-  if (result) navigateToResult(result)
+  if (result) navigateToResult(result, withdrawError.value)
 })
 
-watch(withdrawError, (hasError) => {
-  if (hasError) navigateToResult(null)
+watch(withdrawError, (error) => {
+  if (error) navigateToResult(withdrawResult.value, error)
 })
 
 onMounted(() => {

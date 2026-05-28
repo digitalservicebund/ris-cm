@@ -1,6 +1,7 @@
 import { describe, test, expect, vi, beforeEach } from "vitest"
 import { searchCaselaw, withdrawDocument } from "@/lib/caselaw"
 import type { Env } from "@/lib/env"
+import type { WithdrawResult } from "@/lib/useWithdraw"
 
 vi.mock("@/lib/env", () => ({
   getEnv: vi.fn<() => Promise<Env>>().mockResolvedValue({
@@ -160,7 +161,7 @@ describe("withdrawDocument", () => {
         }),
     } as unknown as Response)
 
-    const result = await withdrawDocument("KORE500102022")
+    const result = (await withdrawDocument("KORE500102022")) as WithdrawResult
 
     expect(fetch).toHaveBeenCalledWith(
       "https://example.com/api/v1/withdraw",
@@ -173,11 +174,33 @@ describe("withdrawDocument", () => {
     expect(result.documentNumber).toEqual("KORE500102022")
   })
 
-  test("throws when response is not ok", async () => {
-    vi.mocked(fetch).mockResolvedValue({ ok: false, status: 500 } as Response)
+  test("returns WithdrawError when response is not ok", async () => {
+    vi.mocked(fetch).mockResolvedValue({
+      ok: false,
+      status: 500,
+      json: () => Promise.resolve({}),
+    } as unknown as Response)
 
-    await expect(withdrawDocument("KORE500102022")).rejects.toThrow(
-      "Withdraw failed: 500",
-    )
+    const result = await withdrawDocument("KORE500102022")
+    expect(result).toEqual({ error: true })
+  })
+
+  test("returns WithdrawError with RFC-9457 detail when response body contains detail", async () => {
+    vi.mocked(fetch).mockResolvedValue({
+      ok: false,
+      status: 500,
+      json: () =>
+        Promise.resolve({
+          status: 500,
+          detail: "Withdraw error.",
+        }),
+    } as unknown as Response)
+
+    const result = await withdrawDocument("KORE500102022")
+    expect(result).toEqual({
+      error: true,
+      detail: "Withdraw error.",
+      status: 500,
+    })
   })
 })

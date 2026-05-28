@@ -11,6 +11,13 @@ export interface WithdrawResult {
   documentNumber: string
 }
 
+export interface WithdrawError {
+  error: true
+  status?: number
+  title?: string
+  detail?: string
+}
+
 export type StatusMessage = {
   title: string
   detail: string
@@ -19,14 +26,14 @@ export type StatusMessage = {
 
 export interface UseWithdrawOptions<T> {
   search: (query: string) => Promise<T[]>
-  withdraw: (documentNumber: string) => Promise<WithdrawResult>
+  withdraw: (documentNumber: string) => Promise<WithdrawResult | WithdrawError>
 }
 
 export function useWithdraw<T>({ search, withdraw }: UseWithdrawOptions<T>) {
   const entries = ref<T[]>([])
   const searchStatusMessage = ref<StatusMessage | null>(null)
   const withdrawResult = ref<WithdrawResult | null>(null)
-  const withdrawError = ref(false)
+  const withdrawError = ref<WithdrawError | null>(null)
 
   async function handleSearch(query: string) {
     searchStatusMessage.value = null
@@ -65,13 +72,16 @@ export function useWithdraw<T>({ search, withdraw }: UseWithdrawOptions<T>) {
   }
 
   async function handleWithdraw(documentNumber: string) {
-    withdrawError.value = false
+    withdrawError.value = null
     withdrawResult.value = null
-    try {
-      withdrawResult.value = await withdraw(documentNumber)
-    } catch (error) {
-      console.error("Error during withdraw", error)
-      withdrawError.value = true
+
+    const result = await withdraw(documentNumber)
+
+    if ("error" in result) {
+      console.error("Error during withdraw", result)
+      withdrawError.value = result
+    } else {
+      withdrawResult.value = result
     }
   }
 

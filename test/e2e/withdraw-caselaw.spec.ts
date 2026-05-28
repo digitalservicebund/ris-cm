@@ -400,7 +400,13 @@ test.describe("Withdraw caselaw – withdraw action", () => {
 
   test("withdraw shows error message on 500 error", async ({ page }) => {
     await page.route(CASELAW_WITHDRAW_URL, (route) =>
-      route.fulfill({ status: 500 }),
+      route.fulfill({
+        status: 500,
+        contentType: "application/problem+json",
+        body: JSON.stringify({
+          detail: "Internal Server Error",
+        }),
+      }),
     )
 
     await page.goto(
@@ -413,7 +419,7 @@ test.describe("Withdraw caselaw – withdraw action", () => {
       "Zurückziehen nicht erfolgreich.",
     )
     await expect(page.getByRole("alert")).toContainText(
-      "Das Dokument konnte nicht aus dem Portal entfernt werden.",
+      "Das Dokument konnte nicht aus dem Portal entfernt werden: Internal Server Error",
     )
     await expect(page.getByRole("button", { name: "Zurück" })).toBeVisible()
   })
