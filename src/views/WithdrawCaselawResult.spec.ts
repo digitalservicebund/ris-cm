@@ -64,7 +64,7 @@ describe("WithdrawCaselawResult", () => {
   })
 
   describe("redirect behavior", () => {
-    test("redirects to 'withdraw' when neither withdrawResult nor withdrawError is in state", async () => {
+    test("redirects to 'withdraw' when no withdrawResult is in state", async () => {
       renderWithState({})
 
       await waitFor(() =>
@@ -72,10 +72,11 @@ describe("WithdrawCaselawResult", () => {
       )
     })
 
-    test("does not redirect when withdrawError is set", async () => {
+    test("does not redirect when withdrawResult is set", async () => {
       renderWithState({
-        withdrawError: JSON.stringify({
-          error: true,
+        withdrawResult: JSON.stringify({
+          status: "ERROR",
+          documentNumber: "KORE500102022",
           detail: "Error during publishing",
         }),
       })
@@ -226,14 +227,13 @@ describe("WithdrawCaselawResult", () => {
     })
   })
 
-  test("shows error message and does not call searchCaselaw when only withdrawError is set", async () => {
-    vi.mocked(searchCaselaw).mockClear()
+  test("shows error message when withdrawResult has ERROR status", async () => {
     renderWithState({
-      withdrawError: JSON.stringify({
-        error: true,
+      withdrawResult: JSON.stringify({
+        status: "ERROR",
+        documentNumber: "KORE500102022",
         detail: "Withdraw Error",
       }),
-      withdrawResult: null,
     })
 
     expect(router.currentRoute.value.name).toBe("withdraw-caselaw-result")
@@ -249,7 +249,6 @@ describe("WithdrawCaselawResult", () => {
     expect(
       screen.queryByText("Erfolgreich zurückgezogen."),
     ).not.toBeInTheDocument()
-    expect(vi.mocked(searchCaselaw)).not.toHaveBeenCalled()
   })
 
   test("Zurück button calls router.back()", async () => {

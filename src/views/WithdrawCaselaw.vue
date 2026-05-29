@@ -14,7 +14,6 @@ const {
   entries,
   searchStatusMessage,
   withdrawResult,
-  withdrawError,
   handleSearch,
   handleWithdraw,
 } = useWithdraw({
@@ -22,25 +21,17 @@ const {
   withdraw: withdrawDocument,
 })
 
-function navigateToResult(
-  result: typeof withdrawResult.value,
-  error: typeof withdrawError.value,
-) {
+function navigateToResult(result: typeof withdrawResult.value) {
   router.push({
     name: "withdraw-caselaw-result",
     state: {
       withdrawResult: result ? JSON.stringify(result) : null,
-      withdrawError: error ? JSON.stringify(error) : null,
     },
   })
 }
 
 watch(withdrawResult, (result) => {
-  if (result) navigateToResult(result, withdrawError.value)
-})
-
-watch(withdrawError, (error) => {
-  if (error) navigateToResult(withdrawResult.value, error)
+  if (result) navigateToResult(result)
 })
 
 onMounted(() => {

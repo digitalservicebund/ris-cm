@@ -1,6 +1,6 @@
 import { describe, test, expect, vi, beforeEach } from "vitest"
 import { useWithdraw } from "@/lib/useWithdraw"
-import type { WithdrawResult, WithdrawError } from "@/lib/useWithdraw"
+import type { WithdrawResult } from "@/lib/useWithdraw"
 
 interface TestDocument {
   documentNumber: string
@@ -9,7 +9,7 @@ interface TestDocument {
 
 const mockSearch = vi.fn<(documentNumber: string) => Promise<TestDocument[]>>()
 const mockWithdraw =
-  vi.fn<(documentNumber: string) => Promise<WithdrawResult | WithdrawError>>()
+  vi.fn<(documentNumber: string) => Promise<WithdrawResult>>()
 
 function createComposable() {
   return useWithdraw({ search: mockSearch, withdraw: mockWithdraw })
@@ -88,17 +88,19 @@ describe("useWithdraw", () => {
   })
 
   describe("handleWithdraw", () => {
-    test("sets withdrawError when withdraw returns a WithdrawError", async () => {
+    test("sets withdrawResult with ERROR status when withdraw returns an error result", async () => {
       mockWithdraw.mockResolvedValueOnce({
-        error: true,
+        status: "ERROR",
+        documentNumber: "DOC-1",
         detail: "Withdraw error.",
       })
-      const { withdrawError, handleWithdraw } = createComposable()
+      const { withdrawResult, handleWithdraw } = createComposable()
 
       await handleWithdraw("DOC-1")
 
-      expect(withdrawError.value).toStrictEqual({
-        error: true,
+      expect(withdrawResult.value).toStrictEqual({
+        status: "ERROR",
+        documentNumber: "DOC-1",
         detail: "Withdraw error.",
       })
       expect(mockSearch).not.toHaveBeenCalled()

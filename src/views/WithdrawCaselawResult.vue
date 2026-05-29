@@ -4,7 +4,7 @@ import { useRouter } from "vue-router"
 import Message from "primevue/message"
 import Button from "primevue/button"
 import ResultListCaselaw from "@/components/ResultListCaselaw.vue"
-import type { WithdrawError, WithdrawResult } from "@/lib/useWithdraw"
+import type { WithdrawResult } from "@/lib/useWithdraw"
 import type { CaselawSearchResult } from "@/lib/caselaw"
 import { searchCaselaw } from "@/lib/caselaw"
 import IconArrowBack from "~icons/ic/baseline-arrow-back"
@@ -14,22 +14,14 @@ const router = useRouter()
 
 const state = globalThis.history.state as {
   withdrawResult?: string
-  withdrawError?: string
 }
 
 const withdrawResult = computed<WithdrawResult | null>(() => {
   if (!state.withdrawResult) return null
   return JSON.parse(state.withdrawResult) as WithdrawResult
 })
-const withdrawError = computed<WithdrawError | null>(() => {
-  if (!state.withdrawError) return null
-  return JSON.parse(state.withdrawError) as WithdrawError
-})
 
-const documentNumber = computed(
-  () =>
-    withdrawResult.value?.documentNumber ?? withdrawError.value?.documentNumber,
-)
+const documentNumber = computed(() => withdrawResult.value?.documentNumber)
 
 const entries = ref<CaselawSearchResult[]>([])
 const searchError = ref<string | null>(null)
@@ -52,7 +44,7 @@ watch(
 )
 
 onMounted(() => {
-  if (!state.withdrawResult && !state.withdrawError) {
+  if (!state.withdrawResult) {
     router.replace({ name: "withdraw" })
   }
 })
@@ -66,7 +58,8 @@ const statusMessage = computed<{
   title: string
   detail: string
 } | null>(() => {
-  switch (status.value) {
+  const result = withdrawResult.value
+  switch (result?.status) {
     case "WITHDRAWN":
     case "NOT_FOUND_IN_DATABASE_BUT_WITHDRAWN_FROM_BUCKET":
       return {
@@ -86,11 +79,17 @@ const statusMessage = computed<{
         title: "Nicht gefunden",
         detail: "Das Dokument konnte nicht gefunden werden.",
       }
-    default:
+    case "ERROR":
       return {
         severity: "error",
         title: "Zurückziehen nicht erfolgreich.",
-        detail: `Das Dokument konnte nicht aus dem Portal entfernt werden: ${withdrawError.value?.detail}`,
+        detail: `Das Dokument konnte nicht aus dem Portal entfernt werden: ${result.detail}`,
+      }
+    default:
+      return {
+        severity: "error",
+        title: "Zurückziehen vermutlich nicht erfolgreich.",
+        detail: `Es ist etwas unerwartetes passiert.`,
       }
   }
 })

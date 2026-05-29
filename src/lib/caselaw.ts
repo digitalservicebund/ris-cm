@@ -1,6 +1,6 @@
 import { useAuthentication } from "@/lib/auth"
 import { getEnv } from "@/lib/env"
-import type { WithdrawResult, WithdrawError } from "@/lib/useWithdraw"
+import type { WithdrawResult } from "@/lib/useWithdraw"
 
 interface CaselawDocument {
   documentNumber: string
@@ -107,7 +107,7 @@ export async function searchCaselaw(
 
 export async function withdrawDocument(
   documentNumber: string,
-): Promise<WithdrawResult | WithdrawError> {
+): Promise<WithdrawResult> {
   const env = await getEnv()
   const auth = useAuthentication()
   await auth.tryRefresh()
@@ -122,11 +122,12 @@ export async function withdrawDocument(
   })
 
   if (!response.ok) {
+    const body = await response.json()
     return {
-      error: true,
+      status: "ERROR",
       documentNumber: documentNumber,
-      ...(await response.json()),
-    } as WithdrawError
+      detail: body.detail,
+    }
   }
 
   return (await response.json()) as WithdrawResult

@@ -162,18 +162,7 @@ describe("withdrawDocument", () => {
     expect(result.documentNumber).toEqual("KORE500102022")
   })
 
-  test("returns WithdrawError when response is not ok", async () => {
-    vi.mocked(fetch).mockResolvedValue({
-      ok: false,
-      status: 500,
-      json: () => Promise.resolve({}),
-    } as unknown as Response)
-
-    const result = await withdrawDocument("KORE500102022")
-    expect(result).toEqual({ error: true })
-  })
-
-  test("returns WithdrawError with RFC-9457 detail when response body contains detail", async () => {
+  test("returns WithdrawResult with ERROR status and RFC-9457 detail when an error happens", async () => {
     vi.mocked(fetch).mockResolvedValue({
       ok: false,
       status: 500,
@@ -186,9 +175,9 @@ describe("withdrawDocument", () => {
 
     const result = await withdrawDocument("KORE500102022")
     expect(result).toEqual({
-      error: true,
+      status: "ERROR",
+      documentNumber: "KORE500102022",
       detail: "Withdraw error.",
-      status: 500,
     })
   })
 })
