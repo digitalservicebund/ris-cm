@@ -124,6 +124,7 @@ export async function withdrawDocument(
   if (!response.ok) {
     return {
       error: true,
+      documentNumber: documentNumber,
       ...(await response.json()),
     } as WithdrawError
   }

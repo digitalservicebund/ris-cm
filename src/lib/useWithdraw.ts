@@ -16,6 +16,7 @@ export interface WithdrawError {
   status?: number
   title?: string
   detail?: string
+  documentNumber: string
 }
 
 export type StatusMessage = {

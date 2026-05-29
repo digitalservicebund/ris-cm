@@ -26,19 +26,24 @@ const withdrawError = computed<WithdrawError | null>(() => {
   return JSON.parse(state.withdrawError) as WithdrawError
 })
 
+const documentNumber = computed(
+  () =>
+    withdrawResult.value?.documentNumber ?? withdrawError.value?.documentNumber,
+)
+
 const entries = ref<CaselawSearchResult[]>([])
 const searchError = ref<string | null>(null)
 
 watch(
-  withdrawResult,
-  async (result) => {
-    if (result?.documentNumber) {
+  documentNumber,
+  async (value) => {
+    entries.value = []
+    if (value) {
       try {
-        entries.value = await searchCaselaw(result.documentNumber)
+        entries.value = await searchCaselaw(value)
         searchError.value = null
       } catch (error) {
         console.error("Error during search of withdrawn document", error)
-        entries.value = []
         searchError.value = `${error}`
       }
     }
@@ -112,8 +117,7 @@ function goBack() {
     >
       <h2 class="font-bold">Folgendes Dokument wurde zurückgezogen:</h2>
       <p v-if="entries.length === 0">
-        Das Dokument {{ withdrawResult?.documentNumber }} konnte nicht gefunden
-        werden.
+        Das Dokument {{ documentNumber }} konnte nicht gefunden werden.
         <template v-if="searchError"> {{ searchError }}</template>
       </p>
       <ResultListCaselaw v-else :entries="entries" readonly />
@@ -143,8 +147,7 @@ function goBack() {
         Folgendes Dokument konnte nicht zurückgezogen werden:
       </h2>
       <p v-if="entries.length === 0">
-        Das Dokument {{ withdrawResult?.documentNumber }} konnte nicht gefunden
-        werden.
+        Das Dokument {{ documentNumber }} konnte nicht gefunden werden.
         <template v-if="searchError"> {{ searchError }}</template>
       </p>
       <ResultListCaselaw v-else :entries="entries" readonly />
