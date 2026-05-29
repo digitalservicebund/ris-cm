@@ -112,23 +112,31 @@ export async function withdrawDocument(
   const auth = useAuthentication()
   await auth.tryRefresh()
 
-  const response = await fetch(env.caselawWithdrawUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "text/plain",
-      ...auth.addAuthorizationHeader(),
-    },
-    body: documentNumber,
-  })
+  try {
+    const response = await fetch(env.caselawWithdrawUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain",
+        ...auth.addAuthorizationHeader(),
+      },
+      body: documentNumber,
+    })
 
-  if (!response.ok) {
-    const body = await response.json()
+    if (!response.ok) {
+      const body = await response.json()
+      return {
+        status: "ERROR",
+        documentNumber,
+        detail: body.detail,
+      }
+    }
+
+    return (await response.json()) as WithdrawResult
+  } catch (error) {
     return {
       status: "ERROR",
-      documentNumber: documentNumber,
-      detail: body.detail,
+      documentNumber,
+      detail: error instanceof Error ? error.message : error?.toString(),
     }
   }
-
-  return (await response.json()) as WithdrawResult
 }
