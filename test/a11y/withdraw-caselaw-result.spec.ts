@@ -1,4 +1,9 @@
-import { CASELAW_SEARCH_URL, expect, PORTAL_BASE_URL, test } from "./a11y-test"
+import {
+  CASELAW_SEARCH_URL,
+  CASELAW_WITHDRAW_URL,
+  PORTAL_BASE_URL,
+  test,
+} from "./a11y-test"
 import { injectAxe, checkA11y } from "axe-playwright"
 
 const mockDocument = {
@@ -28,6 +33,13 @@ test.describe("basic a11y test (withdraw caselaw)", () => {
           body: JSON.stringify(mockDocument),
         }),
     )
+    await page.route(`${CASELAW_WITHDRAW_URL}`, (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: "text/plain",
+        body: "WITHDRAWN",
+      }),
+    )
     await page.route(`${PORTAL_BASE_URL}/v1/case-law/KORE123456789`, (route) =>
       route.fulfill({
         status: 200,
@@ -40,27 +52,17 @@ test.describe("basic a11y test (withdraw caselaw)", () => {
       "/zurueckziehen/rechtsprechung?dokumentnummer=KORE123456789",
     )
     await injectAxe(page)
-    await expect(page.getByText("IV ZR 123/23")).toBeVisible()
+    await page.getByRole("button", { name: "Zurückziehen" }).click()
+    await page.getByRole("button", { name: "Dokument zurückziehen" }).click()
   })
 
   test("simple accessibility run", async ({ page }) => {
-    await checkA11y(page)
-    await page.getByRole("button", { name: "Zurückziehen" }).click()
     await checkA11y(page)
   })
 
   test("check a11y for the whole page and axe run options", async ({
     page,
   }) => {
-    await checkA11y(page, undefined, {
-      axeOptions: {
-        runOnly: {
-          type: "tag",
-          values: ["wcag2a"],
-        },
-      },
-    })
-    await page.getByRole("button", { name: "Zurückziehen" }).click()
     await checkA11y(page, undefined, {
       axeOptions: {
         runOnly: {

@@ -1,4 +1,4 @@
-import { test } from "@playwright/test"
+import { test } from "./a11y-test"
 import { injectAxe, checkA11y } from "axe-playwright"
 
 test.describe("basic a11y test (index page)", () => {

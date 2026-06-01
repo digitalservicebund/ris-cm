@@ -58,7 +58,7 @@ function confirmWithdraw(documentNumber: string) {
         {{ data.visibleInPortal ? "Ja" : "Nein" }}
       </template>
     </Column>
-    <Column header="" class="text-right">
+    <Column header="Aktionen" header-class="sr-only" class="text-right">
       <template #body="{ data }">
         <div class="flex flex-row justify-end gap-8">
           <Button
