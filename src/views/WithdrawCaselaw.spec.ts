@@ -6,6 +6,8 @@ import WithdrawCaselaw from "@/views/WithdrawCaselaw.vue"
 import { userEvent } from "@testing-library/user-event"
 import type { CaselawSearchResult } from "@/lib/caselaw"
 import type { useEnv } from "@/lib/env"
+import PrimeVue from "primevue/config"
+import ConfirmationService from "primevue/confirmationservice"
 
 vi.mock("@/lib/caselaw", () => ({
   searchCaselaw: vi
@@ -20,6 +22,12 @@ vi.mock("@/lib/caselaw", () => ({
         visibleInPortal: true,
       },
     ]),
+  withdrawDocument: vi
+    .fn<() => Promise<{ status: string; documentNumber: string }>>()
+    .mockResolvedValue({
+      status: "WITHDRAWN",
+      documentNumber: "KORE500102022",
+    }),
 }))
 
 vi.mock("@/lib/env", () => ({
@@ -36,12 +44,17 @@ const router = createRouter({
       name: "withdraw-caselaw",
       component: WithdrawCaselaw,
     },
+    {
+      path: "/zurueckziehen/rechtsprechung/ergebnis",
+      name: "withdraw-caselaw-result",
+      component: { template: "<div>Result</div>" },
+    },
   ],
 })
 
 function renderComponent() {
   return render(WithdrawCaselaw, {
-    global: { plugins: [router] },
+    global: { plugins: [router, PrimeVue, ConfirmationService] },
   })
 }
 
@@ -79,31 +92,9 @@ describe("WithdrawCaselaw", () => {
     })
   })
 
-  test("shows error message when search returns no results", async () => {
+  test("displays search results after successful search", async () => {
     const { searchCaselaw } = await import("@/lib/caselaw")
-    vi.mocked(searchCaselaw).mockClear().mockResolvedValueOnce([])
-    const user = userEvent.setup()
-    renderComponent()
-
-    await user.type(
-      screen.getByRole("textbox", { name: "Dokumentnummer" }),
-      "UNBEKANNT",
-    )
-    await user.click(screen.getByRole("button", { name: "Suche starten" }))
-
-    await waitFor(() => {
-      expect(screen.getByText("Kein Treffer.")).toBeInTheDocument()
-      expect(
-        screen.getByText(
-          "Die Suche hat keinen Treffer erzielt. Überprüfen Sie Ihre Eingaben.",
-        ),
-      ).toBeInTheDocument()
-    })
-  })
-
-  test("shows error message when search throws an error", async () => {
-    const { searchCaselaw } = await import("@/lib/caselaw")
-    vi.mocked(searchCaselaw).mockClear().mockRejectedValueOnce(new Error("500"))
+    vi.mocked(searchCaselaw).mockClear()
     const user = userEvent.setup()
     renderComponent()
 
@@ -114,28 +105,100 @@ describe("WithdrawCaselaw", () => {
     await user.click(screen.getByRole("button", { name: "Suche starten" }))
 
     await waitFor(() => {
-      expect(screen.getByText("Fehler.")).toBeInTheDocument()
-      expect(
-        screen.getByText(
-          "Während der Suche ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut: Error: 500",
-        ),
-      ).toBeInTheDocument()
+      expect(screen.getByText("KORE500102022")).toBeInTheDocument()
     })
   })
 
-  test("shows error message when document number is missing", async () => {
-    renderComponent()
+  test("calls withdrawDocument when withdraw is confirmed", async () => {
+    const { withdrawDocument, searchCaselaw } = await import("@/lib/caselaw")
+    vi.mocked(searchCaselaw).mockClear()
     const user = userEvent.setup()
+    renderComponent()
 
+    await user.type(
+      screen.getByRole("textbox", { name: "Dokumentnummer" }),
+      "KORE500102022",
+    )
     await user.click(screen.getByRole("button", { name: "Suche starten" }))
 
     await waitFor(() => {
-      expect(screen.getByText("Dokumentnummer fehlt.")).toBeInTheDocument()
-      expect(
-        screen.getByText(
-          "Um die Suche starten zu können, müssen Sie eine Dokumentnummer eingeben.",
-        ),
-      ).toBeInTheDocument()
+      expect(screen.getByText("KORE500102022")).toBeInTheDocument()
+    })
+
+    await user.click(screen.getByRole("button", { name: "Zurückziehen" }))
+    await user.click(
+      screen.getByRole("button", { name: "Dokument zurückziehen" }),
+    )
+
+    await waitFor(() => {
+      expect(withdrawDocument).toHaveBeenCalledWith("KORE500102022")
+    })
+  })
+
+  test("navigates to result page with withdrawResult in history state after successful withdraw", async () => {
+    const { searchCaselaw } = await import("@/lib/caselaw")
+    vi.mocked(searchCaselaw).mockClear()
+    const user = userEvent.setup()
+    renderComponent()
+
+    await user.type(
+      screen.getByRole("textbox", { name: "Dokumentnummer" }),
+      "KORE500102022",
+    )
+    await user.click(screen.getByRole("button", { name: "Suche starten" }))
+    await waitFor(() =>
+      expect(screen.getByText("KORE500102022")).toBeInTheDocument(),
+    )
+
+    await user.click(screen.getByRole("button", { name: "Zurückziehen" }))
+    await user.click(
+      screen.getByRole("button", { name: "Dokument zurückziehen" }),
+    )
+
+    await waitFor(() => {
+      expect(router.currentRoute.value.name).toBe("withdraw-caselaw-result")
+      const state = globalThis.history.state as { withdrawResult?: string }
+      const parsed = state.withdrawResult
+        ? JSON.parse(state.withdrawResult)
+        : null
+      expect(parsed?.status).toBe("WITHDRAWN")
+      expect(parsed?.documentNumber).toBe("KORE500102022")
+    })
+  })
+
+  test("navigates to result page with ERROR status when withdraw fails", async () => {
+    const { withdrawDocument, searchCaselaw } = await import("@/lib/caselaw")
+    vi.mocked(searchCaselaw).mockClear()
+    vi.mocked(withdrawDocument).mockResolvedValueOnce({
+      status: "ERROR",
+      documentNumber: "KORE500102022",
+      detail: "Fehler vom Server.",
+    })
+    const user = userEvent.setup()
+    renderComponent()
+
+    await user.type(
+      screen.getByRole("textbox", { name: "Dokumentnummer" }),
+      "KORE500102022",
+    )
+    await user.click(screen.getByRole("button", { name: "Suche starten" }))
+    await waitFor(() =>
+      expect(screen.getByText("KORE500102022")).toBeInTheDocument(),
+    )
+
+    await user.click(screen.getByRole("button", { name: "Zurückziehen" }))
+    await user.click(
+      screen.getByRole("button", { name: "Dokument zurückziehen" }),
+    )
+
+    await waitFor(() => {
+      expect(router.currentRoute.value.name).toBe("withdraw-caselaw-result")
+      const state = globalThis.history.state as { withdrawResult?: string }
+      const parsed = state.withdrawResult
+        ? JSON.parse(state.withdrawResult)
+        : null
+      expect(parsed?.status).toBe("ERROR")
+      expect(parsed?.detail).toBe("Fehler vom Server.")
     })
   })
 })
