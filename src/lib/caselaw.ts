@@ -18,7 +18,12 @@ interface PortalApiResponse {
   fileNumbers?: string[]
 }
 
-export type CaselawSearchResult = CaselawDocument & { visibleInPortal: boolean }
+export type CaselawSearchResult = CaselawDocument & {
+  /**
+   * Could the document be found using the portal api?
+   */
+  visibleInPortal: boolean
+}
 
 async function fetchFromCaselawBackendApi(
   documentNumber: string,

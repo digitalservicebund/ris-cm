@@ -1,4 +1,13 @@
 <script lang="ts" setup generic="T">
+/**
+ * Component showing the result of a withdraw action.
+ *
+ * This component should be used on a document-type specific result view.
+ *
+ * @template T The type of the search result for the document-type.
+ * @slot resultList - The result list component for the document-type. The search results are passed to it as `entries`.
+ */
+
 import { computed, ref, watch } from "vue"
 import { useRouter } from "vue-router"
 import Message from "primevue/message"
@@ -7,10 +16,19 @@ import IconArrowBack from "~icons/ic/baseline-arrow-back"
 import IconArrowForward from "~icons/ic/baseline-arrow-forward"
 import type { WithdrawResult } from "@/lib/useWithdraw"
 
-const props = defineProps<{
+interface Props {
+  /**
+   * The result of the withdraw action
+   */
   withdrawResult: WithdrawResult
+  /**
+   * Method to search for a document in both the portal and the backend for the
+   * document type.
+   */
   searchEntries: (documentNumber: string) => Promise<T[]>
-}>()
+}
+
+const props = defineProps<Props>()
 
 const router = useRouter()
 
