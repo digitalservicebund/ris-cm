@@ -4,7 +4,7 @@ import { useRouter } from "vue-router"
 import WithdrawResult from "@/components/WithdrawResult.vue"
 import ResultListCaselaw from "@/components/ResultListCaselaw.vue"
 import type { WithdrawResult as WithdrawResultType } from "@/lib/useWithdraw"
-import { searchCaselaw } from "@/lib/caselaw"
+import { search } from "@/lib/caselaw"
 
 const router = useRouter()
 
@@ -28,7 +28,7 @@ onMounted(() => {
   <WithdrawResult
     v-if="withdrawResult"
     :withdraw-result="withdrawResult"
-    :search-entries="searchCaselaw"
+    :search-entries="search"
   >
     <template #resultList="{ entries }">
       <ResultListCaselaw :entries="entries" readonly />

@@ -1,5 +1,5 @@
 import { describe, test, expect, vi, beforeEach } from "vitest"
-import { searchCaselaw, withdrawDocument } from "@/lib/caselaw"
+import { search, withdraw } from "@/lib/caselaw"
 import type { Env } from "@/lib/env"
 import type { WithdrawResult } from "@/lib/useWithdraw"
 
@@ -29,7 +29,7 @@ const portalResult = {
   fileNumbers: ["IX ZR 1/22"],
 }
 
-describe("searchCaselaw", () => {
+describe("search", () => {
   beforeEach(() => {
     vi.stubGlobal("fetch", vi.fn())
   })
@@ -50,7 +50,7 @@ describe("searchCaselaw", () => {
       } as Response)
     })
 
-    const results = await searchCaselaw("KORE500102022")
+    const results = await search("KORE500102022")
 
     expect(fetch).toHaveBeenCalledWith(
       "https://example.com/api/v1/search?document-number=KORE500102022",
@@ -74,7 +74,7 @@ describe("searchCaselaw", () => {
       } as Response)
     })
 
-    const results = await searchCaselaw("KORE500102022")
+    const results = await search("KORE500102022")
     expect(results[0].visibleInPortal).toBe(false)
   })
 
@@ -90,7 +90,7 @@ describe("searchCaselaw", () => {
       return Promise.resolve({ ok: false, status: 404 } as Response)
     })
 
-    const results = await searchCaselaw("KORE500102022")
+    const results = await search("KORE500102022")
     expect(results[0].court).toBe("BGH Karlsruhe")
     expect(results[0].fileNumber).toBe("IX ZR 1/22")
     expect(results[0].visibleInPortal).toBe(true)
@@ -102,7 +102,7 @@ describe("searchCaselaw", () => {
       status: 404,
     } as Response)
 
-    const results = await searchCaselaw("KORE500102022")
+    const results = await search("KORE500102022")
     expect(results).toEqual([])
   })
 
@@ -114,7 +114,7 @@ describe("searchCaselaw", () => {
       return Promise.resolve({ ok: false, status: 500 } as Response)
     })
 
-    await expect(searchCaselaw("KORE500102022")).rejects.toThrow(
+    await expect(search("KORE500102022")).rejects.toThrow(
       "Search failed (caselaw backend): 500",
     )
   })
@@ -127,13 +127,13 @@ describe("searchCaselaw", () => {
       return Promise.resolve({ ok: false, status: 404 } as Response)
     })
 
-    await expect(searchCaselaw("KORE500102022")).rejects.toThrow(
+    await expect(search("KORE500102022")).rejects.toThrow(
       "Search failed (portal): 500",
     )
   })
 })
 
-describe("withdrawDocument", () => {
+describe("withdraw", () => {
   beforeEach(() => {
     vi.stubGlobal("fetch", vi.fn())
   })
@@ -149,7 +149,7 @@ describe("withdrawDocument", () => {
         }),
     } as unknown as Response)
 
-    const result = (await withdrawDocument("KORE500102022")) as WithdrawResult
+    const result = (await withdraw("KORE500102022")) as WithdrawResult
 
     expect(fetch).toHaveBeenCalledWith(
       "https://example.com/api/v1/withdraw",
@@ -173,7 +173,7 @@ describe("withdrawDocument", () => {
         }),
     } as unknown as Response)
 
-    const result = await withdrawDocument("KORE500102022")
+    const result = await withdraw("KORE500102022")
     expect(result).toEqual({
       status: "ERROR",
       documentNumber: "KORE500102022",

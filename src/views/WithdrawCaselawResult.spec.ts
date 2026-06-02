@@ -6,7 +6,7 @@ import PrimeVue from "primevue/config"
 import ConfirmationService from "primevue/confirmationservice"
 import WithdrawCaselawResult from "@/views/WithdrawCaselawResult.vue"
 import type { CaselawSearchResult } from "@/lib/caselaw"
-import { searchCaselaw } from "@/lib/caselaw"
+import { search } from "@/lib/caselaw"
 import type { useEnv } from "@/lib/env"
 
 vi.mock("@/lib/caselaw", () => ({
@@ -50,7 +50,7 @@ function renderWithState(state: Record<string, unknown>) {
 describe("WithdrawCaselawResult", () => {
   beforeEach(async () => {
     await router.push("/zurueckziehen/rechtsprechung/ergebnis")
-    vi.mocked(searchCaselaw).mockResolvedValue([])
+    vi.mocked(search).mockResolvedValue([])
   })
 
   describe("redirect behavior", () => {

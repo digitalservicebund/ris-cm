@@ -87,7 +87,7 @@ async function fetchFromPortalApi(
   }
 }
 
-export async function searchCaselaw(
+export async function search(
   documentNumber: string,
 ): Promise<CaselawSearchResult[]> {
   const [caselawBackendResult, portalResult] = await Promise.all([
@@ -110,7 +110,7 @@ export async function searchCaselaw(
   ]
 }
 
-export async function withdrawDocument(
+export async function withdraw(
   documentNumber: string,
 ): Promise<WithdrawResult> {
   const env = await getEnv()

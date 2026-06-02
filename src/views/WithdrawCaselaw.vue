@@ -4,7 +4,7 @@ import { useRoute, useRouter } from "vue-router"
 import Message from "primevue/message"
 import SearchForm from "@/components/SearchForm.vue"
 import ResultListCaselaw from "@/components/ResultListCaselaw.vue"
-import { searchCaselaw, withdrawDocument } from "@/lib/caselaw"
+import { search, withdraw } from "@/lib/caselaw"
 import { useWithdraw } from "@/lib/useWithdraw"
 
 const route = useRoute()
@@ -17,8 +17,8 @@ const {
   handleSearch,
   handleWithdraw,
 } = useWithdraw({
-  search: searchCaselaw,
-  withdraw: withdrawDocument,
+  search,
+  withdraw,
 })
 
 function navigateToResult(result: typeof withdrawResult.value) {

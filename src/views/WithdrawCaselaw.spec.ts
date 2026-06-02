@@ -63,8 +63,8 @@ describe("WithdrawCaselaw", () => {
     await router.push("/zurueckziehen/rechtsprechung")
   })
 
-  test("calls searchCaselaw when search event is emitted", async () => {
-    const { searchCaselaw } = await import("@/lib/caselaw")
+  test("calls search when search event is emitted", async () => {
+    const { search } = await import("@/lib/caselaw")
     const user = userEvent.setup()
     renderComponent()
 
@@ -75,26 +75,26 @@ describe("WithdrawCaselaw", () => {
     await user.click(screen.getByRole("button", { name: "Suche starten" }))
 
     await waitFor(() => {
-      expect(searchCaselaw).toHaveBeenCalledWith("KORE500102022")
+      expect(search).toHaveBeenCalledWith("KORE500102022")
     })
   })
 
   test("triggers search on mount when dokumentnummer query param is present", async () => {
-    const { searchCaselaw } = await import("@/lib/caselaw")
-    vi.mocked(searchCaselaw).mockClear()
+    const { search } = await import("@/lib/caselaw")
+    vi.mocked(search).mockClear()
     await router.push(
       "/zurueckziehen/rechtsprechung?dokumentnummer=KORE500102022",
     )
     renderComponent()
 
     await waitFor(() => {
-      expect(searchCaselaw).toHaveBeenCalledWith("KORE500102022")
+      expect(search).toHaveBeenCalledWith("KORE500102022")
     })
   })
 
   test("displays search results after successful search", async () => {
-    const { searchCaselaw } = await import("@/lib/caselaw")
-    vi.mocked(searchCaselaw).mockClear()
+    const { search } = await import("@/lib/caselaw")
+    vi.mocked(search).mockClear()
     const user = userEvent.setup()
     renderComponent()
 
@@ -110,8 +110,8 @@ describe("WithdrawCaselaw", () => {
   })
 
   test("calls withdrawDocument when withdraw is confirmed", async () => {
-    const { withdrawDocument, searchCaselaw } = await import("@/lib/caselaw")
-    vi.mocked(searchCaselaw).mockClear()
+    const { withdraw, search } = await import("@/lib/caselaw")
+    vi.mocked(search).mockClear()
     const user = userEvent.setup()
     renderComponent()
 
@@ -131,13 +131,13 @@ describe("WithdrawCaselaw", () => {
     )
 
     await waitFor(() => {
-      expect(withdrawDocument).toHaveBeenCalledWith("KORE500102022")
+      expect(withdraw).toHaveBeenCalledWith("KORE500102022")
     })
   })
 
   test("navigates to result page with withdrawResult in history state after successful withdraw", async () => {
-    const { searchCaselaw } = await import("@/lib/caselaw")
-    vi.mocked(searchCaselaw).mockClear()
+    const { search } = await import("@/lib/caselaw")
+    vi.mocked(search).mockClear()
     const user = userEvent.setup()
     renderComponent()
 
@@ -167,9 +167,9 @@ describe("WithdrawCaselaw", () => {
   })
 
   test("navigates to result page with ERROR status when withdraw fails", async () => {
-    const { withdrawDocument, searchCaselaw } = await import("@/lib/caselaw")
-    vi.mocked(searchCaselaw).mockClear()
-    vi.mocked(withdrawDocument).mockResolvedValueOnce({
+    const { withdraw, search } = await import("@/lib/caselaw")
+    vi.mocked(search).mockClear()
+    vi.mocked(withdraw).mockResolvedValueOnce({
       status: "ERROR",
       documentNumber: "KORE500102022",
       detail: "Fehler vom Server.",
