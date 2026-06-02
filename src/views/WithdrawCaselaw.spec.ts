@@ -10,19 +10,17 @@ import PrimeVue from "primevue/config"
 import ConfirmationService from "primevue/confirmationservice"
 
 vi.mock("@/lib/caselaw", () => ({
-  searchCaselaw: vi
-    .fn<() => Promise<CaselawSearchResult[]>>()
-    .mockResolvedValue([
-      {
-        documentNumber: "KORE500102022",
-        court: "BGH",
-        typ: "Urteil",
-        decisionDate: "2022-01-01",
-        fileNumber: "IX ZR 1/22",
-        visibleInPortal: true,
-      },
-    ]),
-  withdrawDocument: vi
+  search: vi.fn<() => Promise<CaselawSearchResult[]>>().mockResolvedValue([
+    {
+      documentNumber: "KORE500102022",
+      court: "BGH",
+      typ: "Urteil",
+      decisionDate: "2022-01-01",
+      fileNumber: "IX ZR 1/22",
+      visibleInPortal: true,
+    },
+  ]),
+  withdraw: vi
     .fn<() => Promise<{ status: string; documentNumber: string }>>()
     .mockResolvedValue({
       status: "WITHDRAWN",

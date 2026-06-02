@@ -10,7 +10,7 @@ import { search } from "@/lib/caselaw"
 import type { useEnv } from "@/lib/env"
 
 vi.mock("@/lib/caselaw", () => ({
-  searchCaselaw: vi.fn<() => Promise<CaselawSearchResult[]>>(),
+  search: vi.fn<() => Promise<CaselawSearchResult[]>>(),
 }))
 
 vi.mock("@/lib/env", () => ({
