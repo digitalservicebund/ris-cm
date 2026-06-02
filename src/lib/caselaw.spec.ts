@@ -1,12 +1,14 @@
 import { describe, test, expect, vi, beforeEach } from "vitest"
-import { searchCaselaw } from "@/lib/caselaw"
+import { searchCaselaw, withdrawDocument } from "@/lib/caselaw"
 import type { Env } from "@/lib/env"
+import type { WithdrawResult } from "@/lib/useWithdraw"
 
 vi.mock("@/lib/env", () => ({
   getEnv: vi.fn<() => Promise<Env>>().mockResolvedValue({
     environment: "local",
     portalBaseUrl: "https://portal.example.com",
     caselawSearchUrl: "https://example.com/api/v1/search",
+    caselawWithdrawUrl: "https://example.com/api/v1/withdraw",
   }),
 }))
 
@@ -76,15 +78,7 @@ describe("searchCaselaw", () => {
     expect(results[0].visibleInPortal).toBe(false)
   })
 
-  test("uses fields from portal when search result is missing them", async () => {
-    const partialSearchResult = {
-      documentNumber: "KORE500102022",
-      court: "",
-      typ: "",
-      decisionDate: "",
-      fileNumber: "",
-      visibleInPortal: false,
-    }
+  test("uses fields from portal when search result is missing", async () => {
     vi.mocked(fetch).mockImplementation((url) => {
       if (String(url).includes("portal.example.com")) {
         return Promise.resolve({
@@ -93,11 +87,7 @@ describe("searchCaselaw", () => {
           json: () => Promise.resolve(portalResult),
         } as Response)
       }
-      return Promise.resolve({
-        ok: true,
-        status: 200,
-        json: () => Promise.resolve(partialSearchResult),
-      } as Response)
+      return Promise.resolve({ ok: false, status: 404 } as Response)
     })
 
     const results = await searchCaselaw("KORE500102022")
@@ -140,5 +130,54 @@ describe("searchCaselaw", () => {
     await expect(searchCaselaw("KORE500102022")).rejects.toThrow(
       "Search failed (portal): 500",
     )
+  })
+})
+
+describe("withdrawDocument", () => {
+  beforeEach(() => {
+    vi.stubGlobal("fetch", vi.fn())
+  })
+
+  test("POSTs to the withdraw URL with document number in body", async () => {
+    vi.mocked(fetch).mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: () =>
+        Promise.resolve({
+          status: "WITHDRAWN",
+          documentNumber: "KORE500102022",
+        }),
+    } as unknown as Response)
+
+    const result = (await withdrawDocument("KORE500102022")) as WithdrawResult
+
+    expect(fetch).toHaveBeenCalledWith(
+      "https://example.com/api/v1/withdraw",
+      expect.objectContaining({
+        method: "POST",
+        body: "KORE500102022",
+      }),
+    )
+    expect(result.status).toEqual("WITHDRAWN")
+    expect(result.documentNumber).toEqual("KORE500102022")
+  })
+
+  test("returns WithdrawResult with ERROR status and RFC-9457 detail when an error happens", async () => {
+    vi.mocked(fetch).mockResolvedValue({
+      ok: false,
+      status: 500,
+      json: () =>
+        Promise.resolve({
+          status: 500,
+          detail: "Withdraw error.",
+        }),
+    } as unknown as Response)
+
+    const result = await withdrawDocument("KORE500102022")
+    expect(result).toEqual({
+      status: "ERROR",
+      documentNumber: "KORE500102022",
+      detail: "Withdraw error.",
+    })
   })
 })

@@ -1,49 +1,38 @@
 <script lang="ts" setup>
-import { ref, onMounted } from "vue"
-import { useRoute } from "vue-router"
+import { onMounted, watch } from "vue"
+import { useRoute, useRouter } from "vue-router"
 import Message from "primevue/message"
 import SearchForm from "@/components/SearchForm.vue"
 import ResultListCaselaw from "@/components/ResultListCaselaw.vue"
-import { type CaselawSearchResult, searchCaselaw } from "@/lib/caselaw"
+import { searchCaselaw, withdrawDocument } from "@/lib/caselaw"
+import { useWithdraw } from "@/lib/useWithdraw"
 
 const route = useRoute()
-const entries = ref<CaselawSearchResult[]>([])
+const router = useRouter()
 
-type ErrorMessage = { title: string; detail: string }
-const errorMessage = ref<ErrorMessage | null>(null)
+const {
+  entries,
+  searchStatusMessage,
+  withdrawResult,
+  handleSearch,
+  handleWithdraw,
+} = useWithdraw({
+  search: searchCaselaw,
+  withdraw: withdrawDocument,
+})
 
-async function handleSearch(documentNumber: string) {
-  errorMessage.value = null
-  entries.value = []
-
-  if (!documentNumber) {
-    errorMessage.value = {
-      title: "Dokumentnummer fehlt.",
-      detail:
-        "Um die Suche starten zu können, müssen Sie eine Dokumentnummer eingeben.",
-    }
-    return
-  }
-
-  try {
-    const results = await searchCaselaw(documentNumber)
-    if (results.length === 0) {
-      errorMessage.value = {
-        title: "Kein Treffer.",
-        detail:
-          "Die Suche hat keinen Treffer erzielt. Überprüfen Sie Ihre Eingaben.",
-      }
-      return
-    }
-
-    entries.value = results
-  } catch (error) {
-    errorMessage.value = {
-      title: "Fehler.",
-      detail: `Während der Suche ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut: ${error}`,
-    }
-  }
+function navigateToResult(result: typeof withdrawResult.value) {
+  router.push({
+    name: "withdraw-caselaw-result",
+    state: {
+      withdrawResult: result ? JSON.stringify(result) : null,
+    },
+  })
 }
+
+watch(withdrawResult, (result) => {
+  if (result) navigateToResult(result)
+})
 
 onMounted(() => {
   const param = route.query["dokumentnummer"]
@@ -56,11 +45,18 @@ onMounted(() => {
 
 <template>
   <div class="flex flex-col m-24 gap-8">
-    <Message v-if="errorMessage" severity="error">
-      <p class="ris-body1-bold">{{ errorMessage.title }}</p>
-      {{ errorMessage.detail }}
+    <h1 class="sr-only">Zurückziehen</h1>
+    <Message
+      v-if="searchStatusMessage"
+      :severity="searchStatusMessage.severity"
+    >
+      <p class="ris-body1-bold">{{ searchStatusMessage.title }}</p>
+      {{ searchStatusMessage.detail }}
     </Message>
     <SearchForm @search="handleSearch"></SearchForm>
-    <ResultListCaselaw :entries="entries"></ResultListCaselaw>
+    <ResultListCaselaw
+      :entries="entries"
+      @withdraw="handleWithdraw"
+    ></ResultListCaselaw>
   </div>
 </template>

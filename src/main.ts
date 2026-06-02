@@ -4,6 +4,7 @@ import router from "./router"
 import "@/styles/global.css"
 import { RisUiLocale, RisUiTheme } from "@digitalservicebund/ris-ui/primevue"
 import PrimeVue from "primevue/config"
+import ConfirmationService from "primevue/confirmationservice"
 import Tooltip from "primevue/tooltip"
 import "@digitalservicebund/ris-ui/fonts.css"
 import { useAuthentication } from "./lib/auth"
@@ -24,6 +25,7 @@ try {
       locale: RisUiLocale.deDE,
     })
     .use(Sentry, { env, router })
+    .use(ConfirmationService)
     .directive("tooltip", Tooltip)
 
   if (env.auth) {

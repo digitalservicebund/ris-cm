@@ -1,5 +1,6 @@
 import { useAuthentication } from "@/lib/auth"
 import { getEnv } from "@/lib/env"
+import type { WithdrawResult } from "@/lib/useWithdraw"
 
 interface CaselawDocument {
   documentNumber: string
@@ -17,7 +18,12 @@ interface PortalApiResponse {
   fileNumbers?: string[]
 }
 
-export type CaselawSearchResult = CaselawDocument & { visibleInPortal: boolean }
+export type CaselawSearchResult = CaselawDocument & {
+  /**
+   * Could the document be found using the portal api?
+   */
+  visibleInPortal: boolean
+}
 
 async function fetchFromCaselawBackendApi(
   documentNumber: string,
@@ -102,4 +108,40 @@ export async function searchCaselaw(
       visibleInPortal: portalResult != null,
     },
   ]
+}
+
+export async function withdrawDocument(
+  documentNumber: string,
+): Promise<WithdrawResult> {
+  const env = await getEnv()
+  const auth = useAuthentication()
+  await auth.tryRefresh()
+
+  try {
+    const response = await fetch(env.caselawWithdrawUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain",
+        ...auth.addAuthorizationHeader(),
+      },
+      body: documentNumber,
+    })
+
+    if (!response.ok) {
+      const body = await response.json()
+      return {
+        status: "ERROR",
+        documentNumber,
+        detail: body.detail,
+      }
+    }
+
+    return (await response.json()) as WithdrawResult
+  } catch (error) {
+    return {
+      status: "ERROR",
+      documentNumber,
+      detail: error instanceof Error ? error.message : error?.toString(),
+    }
+  }
 }
