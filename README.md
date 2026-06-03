@@ -90,3 +90,13 @@ You can run the application locally without any authentication.
 To test the auth-flow you can use the keycloak defined in `docker-compose.yml` to start a local keycloak instance.
 You then also need to configure the `env.json` to authenticate against the keycloak instance. An example for this is provided in the `public/config/README.md`.
 The username is `jane.doe` and the password `test`.
+
+## Withdrawing a new document-type
+
+For the changes in this repo please have a look at
+[ADR-0006](./doc/adr/0006-component-and-view-structure-for-withdraw.md).
+Please keep in mind that we need to check both the portal API and the backend service to know if a document is available
+(see [ADR-0007](./doc/adr/0007-check-portal-and-backend-apis.md)).
+The backend service for the document-type needs to provide an API to search for a document and to withdraw it from the
+publication bucket. The service also needs to ensure the document is removed from the bucket if the service itself
+doesn't know about the document anymore.
