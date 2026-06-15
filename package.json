@@ -29,10 +29,10 @@
   "dependencies": {
     "@digitalservicebund/ris-ui": "^4.4.0",
     "@sentry/vue": "^10.57.0",
-    "@tailwindcss/postcss": "^4.3.0",
+    "@tailwindcss/postcss": "^4.3.1",
     "@vueuse/core": "^14.3.0",
     "keycloak-js": "^26.2.4",
-    "vue": "^3.5.35",
+    "vue": "^3.5.38",
     "vue-router": "^5.1.0"
   },
   "devDependencies": {
@@ -44,7 +44,7 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/user-event": "^14.6.1",
     "@testing-library/vue": "^8.1.0",
-    "@types/node": "^25.9.2",
+    "@types/node": "^25.9.3",
     "@vitejs/plugin-vue": "^6.0.7",
     "@vitest/coverage-istanbul": "^4.1.8",
     "@vitest/ui": "^4.0.18",
