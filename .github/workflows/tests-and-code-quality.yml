@@ -21,7 +21,7 @@ jobs:
           cache: npm
           cache-dependency-path: ./package-lock.json
       - name: Cache node_modules
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         id: node-modules-cache
         with:
           path: |
@@ -57,7 +57,7 @@ jobs:
           cache: npm
           cache-dependency-path: ./package-lock.json
       - name: Cache node_modules
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         id: node-modules-cache
         with:
           path: |
@@ -72,7 +72,7 @@ jobs:
         run: echo "PLAYWRIGHT_VERSION=$(jq -r '.packages["node_modules/@playwright/test"].version' package-lock.json)" >> $GITHUB_ENV
       - name: Cache browser binaries
         id: cache-browser-binaries
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
@@ -109,7 +109,7 @@ jobs:
           cache: npm
           cache-dependency-path: ./package-lock.json
       - name: Cache node_modules
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         id: node-modules-cache
         with:
           path: |
@@ -124,7 +124,7 @@ jobs:
         run: echo "PLAYWRIGHT_VERSION=$(jq -r '.packages["node_modules/@playwright/test"].version' package-lock.json)" >> $GITHUB_ENV
       - name: Cache browser binaries
         id: cache-browser-binaries
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ env.PLAYWRIGHT_VERSION }}
@@ -162,14 +162,14 @@ jobs:
           cache: npm
           cache-dependency-path: ./package-lock.json
       - name: Cache node_modules
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         id: node-modules-cache
         with:
           path: |
             ./node_modules
           key: modules-${{ hashFiles('./package-lock.json') }}
       - name: Cache style checks
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         id: style-check-cache
         with:
           path: .cache
