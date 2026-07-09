@@ -9,7 +9,7 @@ const mockDocument = {
   documentNumber: "KORE123456789",
   court: "Bundesgerichtshof",
   typ: "Urteil",
-  decisionDate: "2024-01-15",
+  decisionDate: "15.01.2024",
   fileNumber: "IV ZR 123/23",
 }
 
@@ -69,6 +69,7 @@ test.describe("Withdraw caselaw – search", () => {
     await expect(page.getByText("KORE123456789")).toBeVisible()
     await expect(page.getByText("Bundesgerichtshof")).toBeVisible()
     await expect(page.getByText("Urteil")).toBeVisible()
+    await expect(page.getByText("15.01.2024")).toBeVisible()
     await expect(page.getByText("IV ZR 123/23")).toBeVisible()
   })
 
@@ -98,6 +99,7 @@ test.describe("Withdraw caselaw – search", () => {
 
     await expect(page.getByText("KORE123456789")).toBeVisible()
     await expect(page.getByText("Bundesgerichtshof")).toBeVisible()
+    await expect(page.getByText("15.01.2024")).toBeVisible()
   })
 
   test("search with no results shows error message", async ({ page }) => {
@@ -166,6 +168,7 @@ test.describe("Withdraw caselaw – search", () => {
     await expect(page.getByText("KORE123456789")).toBeVisible()
     await expect(page.getByText("Bundesgerichtshof")).toBeVisible()
     await expect(page.getByText("Urteil")).toBeVisible()
+    await expect(page.getByText("15.01.2024")).toBeVisible()
     await expect(page.getByText("IV ZR 123/23")).toBeVisible()
     await expect(page.getByText("Nein")).toBeVisible()
   })
@@ -198,6 +201,7 @@ test.describe("Withdraw caselaw – search", () => {
     await expect(page.getByText("KORE123456789")).toBeVisible()
     await expect(page.getByText("Bundesgerichtshof")).toBeVisible()
     await expect(page.getByText("Urteil")).toBeVisible()
+    await expect(page.getByText("2024-01-15")).toBeVisible()
     await expect(page.getByText("IV ZR 123/23")).toBeVisible()
     await expect(page.getByText("Ja")).toBeVisible()
   })
