@@ -4,6 +4,7 @@ import { injectAxe, checkA11y } from "axe-playwright"
 test.describe("basic a11y test (index page)", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/")
+    await page.waitForURL("**/zurueckziehen/rechtsprechung")
     await injectAxe(page)
   })
 
