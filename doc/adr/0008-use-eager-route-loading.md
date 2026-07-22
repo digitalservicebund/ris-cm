@@ -22,4 +22,4 @@ of [lazy loading](https://router.vuejs.org/guide/advanced/lazy-loading.html).
 
 ## Consequences
 
-The initial bundle size will be slightly bigger, but we avoid the errors without any implementation effort.  
+The initial bundle size will be slightly bigger, but we avoid the errors without any implementation effort.
