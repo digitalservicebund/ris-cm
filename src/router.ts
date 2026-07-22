@@ -1,5 +1,10 @@
 import type { RouteRecordRaw } from "vue-router"
 import { createRouter, createWebHistory } from "vue-router"
+import WithdrawCaselaw from "@/views/WithdrawCaselaw.vue"
+import Withdraw from "@/views/Withdraw.vue"
+import WithdrawCaselawResult from "@/views/WithdrawCaselawResult.vue"
+import TranslationsNorms from "@/views/TranslationsNorms.vue"
+import NotFound from "@/views/404NotFound.vue"
 
 const routes: readonly RouteRecordRaw[] = [
   {
@@ -15,22 +20,22 @@ const routes: readonly RouteRecordRaw[] = [
       {
         path: "rechtsprechung",
         name: "withdraw-caselaw",
-        component: () => import("@/views/WithdrawCaselaw.vue"),
+        component: WithdrawCaselaw,
       },
       {
         path: "rechtsprechung/ergebnis",
         name: "withdraw-caselaw-result",
-        component: () => import("@/views/WithdrawCaselawResult.vue"),
+        component: WithdrawCaselawResult,
       },
       {
         path: "literatur",
         name: "withdraw-literature",
-        component: () => import("@/views/Withdraw.vue"),
+        component: Withdraw,
       },
       {
         path: "verwaltungsvorschriften",
         name: "withdraw-adm",
-        component: () => import("@/views/Withdraw.vue"),
+        component: Withdraw,
       },
     ],
   },
@@ -41,7 +46,7 @@ const routes: readonly RouteRecordRaw[] = [
       {
         path: "",
         name: "uebersetzungen-normen",
-        component: () => import("@/views/TranslationsNorms.vue"),
+        component: TranslationsNorms,
       },
     ],
   },
@@ -49,7 +54,7 @@ const routes: readonly RouteRecordRaw[] = [
   {
     path: "/:pathMatch(.*)*",
     name: "not-found",
-    component: () => import("@/views/404NotFound.vue"),
+    component: NotFound,
   },
 ]
 
