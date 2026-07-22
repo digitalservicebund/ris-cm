@@ -28,12 +28,12 @@
   },
   "dependencies": {
     "@digitalservicebund/ris-ui": "^4.6.0",
-    "@sentry/vue": "^10.65.0",
-    "@tailwindcss/postcss": "^4.3.2",
+    "@sentry/vue": "^10.66.0",
+    "@tailwindcss/postcss": "^4.3.3",
     "@vueuse/core": "^14.3.0",
     "keycloak-js": "^26.2.4",
-    "vue": "^3.5.39",
-    "vue-router": "^5.1.0"
+    "vue": "^3.5.40",
+    "vue-router": "^5.2.0"
   },
   "devDependencies": {
     "@iconify-json/ic": "^1.2.4",
@@ -45,14 +45,14 @@
     "@testing-library/user-event": "^14.6.1",
     "@testing-library/vue": "^8.1.0",
     "@types/node": "^26.1.1",
-    "@vitejs/plugin-vue": "^6.0.7",
+    "@vitejs/plugin-vue": "^6.0.8",
     "@vitest/coverage-istanbul": "^4.1.10",
     "@vitest/ui": "^4.0.18",
-    "autoprefixer": "^10.5.2",
+    "autoprefixer": "^10.5.4",
     "axe-playwright": "^2.2.2",
     "jsdom": "^29.1.1",
     "license-checker-rseidelsohn": "^5.0.1",
-    "oxlint": "^1.73.0",
+    "oxlint": "^1.74.0",
     "playwright": "^1.58.2",
     "postcss": "^8.5.18",
     "prettier": "3.9.5",
@@ -61,7 +61,7 @@
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3",
     "unplugin-icons": "^23.0.1",
-    "vite": "^8.1.4",
+    "vite": "^8.1.5",
     "vitest": "^4.0.18",
     "vue-tsc": "^3.3.7"
   },
