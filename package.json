@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@digitalservicebund/ris-ui": "^4.6.0",
-    "@sentry/vue": "^10.66.0",
+    "@sentry/vue": "^10.67.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@vueuse/core": "^14.3.0",
     "keycloak-js": "^26.2.4",
