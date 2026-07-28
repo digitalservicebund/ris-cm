@@ -38,7 +38,7 @@
   "devDependencies": {
     "@iconify-json/ic": "^1.2.4",
     "@playwright-testing-library/test": "^4.5.0",
-    "@playwright/test": "^1.61.1",
+    "@playwright/test": "^1.62.0",
     "@sentry/vite-plugin": "^5.4.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^7.0.0",
