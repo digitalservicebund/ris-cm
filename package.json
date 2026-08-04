@@ -65,6 +65,9 @@
     "vitest": "^4.0.18",
     "vue-tsc": "^3.3.9"
   },
+  "overrides": {
+    "brace-expansion": "2.1.4"
+  },
   "engines": {
     "node": "24.11.1",
     "npm": "11.6.3"
