@@ -1,4 +1,4 @@
-import type { Page } from "@playwright/test"
+import type { Locator, Page } from "@playwright/test"
 import { test, expect } from "@playwright/test"
 
 const CASELAW_SEARCH_URL = "http://localhost:9000/api/v1/search"
@@ -35,6 +35,21 @@ const mockPortalDocument2 = {
   documentType: "Beschluss",
   decisionDate: "2025-04-27",
   fileNumbers: ["III ZV 16/025", "III ZA 16/025"],
+}
+
+async function expectCellInFirstRowOfColumn(
+  table: Locator,
+  columnHeader: string,
+  value: string,
+): Promise<void> {
+  await expect(
+    table.getByRole("columnheader", { name: columnHeader }),
+  ).toBeVisible()
+  const headers = await table.getByRole("columnheader").allTextContents()
+  const colIndex = headers.findIndex((h) => h.trim() === columnHeader)
+  await expect(
+    table.getByRole("row").nth(1).getByRole("cell").nth(colIndex),
+  ).toContainText(value)
 }
 
 async function mockEnv(page: Page): Promise<void> {
@@ -174,11 +189,20 @@ test.describe(
         .fill("KORE123456789")
       await page.getByRole("button", { name: "Suche starten" }).click()
 
-      await expect(page.getByText("KORE123456789")).toBeVisible()
-      await expect(page.getByText("Bundesgerichtshof")).toBeVisible()
-      await expect(page.getByText("Urteil")).toBeVisible()
-      await expect(page.getByText("15.01.2024")).toBeVisible()
-      await expect(page.getByText("IV ZR 123/23")).toBeVisible()
+      const table = page.getByRole("table")
+      await expectCellInFirstRowOfColumn(
+        table,
+        "Dokumentnummer",
+        "KORE123456789",
+      )
+      await expectCellInFirstRowOfColumn(table, "Gericht", "Bundesgerichtshof")
+      await expectCellInFirstRowOfColumn(table, "Typ", "Urteil")
+      await expectCellInFirstRowOfColumn(
+        table,
+        "Entscheidungsdatum",
+        "15.01.2024",
+      )
+      await expectCellInFirstRowOfColumn(table, "Aktenzeichen", "IV ZR 123/23")
       await expect(
         page.getByRole("button", { name: "Zurückziehen" }),
       ).toBeVisible()
@@ -189,11 +213,19 @@ test.describe(
         .fill("KORE234567890")
       await page.getByRole("button", { name: "Suche starten" }).click()
 
-      await expect(page.getByText("KORE234567890")).toBeVisible()
-      await expect(page.getByText("BVerfG")).toBeVisible()
-      await expect(page.getByText("Beschluss")).toBeVisible()
-      await expect(page.getByText("27.04.2025")).toBeVisible()
-      await expect(page.getByText("III ZV 16/025")).toBeVisible()
+      await expectCellInFirstRowOfColumn(
+        table,
+        "Dokumentnummer",
+        "KORE234567890",
+      )
+      await expectCellInFirstRowOfColumn(table, "Gericht", "BVerfG")
+      await expectCellInFirstRowOfColumn(table, "Typ", "Beschluss")
+      await expectCellInFirstRowOfColumn(
+        table,
+        "Entscheidungsdatum",
+        "27.04.2025",
+      )
+      await expectCellInFirstRowOfColumn(table, "Aktenzeichen", "III ZV 16/025")
       await expect(
         page.getByRole("button", { name: "Zurückziehen" }),
       ).toBeVisible()
@@ -226,11 +258,20 @@ test.describe(
         "/zurueckziehen/rechtsprechung?dokumentnummer=KORE123456789",
       )
 
-      await expect(page.getByText("KORE123456789")).toBeVisible()
-      await expect(page.getByText("Bundesgerichtshof")).toBeVisible()
-      await expect(page.getByText("Urteil")).toBeVisible()
-      await expect(page.getByText("15.01.2024")).toBeVisible()
-      await expect(page.getByText("IV ZR 123/23")).toBeVisible()
+      const table = page.getByRole("table")
+      await expectCellInFirstRowOfColumn(
+        table,
+        "Dokumentnummer",
+        "KORE123456789",
+      )
+      await expectCellInFirstRowOfColumn(table, "Gericht", "Bundesgerichtshof")
+      await expectCellInFirstRowOfColumn(table, "Typ", "Urteil")
+      await expectCellInFirstRowOfColumn(
+        table,
+        "Entscheidungsdatum",
+        "15.01.2024",
+      )
+      await expectCellInFirstRowOfColumn(table, "Aktenzeichen", "IV ZR 123/23")
       await expect(
         page.getByRole("button", { name: "Zurückziehen" }),
       ).toBeVisible()
@@ -302,12 +343,21 @@ test.describe(
         .fill("KORE123456789")
       await page.getByRole("button", { name: "Suche starten" }).click()
 
-      await expect(page.getByText("KORE123456789")).toBeVisible()
-      await expect(page.getByText("Bundesgerichtshof")).toBeVisible()
-      await expect(page.getByText("Urteil")).toBeVisible()
-      await expect(page.getByText("15.01.2024")).toBeVisible()
-      await expect(page.getByText("IV ZR 123/23")).toBeVisible()
-      await expect(page.getByText("Nein")).toBeVisible()
+      const table = page.getByRole("table")
+      await expectCellInFirstRowOfColumn(
+        table,
+        "Dokumentnummer",
+        "KORE123456789",
+      )
+      await expectCellInFirstRowOfColumn(table, "Gericht", "Bundesgerichtshof")
+      await expectCellInFirstRowOfColumn(table, "Typ", "Urteil")
+      await expectCellInFirstRowOfColumn(
+        table,
+        "Entscheidungsdatum",
+        "15.01.2024",
+      )
+      await expectCellInFirstRowOfColumn(table, "Aktenzeichen", "IV ZR 123/23")
+      await expectCellInFirstRowOfColumn(table, "Sichtbar im Portal", "Nein")
       await expect(
         page.getByRole("button", { name: "Zurückziehen" }),
       ).toBeVisible()
@@ -341,12 +391,21 @@ test.describe(
         .fill("KORE123456789")
       await page.getByRole("button", { name: "Suche starten" }).click()
 
-      await expect(page.getByText("KORE123456789")).toBeVisible()
-      await expect(page.getByText("Bundesgerichtshof")).toBeVisible()
-      await expect(page.getByText("Urteil")).toBeVisible()
-      await expect(page.getByText("2024-01-15")).toBeVisible()
-      await expect(page.getByText("IV ZR 123/23")).toBeVisible()
-      await expect(page.getByText("Ja")).toBeVisible()
+      const table = page.getByRole("table")
+      await expectCellInFirstRowOfColumn(
+        table,
+        "Dokumentnummer",
+        "KORE123456789",
+      )
+      await expectCellInFirstRowOfColumn(table, "Gericht", "Bundesgerichtshof")
+      await expectCellInFirstRowOfColumn(table, "Typ", "Urteil")
+      await expectCellInFirstRowOfColumn(
+        table,
+        "Entscheidungsdatum",
+        "2024-01-15",
+      )
+      await expectCellInFirstRowOfColumn(table, "Aktenzeichen", "IV ZR 123/23")
+      await expectCellInFirstRowOfColumn(table, "Sichtbar im Portal", "Ja")
       await expect(
         page.getByRole("button", { name: "Zurückziehen" }),
       ).toBeVisible()
@@ -396,7 +455,12 @@ test.describe(
         .getByRole("textbox", { name: "Dokumentnummer" })
         .fill("KORE123456789")
       await page.getByRole("button", { name: "Suche starten" }).click()
-      await expect(page.getByText("KORE123456789")).toBeVisible()
+      const table = page.getByRole("table")
+      await expectCellInFirstRowOfColumn(
+        table,
+        "Dokumentnummer",
+        "KORE123456789",
+      )
 
       await page.getByRole("button", { name: "Zurückziehen" }).click()
 
@@ -421,7 +485,12 @@ test.describe(
         .getByRole("textbox", { name: "Dokumentnummer" })
         .fill("KORE123456789")
       await page.getByRole("button", { name: "Suche starten" }).click()
-      await expect(page.getByText("KORE123456789")).toBeVisible()
+      const table = page.getByRole("table")
+      await expectCellInFirstRowOfColumn(
+        table,
+        "Dokumentnummer",
+        "KORE123456789",
+      )
 
       await page.getByRole("button", { name: "Zurückziehen" }).click()
       await expect(
@@ -433,7 +502,11 @@ test.describe(
       await expect(
         page.getByRole("alertdialog", { name: "Dokument zurückziehen" }),
       ).not.toBeVisible()
-      await expect(page.getByText("KORE123456789")).toBeVisible()
+      await expectCellInFirstRowOfColumn(
+        table,
+        "Dokumentnummer",
+        "KORE123456789",
+      )
     })
 
     test("confirming withdraw calls the withdraw endpoint and shows success message on WITHDRAWN status", async ({
@@ -459,7 +532,12 @@ test.describe(
       await expect(page.getByRole("alert")).toContainText(
         "Erfolgreich zurückgezogen.",
       )
-      await expect(page.getByText("KORE123456789")).toBeVisible()
+      const table = page.getByRole("table")
+      await expectCellInFirstRowOfColumn(
+        table,
+        "Dokumentnummer",
+        "KORE123456789",
+      )
       await expect(
         page.getByRole("button", { name: "Startseite" }),
       ).toBeVisible()
@@ -497,7 +575,12 @@ test.describe(
       await expect(page.getByRole("alert")).toContainText(
         "Erfolgreich zurückgezogen.",
       )
-      await expect(page.getByText("KORE123456789")).toBeVisible()
+      const table = page.getByRole("table")
+      await expectCellInFirstRowOfColumn(
+        table,
+        "Dokumentnummer",
+        "KORE123456789",
+      )
       await expect(
         page.getByRole("button", { name: "Startseite" }),
       ).toBeVisible()
@@ -534,7 +617,12 @@ test.describe(
       await expect(
         page.getByText("Folgendes Dokument konnte nicht zurückgezogen werden:"),
       ).toBeVisible()
-      await expect(page.getByText("KORE123456789")).toBeVisible()
+      const table = page.getByRole("table")
+      await expectCellInFirstRowOfColumn(
+        table,
+        "Dokumentnummer",
+        "KORE123456789",
+      )
       await expect(page.getByRole("button", { name: "Zurück" })).toBeVisible()
       await expect(
         page.getByRole("button", { name: "Startseite" }),
