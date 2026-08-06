@@ -419,7 +419,7 @@ test.describe(
   {
     annotation: {
       description:
-        "https://digitalservicebund.atlassian.net/browse/RISDEV-10676",
+        "https://digitalservicebund.atlassian.net/browse/RISDEV-10675",
       type: "epic",
     },
     tag: ["@RISDEV-10676"],
