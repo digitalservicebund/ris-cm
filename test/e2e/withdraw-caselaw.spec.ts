@@ -422,7 +422,7 @@ test.describe(
         "https://digitalservicebund.atlassian.net/browse/RISDEV-10675",
       type: "epic",
     },
-    tag: ["@RISDEV-10676"],
+    tag: ["@RISDEV-10675"],
   },
   () => {
     test.beforeEach(async ({ page }) => {
