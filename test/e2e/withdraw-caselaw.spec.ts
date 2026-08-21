@@ -164,6 +164,15 @@ test.describe(
           }),
       )
       await page.route(
+        `${PORTAL_BASE_URL}/v1/case-law/KORE123456789.xml`,
+        (route) =>
+          route.fulfill({
+            status: 200,
+            contentType: "text/xml",
+            body: "<xml></xml>",
+          }),
+      )
+      await page.route(
         `${CASELAW_SEARCH_URL}?document-number=KORE234567890`,
         (route) =>
           route.fulfill({
@@ -179,6 +188,15 @@ test.describe(
             status: 200,
             contentType: "application/json",
             body: JSON.stringify(mockPortalDocument2),
+          }),
+      )
+      await page.route(
+        `${PORTAL_BASE_URL}/v1/case-law/KORE234567890.xml`,
+        (route) =>
+          route.fulfill({
+            status: 200,
+            contentType: "text/xml",
+            body: "<xml></xml>",
           }),
       )
 
@@ -253,6 +271,15 @@ test.describe(
             body: JSON.stringify(mockPortalDocument),
           }),
       )
+      await page.route(
+        `${PORTAL_BASE_URL}/v1/case-law/KORE123456789.xml`,
+        (route) =>
+          route.fulfill({
+            status: 200,
+            contentType: "text/xml",
+            body: "<xml></xml>",
+          }),
+      )
 
       await page.goto(
         "/zurueckziehen/rechtsprechung?dokumentnummer=KORE123456789",
@@ -290,6 +317,13 @@ test.describe(
         route.fulfill({
           status: 404,
         }),
+      )
+      await page.route(
+        `${PORTAL_BASE_URL}/v1/case-law/UNKNOWN999.xml`,
+        (route) =>
+          route.fulfill({
+            status: 404,
+          }),
       )
 
       await page.goto("/zurueckziehen/rechtsprechung")
@@ -330,6 +364,13 @@ test.describe(
       )
       await page.route(
         `${PORTAL_BASE_URL}/v1/case-law/KORE123456789`,
+        (route) =>
+          route.fulfill({
+            status: 404,
+          }),
+      )
+      await page.route(
+        `${PORTAL_BASE_URL}/v1/case-law/KORE123456789.xml`,
         (route) =>
           route.fulfill({
             status: 404,
@@ -381,6 +422,15 @@ test.describe(
             status: 200,
             contentType: "application/json",
             body: JSON.stringify(mockPortalDocument),
+          }),
+      )
+      await page.route(
+        `${PORTAL_BASE_URL}/v1/case-law/KORE123456789.xml`,
+        (route) =>
+          route.fulfill({
+            status: 200,
+            contentType: "text/xml",
+            body: "<xml></xml>",
           }),
       )
 
@@ -443,6 +493,15 @@ test.describe(
             status: 200,
             contentType: "application/json",
             body: JSON.stringify(mockPortalDocument),
+          }),
+      )
+      await page.route(
+        `${PORTAL_BASE_URL}/v1/case-law/KORE123456789.xml`,
+        (route) =>
+          route.fulfill({
+            status: 200,
+            contentType: "text/xml",
+            body: "<xml></xml>",
           }),
       )
     })
