@@ -41,6 +41,18 @@ fileignoreconfig:
     ignore_detectors: [filename]
   - filename: src/vite-env.d.ts
     ignore_detectors: [filename]
+  - filename: src/lib/basicAuth.spec.ts
+    allowed_patterns:
+      - storeCredentials
+      - password
+      - "pass"
+  - filename: src/lib/basicAuth.ts
+    allowed_patterns:
+      - portalBasicAuthCredentials
+      - credentials
+      - Passwort
+      - password
+      - STORAGE_KEY
 scopeconfig:
   - scope: node
 allowed_patterns:
