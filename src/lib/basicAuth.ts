@@ -61,11 +61,49 @@ function toAuthorizationHeader(credentials: Credentials): string {
 }
 
 /**
+ * Performs a single fetch attempt with the given credentials attached as an
+ * `Authorization: Basic ...` header.
+ *
+ * Because `Authorization` is a non-simple header, the browser will send a
+ * CORS preflight (`OPTIONS`) request first. If the server rejects that
+ * preflight (e.g. because it also requires authentication for `OPTIONS`,
+ * or otherwise fails the CORS checks), `fetch` doesn't resolve with a
+ * `401` response at all - it rejects with a generic network error (e.g.
+ * `TypeError: Failed to fetch`). To treat that the same as an
+ * authentication failure, such errors are caught and represented as a
+ * synthetic `401` response.
+ *
+ * @param url URL to fetch
+ * @param init Optional fetch options
+ * @param credentials Credentials to authenticate with
+ * @returns The fetch `Response`, or a synthetic `401` response if the
+ *  request failed (e.g. due to a CORS/auth-related network error).
+ */
+async function attemptFetch(
+  url: RequestInfo | URL,
+  init: RequestInit | undefined,
+  credentials: Credentials,
+): Promise<Response> {
+  try {
+    return await fetch(url, {
+      ...init,
+      headers: {
+        ...init?.headers,
+        Authorization: toAuthorizationHeader(credentials),
+      },
+    })
+  } catch {
+    return new Response(null, { status: 401 })
+  }
+}
+
+/**
  * Performs a `fetch` request with an `Authorization: Basic ...` header,
  * using stored credentials or prompting the user for them if none are
- * stored yet. If the server responds with `401`, stored credentials are
- * cleared, the user is prompted again, and the request is retried exactly
- * once.
+ * stored yet. If the server responds with `401` - or the request fails
+ * outright, e.g. because a CORS preflight was rejected due to bad
+ * credentials - stored credentials are cleared, the user is prompted
+ * again, and the request is retried exactly once.
  *
  * @param url URL to fetch
  * @param init Optional fetch options; any `headers` provided will be merged
@@ -86,13 +124,7 @@ async function fetchWithBasicAuth(
     storeCredentials(credentials)
   }
 
-  const response = await fetch(url, {
-    ...init,
-    headers: {
-      ...init?.headers,
-      Authorization: toAuthorizationHeader(credentials),
-    },
-  })
+  const response = await attemptFetch(url, init, credentials)
 
   if (response.status !== 401) {
     return response
@@ -105,13 +137,7 @@ async function fetchWithBasicAuth(
   }
   storeCredentials(retryCredentials)
 
-  return fetch(url, {
-    ...init,
-    headers: {
-      ...init?.headers,
-      Authorization: toAuthorizationHeader(retryCredentials),
-    },
-  })
+  return attemptFetch(url, init, retryCredentials)
 }
 
 export {

@@ -132,5 +132,38 @@ describe("basicAuth", () => {
       )
       expect(fetch).toHaveBeenCalledTimes(1)
     })
+
+    test("treats a rejected fetch (e.g. CORS preflight failure) as a 401 and retries once", async () => {
+      storeCredentials({ username: "user", password: "wrong" })
+      vi.spyOn(window, "prompt")
+        .mockReturnValueOnce("user")
+        .mockReturnValueOnce("correct")
+      vi.mocked(fetch)
+        .mockRejectedValueOnce(new TypeError("Failed to fetch"))
+        .mockResolvedValueOnce({ status: 200, ok: true } as Response)
+
+      const response = await fetchWithBasicAuth("https://example.com")
+
+      expect(response.status).toBe(200)
+      expect(fetch).toHaveBeenCalledTimes(2)
+      expect(fetch).toHaveBeenNthCalledWith(2, "https://example.com", {
+        headers: { Authorization: `Basic ${btoa("user:correct")}` },
+      })
+      expect(getCredentials()).toEqual({
+        username: "user",
+        password: "correct",
+      })
+    })
+
+    test("throws when retry prompt is cancelled after a rejected fetch", async () => {
+      storeCredentials({ username: "user", password: "wrong" })
+      vi.spyOn(window, "prompt").mockReturnValue(null)
+      vi.mocked(fetch).mockRejectedValue(new TypeError("Failed to fetch"))
+
+      await expect(fetchWithBasicAuth("https://example.com")).rejects.toThrow(
+        "Basic auth credentials are required",
+      )
+      expect(fetch).toHaveBeenCalledTimes(1)
+    })
   })
 })
