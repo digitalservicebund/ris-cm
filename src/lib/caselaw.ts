@@ -59,12 +59,21 @@ async function fetchFromPortalApi(
   documentNumber: string,
 ): Promise<CaselawDocument | null> {
   const env = await getEnv()
-  const url = `${env.portalBaseUrl}/v1/case-law/${encodeURIComponent(documentNumber)}`
+  const jsonUrl = `${env.portalBaseUrl}/v1/case-law/${encodeURIComponent(documentNumber)}`
+  const xmlUrl = `${env.portalBaseUrl}/v1/case-law/${encodeURIComponent(documentNumber)}.xml`
 
   try {
+    // the json endpoint is cached for a bit so we need to check the xml to know if a document is still available
+    const xmlResponse = env.portalBasicAuth
+      ? await fetchWithBasicAuth(xmlUrl)
+      : await fetch(xmlUrl)
+    if (xmlResponse.status === 404) {
+      return null
+    }
+
     const response = env.portalBasicAuth
-      ? await fetchWithBasicAuth(url, undefined)
-      : await fetch(url)
+      ? await fetchWithBasicAuth(jsonUrl)
+      : await fetch(jsonUrl)
     if (response.status === 404) {
       return null
     }
