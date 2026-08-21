@@ -3,13 +3,24 @@ import { search, withdraw } from "@/lib/caselaw"
 import type { Env } from "@/lib/env"
 import type { WithdrawResult } from "@/lib/useWithdraw"
 
+const mockGetEnv = vi.fn<() => Promise<Env>>().mockResolvedValue({
+  environment: "local",
+  portalBaseUrl: "https://portal.example.com",
+  caselawSearchUrl: "https://example.com/api/v1/search",
+  caselawWithdrawUrl: "https://example.com/api/v1/withdraw",
+})
+
 vi.mock("@/lib/env", () => ({
-  getEnv: vi.fn<() => Promise<Env>>().mockResolvedValue({
-    environment: "local",
-    portalBaseUrl: "https://portal.example.com",
-    caselawSearchUrl: "https://example.com/api/v1/search",
-    caselawWithdrawUrl: "https://example.com/api/v1/withdraw",
-  }),
+  getEnv: () => mockGetEnv(),
+}))
+
+const mockFetchWithBasicAuth =
+  vi.fn<(url: RequestInfo | URL, init?: RequestInit) => Promise<Response>>()
+vi.mock("@/lib/basicAuth", () => ({
+  fetchWithBasicAuth: (
+    url: RequestInfo | URL,
+    init?: RequestInit | undefined,
+  ) => mockFetchWithBasicAuth(url, init),
 }))
 
 const searchResult = {
@@ -32,6 +43,13 @@ const portalResult = {
 describe("search", () => {
   beforeEach(() => {
     vi.stubGlobal("fetch", vi.fn())
+    mockGetEnv.mockResolvedValue({
+      environment: "local",
+      portalBaseUrl: "https://portal.example.com",
+      caselawSearchUrl: "https://example.com/api/v1/search",
+      caselawWithdrawUrl: "https://example.com/api/v1/withdraw",
+    })
+    mockFetchWithBasicAuth.mockReset()
   })
 
   test("calls the search URL and portal URL with the document number", async () => {
@@ -130,6 +148,34 @@ describe("search", () => {
     await expect(search("KORE500102022")).rejects.toThrow(
       "Search failed (portal): 500",
     )
+  })
+
+  test("uses fetchWithBasicAuth for the portal request when portalBasicAuth is enabled", async () => {
+    mockGetEnv.mockResolvedValue({
+      environment: "local",
+      portalBaseUrl: "https://portal.example.com",
+      caselawSearchUrl: "https://example.com/api/v1/search",
+      caselawWithdrawUrl: "https://example.com/api/v1/withdraw",
+      portalBasicAuth: true,
+    })
+    mockFetchWithBasicAuth.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: () => Promise.resolve(portalResult),
+    } as Response)
+    vi.mocked(fetch).mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: () => Promise.resolve(searchResult),
+    } as Response)
+
+    const results = await search("KORE500102022")
+
+    expect(mockFetchWithBasicAuth).toHaveBeenCalledWith(
+      "https://portal.example.com/v1/case-law/KORE500102022",
+      undefined,
+    )
+    expect(results[0].visibleInPortal).toBe(true)
   })
 })
 

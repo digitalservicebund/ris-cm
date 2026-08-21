@@ -11,6 +11,7 @@ export type Env = {
   portalBaseUrl: string
   caselawSearchUrl: string
   caselawWithdrawUrl: string
+  portalBasicAuth?: boolean
   sentry?: BrowserOptions
 }
 

@@ -1,4 +1,5 @@
 import { useAuthentication } from "@/lib/auth"
+import { fetchWithBasicAuth } from "@/lib/basicAuth"
 import { getEnv } from "@/lib/env"
 import type { WithdrawResult } from "@/lib/useWithdraw"
 
@@ -58,11 +59,12 @@ async function fetchFromPortalApi(
   documentNumber: string,
 ): Promise<CaselawDocument | null> {
   const env = await getEnv()
+  const url = `${env.portalBaseUrl}/v1/case-law/${encodeURIComponent(documentNumber)}`
 
   try {
-    const response = await fetch(
-      `${env.portalBaseUrl}/v1/case-law/${encodeURIComponent(documentNumber)}`,
-    )
+    const response = env.portalBasicAuth
+      ? await fetchWithBasicAuth(url, undefined)
+      : await fetch(url)
     if (response.status === 404) {
       return null
     }
