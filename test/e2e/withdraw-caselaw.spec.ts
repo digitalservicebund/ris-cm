@@ -99,7 +99,8 @@ test.describe(
       ).not.toBeChecked()
     })
 
-    test("move around the tabs", async ({ page }) => {
+    // Disabled until we have a second doc type implemented
+    test.skip("move around the tabs", async ({ page }) => {
       await page.goto("/zurueckziehen/rechtsprechung")
 
       page.getByRole("radio", { name: "Verwaltungsvorschriften" }).check()

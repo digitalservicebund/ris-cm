@@ -52,7 +52,8 @@ test("show header", async () => {
   ).toBeInTheDocument()
 })
 
-test("update navigation when inputting search params", async () => {
+// eslint-disable-next-line vitest/no-disabled-tests -- Disabled until we have a second doctype implemented
+test.skip("update navigation when inputting search params", async () => {
   renderComponent()
   const user = userEvent.setup()
 
