@@ -69,6 +69,7 @@ const handleSearch = () => {
             size="small"
             value="withdraw-adm"
             v-model="documentType"
+            disabled
           />
           <label for="adm-button" class="ml-12">Verwaltungsvorschriften</label>
         </div>
@@ -80,6 +81,7 @@ const handleSearch = () => {
             size="small"
             value="withdraw-literature"
             v-model="documentType"
+            disabled
           />
           <label for="literature-button" class="ml-12"
             >Literaturnachweise</label
