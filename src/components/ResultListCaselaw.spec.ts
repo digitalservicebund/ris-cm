@@ -92,15 +92,15 @@ test("verlinkt auf Portal-Seite der jeweiligen Dokumentnummer", () => {
   const links = screen.getAllByRole("link", { name: "Portal" })
   expect(links[0]).toHaveAttribute(
     "href",
-    "https://portal.example.com/rechtsprechung/KORE123456789",
+    "https://portal.example.com/gerichtsentscheidungen/KORE123456789",
   )
   expect(links[1]).toHaveAttribute(
     "href",
-    "https://portal.example.com/rechtsprechung/KVRE987654321",
+    "https://portal.example.com/gerichtsentscheidungen/KVRE987654321",
   )
   expect(links[2]).toHaveAttribute(
     "href",
-    "https://portal.example.com/rechtsprechung/BSGE112233445",
+    "https://portal.example.com/gerichtsentscheidungen/BSGE112233445",
   )
 })
 
