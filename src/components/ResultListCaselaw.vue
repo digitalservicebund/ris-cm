@@ -14,7 +14,7 @@ const confirm = useConfirm()
 
 function portalUrl(documentNumber: string): string | undefined {
   if (!env.value) return undefined
-  return `${env.value.portalBaseUrl}/rechtsprechung/${documentNumber}`
+  return `${env.value.portalBaseUrl}/gerichtsentscheidungen/${documentNumber}`
 }
 
 const props = defineProps<{
