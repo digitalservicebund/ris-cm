@@ -16,6 +16,10 @@ updates:
       typescript-eslint:
         patterns:
           - "@typescript-eslint/*"
+      typescript-vitest:
+        patterns:
+          - "@vitest/*"
+          - "vitest"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
