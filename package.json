@@ -30,7 +30,7 @@
     "@digitalservicebund/ris-ui": "^4.7.0",
     "@sentry/vue": "^10.74.0",
     "@tailwindcss/postcss": "^4.3.3",
-    "@vueuse/core": "^14.4.0",
+    "@vueuse/core": "^15.0.0",
     "keycloak-js": "^26.2.4",
     "vue": "^3.5.42",
     "vue-router": "^5.3.1"
