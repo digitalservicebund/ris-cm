@@ -16,6 +16,13 @@ export default defineConfig((context) =>
           // attached to the class name.
           modules: { classNameStrategy: "non-scoped" },
         },
+        reporters: [
+          "default",
+          [
+            "html",
+            { singleFile: true, outputDir: "./test-results/unit-tests" },
+          ],
+        ],
         coverage: {
           provider: "istanbul",
           reporter: ["lcov"],
