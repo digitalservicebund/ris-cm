@@ -29,7 +29,7 @@ jobs:
           argocd_server: ${{ secrets.ARGOCD_SERVER_STACKIT }}
       - name: Track deploy
         continue-on-error: true
-        uses: digitalservicebund/track-deployment@5a2815e150e1268983aac5ca04c8c046ed1b614a # v1.0.0
+        uses: digitalservicebund/track-deployment@379b3db3b4ed6c0eab31e057858e842cea4789dc # v1.2.0
         with:
           project: ris-cm
           environment: ${{ inputs.environment }}

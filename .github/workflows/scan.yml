@@ -29,7 +29,7 @@ jobs:
           exit-code: "1" # Fail the build!
       - name: Upload Trivy scan results to GitHub Security tab
         if: ${{ always() && github.ref == 'refs/heads/main' }} # Bypass non-zero exit code..
-        uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63
+        uses: github/codeql-action/upload-sarif@1c5b675653bb5c22dbe9b12b556ec555138e09fd
         with:
           sarif_file: "trivy-results.sarif"
       - name: Upload trivy-results.sarif as an artifact
@@ -39,7 +39,7 @@ jobs:
           name: trivy-results.sarif
           path: trivy-results.sarif
       - name: Send status to Slack
-        uses: digitalservicebund/notify-on-failure-gha@671832f192aee0a068fd92b2f6deb975df794a84 # v1.6.1
+        uses: digitalservicebund/notify-on-failure-gha@9fafd6e97d275a51126f80bec2285a2cf2beb1fc # v1.8.0
         if: ${{ failure() && github.ref == 'refs/heads/main' }}
         with:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
