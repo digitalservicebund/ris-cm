@@ -1,4 +1,4 @@
-FROM node:26.9 AS builder
+FROM node:26.10 AS builder
 WORKDIR /src
 # Required files are whitelisted in dockerignore
 COPY . ./
