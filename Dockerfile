@@ -10,7 +10,7 @@ RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN \
     fi; \
     npm ci --ignore-scripts && npm run build && npm prune --production
 
-FROM cgr.dev/chainguard/nginx@sha256:a104d1995e56b7a15e8f152078dfbdb1ecbf9f9d1af311e7906e7b4c0c790cf2
+FROM cgr.dev/chainguard/nginx@sha256:f77f61de0f1001a54f3186e8a62adcde80c946603b88379263cf6f3bbaab54a7
 COPY --from=builder /src/dist /usr/share/nginx/html/
 COPY nginx /etc/nginx/conf.d/
 EXPOSE 8080
