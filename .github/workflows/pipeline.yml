@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
       - name: Setup Node
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
         with:
           node-version-file: .node-version
           cache: npm
@@ -57,7 +57,7 @@ jobs:
         run: npm run audit:licenses -- --csv --out ./license-report.csv
 
       - name: Upload license report
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: license-reports
           retention-days: 3
@@ -131,7 +131,7 @@ jobs:
           output: "${{ env.PACKAGE_NAME }}-vulnerabilities.json"
 
       - name: Upload cosign vulnerability scan record
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: "${{ env.PACKAGE_NAME }}-vulnerabilities.json"
           path: "${{ env.PACKAGE_NAME }}-vulnerabilities.json"
@@ -209,7 +209,7 @@ jobs:
           ls -l tmp/adr-source
       # License reports
       - name: License reports - Download
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
         with:
           name: license-reports
           path: tmp/license-reports/
@@ -232,7 +232,7 @@ jobs:
           BUCKET_SECRET_ACCESS_KEY: ${{ secrets.REPORTS_BUCKET_SECRET_ACCESS_KEY }}
       # E2E test report
       - name: E2E test reports - Download
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
         with:
           name: e2e-test-report-chromium
           path: tmp/e2e-test-report/
@@ -246,7 +246,7 @@ jobs:
           BUCKET_SECRET_ACCESS_KEY: ${{ secrets.REPORTS_BUCKET_SECRET_ACCESS_KEY }}
       # A11y test report
       - name: A11y test reports - Download
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
         with:
           name: a11y-test-report-chromium
           path: tmp/a11y-test-report/
@@ -260,7 +260,7 @@ jobs:
           BUCKET_SECRET_ACCESS_KEY: ${{ secrets.REPORTS_BUCKET_SECRET_ACCESS_KEY }}
       # Unit test report
       - name: unit test report - download artifact
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
         with:
           name: unit-test-report
           path: tmp/unit-test-report
