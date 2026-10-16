@@ -28,12 +28,14 @@ test.describe("basic a11y test (withdraw caselaw)", () => {
           body: JSON.stringify(mockDocument),
         }),
     )
-    await page.route(`${PORTAL_BASE_URL}/v1/case-law/KORE123456789`, (route) =>
-      route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify(mockPortalDocument),
-      }),
+    await page.route(
+      `${PORTAL_BASE_URL}/v1/rechtsprechung/KORE123456789`,
+      (route) =>
+        route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify(mockPortalDocument),
+        }),
     )
 
     await page.goto(

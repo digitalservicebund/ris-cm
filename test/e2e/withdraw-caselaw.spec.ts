@@ -156,7 +156,7 @@ test.describe(
           }),
       )
       await page.route(
-        `${PORTAL_BASE_URL}/v1/case-law/KORE123456789`,
+        `${PORTAL_BASE_URL}/v1/rechtsprechung/KORE123456789`,
         (route) =>
           route.fulfill({
             status: 200,
@@ -165,7 +165,7 @@ test.describe(
           }),
       )
       await page.route(
-        `${PORTAL_BASE_URL}/v1/case-law/KORE123456789.xml`,
+        `${PORTAL_BASE_URL}/v1/rechtsprechung/KORE123456789.xml`,
         (route) =>
           route.fulfill({
             status: 200,
@@ -183,7 +183,7 @@ test.describe(
           }),
       )
       await page.route(
-        `${PORTAL_BASE_URL}/v1/case-law/KORE234567890`,
+        `${PORTAL_BASE_URL}/v1/rechtsprechung/KORE234567890`,
         (route) =>
           route.fulfill({
             status: 200,
@@ -192,7 +192,7 @@ test.describe(
           }),
       )
       await page.route(
-        `${PORTAL_BASE_URL}/v1/case-law/KORE234567890.xml`,
+        `${PORTAL_BASE_URL}/v1/rechtsprechung/KORE234567890.xml`,
         (route) =>
           route.fulfill({
             status: 200,
@@ -264,7 +264,7 @@ test.describe(
           }),
       )
       await page.route(
-        `${PORTAL_BASE_URL}/v1/case-law/KORE123456789`,
+        `${PORTAL_BASE_URL}/v1/rechtsprechung/KORE123456789`,
         (route) =>
           route.fulfill({
             status: 200,
@@ -273,7 +273,7 @@ test.describe(
           }),
       )
       await page.route(
-        `${PORTAL_BASE_URL}/v1/case-law/KORE123456789.xml`,
+        `${PORTAL_BASE_URL}/v1/rechtsprechung/KORE123456789.xml`,
         (route) =>
           route.fulfill({
             status: 200,
@@ -314,13 +314,15 @@ test.describe(
             status: 404,
           }),
       )
-      await page.route(`${PORTAL_BASE_URL}/v1/case-law/UNKNOWN999`, (route) =>
-        route.fulfill({
-          status: 404,
-        }),
+      await page.route(
+        `${PORTAL_BASE_URL}/v1/rechtsprechung/UNKNOWN999`,
+        (route) =>
+          route.fulfill({
+            status: 404,
+          }),
       )
       await page.route(
-        `${PORTAL_BASE_URL}/v1/case-law/UNKNOWN999.xml`,
+        `${PORTAL_BASE_URL}/v1/rechtsprechung/UNKNOWN999.xml`,
         (route) =>
           route.fulfill({
             status: 404,
@@ -364,14 +366,14 @@ test.describe(
           }),
       )
       await page.route(
-        `${PORTAL_BASE_URL}/v1/case-law/KORE123456789`,
+        `${PORTAL_BASE_URL}/v1/rechtsprechung/KORE123456789`,
         (route) =>
           route.fulfill({
             status: 404,
           }),
       )
       await page.route(
-        `${PORTAL_BASE_URL}/v1/case-law/KORE123456789.xml`,
+        `${PORTAL_BASE_URL}/v1/rechtsprechung/KORE123456789.xml`,
         (route) =>
           route.fulfill({
             status: 404,
@@ -417,7 +419,7 @@ test.describe(
           }),
       )
       await page.route(
-        `${PORTAL_BASE_URL}/v1/case-law/KORE123456789`,
+        `${PORTAL_BASE_URL}/v1/rechtsprechung/KORE123456789`,
         (route) =>
           route.fulfill({
             status: 200,
@@ -426,7 +428,7 @@ test.describe(
           }),
       )
       await page.route(
-        `${PORTAL_BASE_URL}/v1/case-law/KORE123456789.xml`,
+        `${PORTAL_BASE_URL}/v1/rechtsprechung/KORE123456789.xml`,
         (route) =>
           route.fulfill({
             status: 200,
@@ -488,7 +490,7 @@ test.describe(
           }),
       )
       await page.route(
-        `${PORTAL_BASE_URL}/v1/case-law/KORE123456789`,
+        `${PORTAL_BASE_URL}/v1/rechtsprechung/KORE123456789`,
         (route) =>
           route.fulfill({
             status: 200,
@@ -497,7 +499,7 @@ test.describe(
           }),
       )
       await page.route(
-        `${PORTAL_BASE_URL}/v1/case-law/KORE123456789.xml`,
+        `${PORTAL_BASE_URL}/v1/rechtsprechung/KORE123456789.xml`,
         (route) =>
           route.fulfill({
             status: 200,

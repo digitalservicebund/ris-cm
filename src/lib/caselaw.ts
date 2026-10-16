@@ -59,8 +59,8 @@ async function fetchFromPortalApi(
   documentNumber: string,
 ): Promise<CaselawDocument | null> {
   const env = await getEnv()
-  const jsonUrl = `${env.portalBaseUrl}/v1/case-law/${encodeURIComponent(documentNumber)}`
-  const xmlUrl = `${env.portalBaseUrl}/v1/case-law/${encodeURIComponent(documentNumber)}.xml`
+  const jsonUrl = `${env.portalBaseUrl}/v1/rechtsprechung/${encodeURIComponent(documentNumber)}`
+  const xmlUrl = `${env.portalBaseUrl}/v1/rechtsprechung/${encodeURIComponent(documentNumber)}.xml`
 
   try {
     // the json endpoint is cached for a bit so we need to check the xml to know if a document is still available

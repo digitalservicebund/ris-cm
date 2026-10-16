@@ -75,7 +75,7 @@ describe("search", () => {
       expect.anything(),
     )
     expect(fetch).toHaveBeenCalledWith(
-      "https://portal.example.com/v1/case-law/KORE500102022",
+      "https://portal.example.com/v1/rechtsprechung/KORE500102022",
     )
     expect(results[0].visibleInPortal).toBe(true)
   })
@@ -172,7 +172,7 @@ describe("search", () => {
     const results = await search("KORE500102022")
 
     expect(mockFetchWithBasicAuth).toHaveBeenCalledWith(
-      "https://portal.example.com/v1/case-law/KORE500102022",
+      "https://portal.example.com/v1/rechtsprechung/KORE500102022",
       undefined,
     )
     expect(results[0].visibleInPortal).toBe(true)

@@ -67,3 +67,5 @@ allowed_patterns:
   - https://portal.example.com/gerichtsentscheidungen/KORE123456789
   - https://portal.example.com/gerichtsentscheidungen/KVRE987654321
   - https://portal.example.com/gerichtsentscheidungen/BSGE112233445
+  - KORE234567890
+  - KORE123456789
