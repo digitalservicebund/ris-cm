@@ -11,7 +11,7 @@ Accepted
 We will develop a frontend application with user interactions. For this using a frontend-framework greatly simplifies
 what we need to implement.
 
-All other projects in NeuRIS used Vue for building complex frontend applications.
+All other projects in RI Portal used Vue for building complex frontend applications.
 
 ## Decision
 
