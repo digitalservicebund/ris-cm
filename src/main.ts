@@ -2,11 +2,6 @@ import { createApp } from "vue"
 import App from "./App.vue"
 import router from "./router"
 import "@/styles/global.css"
-import { RisUiLocale, RisUiTheme } from "@digitalservicebund/ris-ui/primevue"
-import PrimeVue from "primevue/config"
-import ConfirmationService from "primevue/confirmationservice"
-import Tooltip from "primevue/tooltip"
-import "@digitalservicebund/ris-ui/fonts.css"
 import { useAuthentication } from "./lib/auth"
 import { getEnv } from "@/lib/env"
 import { useFavicon } from "@vueuse/core"
@@ -17,16 +12,7 @@ try {
   const env = await getEnv()
 
   // Initialize Vue application
-  const app = createApp(App)
-    .use(router)
-    .use(PrimeVue, {
-      unstyled: true,
-      pt: RisUiTheme,
-      locale: RisUiLocale.deDE,
-    })
-    .use(Sentry, { env, router })
-    .use(ConfirmationService)
-    .directive("tooltip", Tooltip)
+  const app = createApp(App).use(router).use(Sentry, { env, router })
 
   if (env.auth) {
     const auth = useAuthentication()
