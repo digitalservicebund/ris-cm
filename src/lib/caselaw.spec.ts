@@ -8,6 +8,8 @@ const mockGetEnv = vi.fn<() => Promise<Env>>().mockResolvedValue({
   portalBaseUrl: "https://portal.example.com",
   caselawSearchUrl: "https://example.com/api/v1/search",
   caselawWithdrawUrl: "https://example.com/api/v1/withdraw",
+  admVVBundSearchUrl: "https://example.com/api/v1/adm-search",
+  admVVBundWithdrawUrl: "https://example.com/api/v1/adm-withdraw",
 })
 
 vi.mock("@/lib/env", () => ({
@@ -48,6 +50,8 @@ describe("search", () => {
       portalBaseUrl: "https://portal.example.com",
       caselawSearchUrl: "https://example.com/api/v1/search",
       caselawWithdrawUrl: "https://example.com/api/v1/withdraw",
+      admVVBundSearchUrl: "https://example.com/api/v1/adm-search",
+      admVVBundWithdrawUrl: "https://example.com/api/v1/adm-withdraw",
     })
     mockFetchWithBasicAuth.mockReset()
   })
@@ -156,6 +160,8 @@ describe("search", () => {
       portalBaseUrl: "https://portal.example.com",
       caselawSearchUrl: "https://example.com/api/v1/search",
       caselawWithdrawUrl: "https://example.com/api/v1/withdraw",
+      admVVBundSearchUrl: "https://example.com/api/v1/adm-search",
+      admVVBundWithdrawUrl: "https://example.com/api/v1/adm-withdraw",
       portalBasicAuth: true,
     })
     mockFetchWithBasicAuth.mockResolvedValue({

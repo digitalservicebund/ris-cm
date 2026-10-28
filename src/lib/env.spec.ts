@@ -23,6 +23,8 @@ const validEnv: Env = {
   portalBaseUrl: "https://portal.example.com",
   caselawSearchUrl: "https://search.example.com",
   caselawWithdrawUrl: "https://withdraw.example.com",
+  admVVBundSearchUrl: "https://adm-search.example.com",
+  admVVBundWithdrawUrl: "https://adm-withdraw.example.com",
 }
 
 describe("getEnv", () => {
@@ -75,6 +77,33 @@ describe("getEnv", () => {
     const { getEnv } = await import("@/lib/env")
     await expect(getEnv()).rejects.toThrow(
       "Missing required config field: caselawWithdrawUrl",
+    )
+  })
+
+  test("throws when admVVBundSearchUrl field is missing", async () => {
+    mockFetch({
+      environment: "local",
+      portalBaseUrl: "https://portal.example.com",
+      caselawSearchUrl: "https://search.example.com",
+      caselawWithdrawUrl: "https://withdraw.example.com",
+    })
+    const { getEnv } = await import("@/lib/env")
+    await expect(getEnv()).rejects.toThrow(
+      "Missing required config field: admVVBundSearchUrl",
+    )
+  })
+
+  test("throws when admVVBundWithdrawUrl field is missing", async () => {
+    mockFetch({
+      environment: "local",
+      portalBaseUrl: "https://portal.example.com",
+      caselawSearchUrl: "https://search.example.com",
+      caselawWithdrawUrl: "https://withdraw.example.com",
+      admVVBundSearchUrl: "https://adm-search.example.com",
+    })
+    const { getEnv } = await import("@/lib/env")
+    await expect(getEnv()).rejects.toThrow(
+      "Missing required config field: admVVBundWithdrawUrl",
     )
   })
 
