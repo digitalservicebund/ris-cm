@@ -3,7 +3,7 @@ import { useAuthentication } from "@/lib/auth"
 import IconPermIdentity from "~icons/ic/baseline-perm-identity"
 import { computed, ref } from "vue"
 import Menu from "primevue/menu"
-import Button from "primevue/button"
+import Button from "./ui/Button.vue"
 import type { MenuItem } from "primevue/menuitem"
 
 const { getUsername, getLogoutLink, getAccountLink, isConfigured } =

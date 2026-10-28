@@ -11,7 +11,7 @@
 import { computed, ref, watch } from "vue"
 import { useRouter } from "vue-router"
 import Message from "primevue/message"
-import Button from "primevue/button"
+import Button from "./ui/Button.vue"
 import IconArrowBack from "~icons/ic/baseline-arrow-back"
 import IconArrowForward from "~icons/ic/baseline-arrow-forward"
 import type { WithdrawResult } from "@/lib/useWithdraw"
