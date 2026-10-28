@@ -2,8 +2,6 @@ import { ref } from "vue"
 import { render, waitFor } from "@testing-library/vue"
 import { createRouter, createWebHistory } from "vue-router"
 import { describe, test, expect, vi, beforeEach } from "vitest"
-import PrimeVue from "primevue/config"
-import ConfirmationService from "primevue/confirmationservice"
 import WithdrawAdmResult from "@/views/WithdrawAdmResult.vue"
 import type { AdministrativeDirectiveSearchResult } from "@/lib/administrativeDirective"
 import { search } from "@/lib/administrativeDirective"
@@ -43,7 +41,7 @@ const router = createRouter({
 function renderWithState(state: Record<string, unknown>) {
   globalThis.history.replaceState({ ...globalThis.history.state, ...state }, "")
   return render(WithdrawAdmResult, {
-    global: { plugins: [router, PrimeVue, ConfirmationService] },
+    global: { plugins: [router] },
   })
 }
 

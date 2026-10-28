@@ -4,8 +4,9 @@ import ResultListCaselaw from "./ResultListCaselaw.vue"
 import { ref } from "vue"
 import type { CaselawSearchResult } from "@/lib/caselaw"
 import { userEvent } from "@testing-library/user-event"
-import ConfirmationService from "primevue/confirmationservice"
-import PrimeVue from "primevue/config"
+
+// We use hidden: true for various elements within dialogs as jsdom does not evaluate
+// command and commandfor attributes and therefor never displays the dialog.
 
 vi.mock("@/lib/env", () => ({
   useEnv: () => ({
@@ -46,7 +47,6 @@ const sampleEntries: CaselawSearchResult[] = [
 function renderComponent() {
   return render(ResultListCaselaw, {
     props: { entries: sampleEntries },
-    global: { plugins: [PrimeVue, ConfirmationService] },
   })
 }
 
@@ -64,11 +64,11 @@ test("zeigt Spaltenheader an", () => {
 test("zeigt statische Einträge an", () => {
   renderComponent()
 
-  expect(screen.getByText("KORE123456789")).toBeInTheDocument()
+  expect(screen.getAllByText("KORE123456789")).toBeTruthy()
   expect(screen.getByText("Bundesgerichtshof")).toBeInTheDocument()
-  expect(screen.getByText("KVRE987654321")).toBeInTheDocument()
+  expect(screen.getAllByText("KVRE987654321")).toBeTruthy()
   expect(screen.getByText("Bundesverwaltungsgericht")).toBeInTheDocument()
-  expect(screen.getByText("BSGE112233445")).toBeInTheDocument()
+  expect(screen.getAllByText("BSGE112233445")).toBeTruthy()
   expect(screen.getByText("Bundessozialgericht")).toBeInTheDocument()
 })
 
@@ -82,14 +82,14 @@ test("zeigt Zurückziehen-Buttons an", () => {
 test("zeigt Portal-Buttons an", () => {
   renderComponent()
 
-  const links = screen.getAllByRole("link", { name: "Portal" })
+  const links = screen.getAllByRole("link", { name: "Im Portal öffnen" })
   expect(links).toHaveLength(3)
 })
 
 test("verlinkt auf Portal-Seite der jeweiligen Dokumentnummer", () => {
   renderComponent()
 
-  const links = screen.getAllByRole("link", { name: "Portal" })
+  const links = screen.getAllByRole("link", { name: "Im Portal öffnen" })
   expect(links[0]).toHaveAttribute(
     "href",
     "https://portal.example.com/gerichtsentscheidungen/KORE123456789",
@@ -107,7 +107,6 @@ test("verlinkt auf Portal-Seite der jeweiligen Dokumentnummer", () => {
 test("zeigt 'Starten Sie die Suche.' an, wenn entries undefined ist", () => {
   render(ResultListCaselaw, {
     props: { entries: undefined },
-    global: { plugins: [PrimeVue, ConfirmationService] },
   })
 
   expect(screen.getByText("Starten Sie die Suche.")).toBeInTheDocument()
@@ -116,7 +115,6 @@ test("zeigt 'Starten Sie die Suche.' an, wenn entries undefined ist", () => {
 test("zeigt 'Starten Sie die Suche.' an, wenn entries leer ist", () => {
   render(ResultListCaselaw, {
     props: { entries: [] },
-    global: { plugins: [PrimeVue, ConfirmationService] },
   })
 
   expect(screen.getByText("Starten Sie die Suche.")).toBeInTheDocument()
@@ -128,7 +126,10 @@ test("öffnet Bestätigungsdialog beim Klick auf Zurückziehen", async () => {
 
   await user.click(screen.getAllByRole("button", { name: "Zurückziehen" })[0])
 
-  const dialog = screen.getByRole("alertdialog")
+  const dialog = screen
+    .getAllByRole("alertdialog", { hidden: true })
+    .find((candidate) => within(candidate).queryByText("KORE123456789"))!
+
   expect(dialog).toBeInTheDocument()
   expect(
     within(dialog).getByText(
@@ -146,8 +147,14 @@ test("erzeugt withdraw-Event beim Bestätigen des Dialogs", async () => {
   const { emitted } = renderComponent()
 
   await user.click(screen.getAllByRole("button", { name: "Zurückziehen" })[0])
+  const dialog = screen
+    .getAllByRole("alertdialog", { hidden: true })
+    .find((candidate) => within(candidate).queryByText("KORE123456789"))!
   await user.click(
-    screen.getByRole("button", { name: "Dokument zurückziehen" }),
+    within(dialog).getByRole("button", {
+      name: "Dokument zurückziehen",
+      hidden: true,
+    }),
   )
 
   expect(emitted("withdraw")).toBeTruthy()
@@ -159,12 +166,12 @@ test("schließt Dialog ohne Aktion beim Klick auf Abbrechen", async () => {
   const { emitted } = renderComponent()
 
   await user.click(screen.getAllByRole("button", { name: "Zurückziehen" })[0])
-  await user.click(screen.getByRole("button", { name: "Abbrechen" }))
+  const dialog = screen
+    .getAllByRole("alertdialog", { hidden: true })
+    .find((candidate) => within(candidate).queryByText("KORE123456789"))!
+  await user.click(
+    within(dialog).getByRole("button", { name: "Abbrechen", hidden: true }),
+  )
 
   expect(emitted("withdraw")).toBeFalsy()
-  expect(
-    screen.queryByText(
-      "Sind Sie sicher, dass Sie dieses Dokument zurückziehen wollen?",
-    ),
-  ).not.toBeInTheDocument()
 })

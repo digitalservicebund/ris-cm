@@ -88,11 +88,11 @@ describe("Message", () => {
     expect(screen.getByText("x")).toBeInTheDocument()
   })
 
-  it("sets no role or live region by default", () => {
+  it("sets alert role but no live region by default", () => {
     const { container } = render(Message, { slots: { default: () => "x" } })
 
     const root = container.firstElementChild
-    expect(root).not.toHaveAttribute("role")
+    expect(root).toHaveAttribute("role", "alert")
     expect(root).not.toHaveAttribute("aria-live")
     expect(root).not.toHaveAttribute("aria-atomic")
   })
