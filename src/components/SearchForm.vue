@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import Button from "./ui/Button.vue"
 import RadioButton from "./ui/RadioButton.vue"
-import InputText from "primevue/inputtext"
+import InputText from "./ui/InputText.vue"
 import { useRouter, useRoute } from "vue-router"
 import type { ComputedRef } from "vue"
 import { computed } from "vue"
@@ -19,13 +19,13 @@ const documentType = computed({
   },
 })
 
-const documentNumber: ComputedRef<string | null> = computed({
+const documentNumber: ComputedRef<string | undefined> = computed({
   get: () => {
     const dokumentNumberQueryParameter = route.query?.dokumentnummer
     if (Array.isArray(dokumentNumberQueryParameter)) {
-      return dokumentNumberQueryParameter[0]
+      return dokumentNumberQueryParameter[0] ?? undefined
     }
-    return dokumentNumberQueryParameter
+    return dokumentNumberQueryParameter ?? undefined
   },
   set: (newValue) => {
     router.push({ query: { dokumentnummer: newValue } })
