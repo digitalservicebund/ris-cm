@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { RouterView } from "vue-router"
-import Toast from "primevue/toast"
 import Navbar from "@/components/NavbarTop.vue"
 </script>
 
@@ -10,6 +9,5 @@ import Navbar from "@/components/NavbarTop.vue"
     <Suspense>
       <router-view class="grow" />
     </Suspense>
-    <Toast position="bottom-right" />
   </div>
 </template>
