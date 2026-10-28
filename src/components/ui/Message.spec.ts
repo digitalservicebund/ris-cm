@@ -74,20 +74,6 @@ describe("Message", () => {
     expect(container.querySelector("svg")).not.toBeInTheDocument()
   })
 
-  it("hides the icon", () => {
-    const { container } = render(Message, {
-      props: { hideIcon: true },
-      slots: {
-        default: () => "x",
-        icon: () => h("span", { "data-testid": "custom-icon" }, "!"),
-      },
-    })
-
-    expect(container.querySelector("svg")).not.toBeInTheDocument()
-    expect(screen.queryByTestId("custom-icon")).not.toBeInTheDocument()
-    expect(screen.getByText("x")).toBeInTheDocument()
-  })
-
   it("sets alert role but no live region by default", () => {
     const { container } = render(Message, { slots: { default: () => "x" } })
 

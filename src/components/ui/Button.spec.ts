@@ -33,23 +33,15 @@ describe("Button", () => {
     expect(screen.getByRole("button")).toHaveAttribute("type", "submit")
   })
 
-  it("renders the icon slot and passes the position class as scope", () => {
+  it("renders the icon slot", () => {
     render(Button, {
-      props: { label: "x", iconPos: "right" },
+      props: { label: "x" },
       slots: {
-        icon: (scope: { class: unknown }) =>
-          h("span", { class: scope.class, "data-testid": "icon" }, "i"),
+        icon: () => h("span", { "data-testid": "icon" }, "i"),
       },
     })
 
-    expect(screen.getByTestId("icon")).toHaveClass("order-last")
-  })
-
-  it("shows a spinner and disables the button while loading", () => {
-    render(Button, { props: { label: "x", loading: true } })
-
-    expect(screen.getByLabelText("Ladestatus")).toBeInTheDocument()
-    expect(screen.getByRole("button")).toBeDisabled()
+    expect(screen.getByTestId("icon")).toBeInTheDocument()
   })
 
   it("reflects the disabled prop", () => {

@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T extends DataTableRow">
-import { computed, type Component, useTemplateRef } from "vue"
+import { computed } from "vue"
 
 export type DataTableColumn<T> = {
   /**
@@ -17,43 +17,13 @@ export type DataTableColumn<T> = {
 export type DataTableRow = {
   /** Stable identity of the row. */
   key: string
-  /**
-   * Attributes applied onto the row element. Use this to turn rows into links,
-   * e.g. `{ to: "/target" }` together with a link component as `rowAs`, or `{
-   * href: "/target" }` together with `rowAs="a"`.
-   */
-  attrs?: Record<string, unknown>
-  /**
-   * Marks the row as the one currently being displayed. It is highlighted and
-   * announced as the current page.
-   */
-  current?: boolean
 }
 
-const {
-  columns,
-  rowAs = "div",
-  rows,
-} = defineProps<{
+const { columns, rows } = defineProps<{
   /** Columns to render, in order. */
   columns: DataTableColumn<T>[]
-  /**
-   * Element or component used for each row. Pass a link component to make whole
-   * rows navigable; use `row.attrs` to apply props to the component. Rows must
-   * be focusable for the exposed `focusRow` to have an effect.
-   */
-  rowAs?: string | Component
   /** Rows to render, in order. */
   rows: T[]
-
-  /** If true the header row is hidden */
-  hideHeader?: boolean
-
-  /**
-   * If true the first column has reduced left padding on wide viewports, so its
-   * content sits closer to the table's left edge
-   */
-  reducedFirstColumnPadding?: boolean
 }>()
 
 defineSlots<
@@ -79,33 +49,23 @@ const gridTemplateColumns = computed(() =>
     ? `repeat(${columns.length - 1}, auto) minmax(0, 1fr)`
     : "minmax(0, 1fr)",
 )
-
-const list = useTemplateRef("list")
-
-function focusRow(index: number) {
-  list.value?.querySelectorAll<HTMLElement>("[data-row]")[index]?.focus()
-}
-
-defineExpose({ focusRow })
 </script>
 
 <template>
   <ul
-    ref="list"
     class="border-t border-gray-400 md:grid md:grid-cols-(--data-table-columns) md:border-t-0"
     :style="{ '--data-table-columns': gridTemplateColumns }"
   >
     <!-- Decorative: every row repeats the column labels for assistive
          technology, so exposing them here as well would only add noise. -->
     <li
-      v-if="columns.length && !hideHeader && rows.length"
+      v-if="columns.length && rows.length"
       class="hidden border-b border-gray-400 md:col-span-full md:grid md:grid-cols-subgrid"
       aria-hidden="true"
     >
       <span
-        v-for="(column, index) in columns"
+        v-for="column in columns"
         :key="column.key"
-        :class="{ 'md:pl-8': reducedFirstColumnPadding && index === 0 }"
         class="ris-label2-bold flex min-h-48 items-center px-16 py-10"
       >
         {{ column.label }}
@@ -116,23 +76,17 @@ defineExpose({ focusRow })
       <li
         v-for="row in rows"
         :key="row.key"
-        :class="{ 'bg-gray-100': row.current }"
         class="border-b border-gray-400 last:border-b-0 hover:bg-gray-100 md:col-span-full md:grid md:grid-cols-subgrid"
       >
-        <component
-          :is="rowAs"
-          :aria-current="row.current ? 'page' : undefined"
-          data-row
-          class="grid scroll-my-16 grid-cols-[max-content_minmax(0,1fr)] items-center gap-x-16 gap-y-4 p-16 focus-visible:outline-4 focus-visible:-outline-offset-4 focus-visible:outline-blue-800 md:col-span-full md:grid-cols-subgrid md:gap-0 md:p-0"
-          v-bind="row.attrs"
+        <div
+          class="grid scroll-my-16 grid-cols-[max-content_minmax(0,1fr)] items-center gap-x-16 gap-y-4 p-16 md:col-span-full md:grid-cols-subgrid md:gap-0 md:p-0"
         >
-          <template v-for="(column, index) in columns" :key="column.key">
+          <template v-for="column in columns" :key="column.key">
             <span class="typo-label1-bold flex min-h-32 items-center md:sr-only"
               >{{ column.label }}:</span
             >
             {{ " " }}
             <span
-              :class="{ 'md:pl-8': reducedFirstColumnPadding && index === 0 }"
               class="typo-label1-regular flex min-h-32 items-center md:min-h-48 md:px-16 md:py-10"
             >
               <slot :name="`cell-${column.key}`" :row="row" :column="column">
@@ -141,7 +95,7 @@ defineExpose({ focusRow })
             </span>
             {{ " " }}
           </template>
-        </component>
+        </div>
       </li>
     </template>
 

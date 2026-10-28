@@ -1,13 +1,10 @@
-import { userEvent } from "@testing-library/user-event"
 import { render, screen } from "@testing-library/vue"
 import { describe, it, expect } from "vitest"
-import { defineComponent, h, ref } from "vue"
+import { h } from "vue"
 import DataTable, { type DataTableColumn } from "./DataTable.vue"
 
 type Row = {
   key: string
-  attrs?: Record<string, unknown>
-  current?: boolean
   fromDate: string
   status: string
 }
@@ -24,9 +21,7 @@ const rows: Row[] = [
 
 type Props = {
   columns: DataTableColumn<Row>[]
-  rowAs?: string
   rows: Row[]
-  hideHeader?: boolean
 }
 
 /**
@@ -42,11 +37,6 @@ function renderTable(
 ) {
   return render(DataTable, { props, ...options } as never)
 }
-
-const linkedRows = rows.map((row) => ({
-  ...row,
-  attrs: { href: `/${row.key}` },
-}))
 
 describe("DataTable", () => {
   it("renders a list with one item per row", () => {
@@ -77,49 +67,11 @@ describe("DataTable", () => {
     expect(screen.getAllByText("Gültig ab:")).toHaveLength(2)
   })
 
-  it("omits the header row but keeps the per-row labels when hideHeader is set", () => {
-    renderTable({ columns, rows, hideHeader: true })
-
-    expect(screen.queryByText("Gültig ab")).not.toBeInTheDocument()
-    expect(screen.getAllByText("Gültig ab:")).toHaveLength(2)
-  })
-
   it("keeps the decorative header row out of the accessibility tree", () => {
     renderTable({ columns, rows })
 
     // Would be 3 if the header row were exposed as a list item
     expect(screen.getAllByRole("listitem")).toHaveLength(2)
-  })
-
-  it("renders rows as links when rowAs and attrs are given", () => {
-    renderTable({ columns, rowAs: "a", rows: linkedRows })
-
-    const links = screen.getAllByRole("link")
-    expect(links).toHaveLength(2)
-    expect(links[0]).toHaveAttribute("href", "/a")
-    expect(links[1]).toHaveAttribute("href", "/b")
-  })
-
-  it("gives each row link an accessible name built from labels and values", () => {
-    renderTable({ columns, rowAs: "a", rows: [linkedRows[0]!] })
-
-    expect(
-      screen.getByRole("link", {
-        name: "Gültig ab: 27.10.2026 Status: Zukünftig in Kraft",
-      }),
-    ).toBeInTheDocument()
-  })
-
-  it("marks the current row as the current page", () => {
-    renderTable({
-      columns,
-      rowAs: "a",
-      rows: linkedRows.map((row) => ({ ...row, current: row.key === "b" })),
-    })
-
-    const links = screen.getAllByRole("link")
-    expect(links[0]).not.toHaveAttribute("aria-current")
-    expect(links[1]).toHaveAttribute("aria-current", "page")
   })
 
   it("renders the cell slot and passes row and column as scope", () => {
@@ -155,26 +107,5 @@ describe("DataTable", () => {
     renderTable({ columns, rows }, { attrs: { "aria-label": "Fassungen" } })
 
     expect(screen.getByRole("list", { name: "Fassungen" })).toBeInTheDocument()
-  })
-
-  it("moves focus to the row at the given index, not counting the header", async () => {
-    const user = userEvent.setup()
-    const Host = defineComponent(() => {
-      const table = ref<{ focusRow: (index: number) => void }>()
-      return () => [
-        h(DataTable, {
-          ref: table,
-          columns,
-          rowAs: "a",
-          rows: linkedRows,
-        } as never),
-        h("button", { onClick: () => table.value?.focusRow(1) }, "Fokus"),
-      ]
-    })
-    render(Host)
-
-    await user.click(screen.getByRole("button", { name: "Fokus" }))
-
-    expect(screen.getByRole("link", { name: /Aktuell gültig/ })).toHaveFocus()
   })
 })

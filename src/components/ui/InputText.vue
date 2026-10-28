@@ -1,49 +1,25 @@
 <script setup lang="ts">
-import { computed, useAttrs, useTemplateRef, type StyleValue } from "vue"
+import { computed, useTemplateRef } from "vue"
 import { tw } from "./tags"
 
 const props = withDefaults(
   defineProps<{
-    fluid?: boolean
     size?: "small" | "large"
   }>(),
   {
-    fluid: false,
     size: "small",
   },
 )
 
 const model = defineModel<string>()
 
-const emit = defineEmits<{
-  clear: []
-}>()
-
 const inputRef = useTemplateRef<HTMLInputElement>("inputRef")
-
-const attrs = useAttrs()
 
 // The template ref is the underlying input, so consumers can focus it or set
 // the selection range (see DataFieldPicker).
 defineExpose({ input: inputRef })
 
 defineOptions({ inheritAttrs: false })
-
-// Attributes ---------------------------------------------
-
-// `class` and `style` always target the root element, which is the wrapper when
-// the clear button is rendered. Everything else goes to the input. Vue
-// normalizes both before they reach `attrs`.
-const rootClass = computed(() => attrs.class as string | undefined)
-
-const rootStyle = computed(() => attrs.style as StyleValue)
-
-const inputAttrs = computed(() => {
-  const rest = { ...attrs }
-  delete rest.class
-  delete rest.style
-  return rest
-})
 
 // Classes ------------------------------------------------
 
@@ -53,15 +29,12 @@ const small = tw`typo-label2-regular h-48 px-16 py-4`
 
 const large = tw`typo-label1-regular h-64 px-24 py-4`
 
-const clearButtonFocus = tw`group-has-[button:focus-visible]/input:outline-4 group-has-[button:focus-visible]/input:-outline-offset-4 not-aria-[invalid]:group-has-[button:focus-visible]/input:outline-blue-800`
-
-// Combines the two size variants and the clear-button-related adjustments;
-// used identically by both template branches below.
+// Combines the two size variants; used identically by both template branches
+// below.
 const inputClass = computed(() => ({
   [base]: true,
   [large]: props.size === "large",
   [small]: props.size === "small",
-  "w-full": props.fluid,
 }))
 </script>
 
