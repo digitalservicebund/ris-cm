@@ -75,7 +75,6 @@ function confirmWithdraw(documentNumber: string) {
       <div class="flex flex-row justify-end gap-8">
         <Button
           v-if="!props.readonly"
-          v-tooltip.bottom="'Aus Portal entfernen'"
           aria-label="Zurückziehen"
           label="Zurückziehen"
           severity="secondary"
@@ -87,8 +86,8 @@ function confirmWithdraw(documentNumber: string) {
           </template>
         </Button>
         <Button
-          v-tooltip.bottom="'Portal'"
-          aria-label="Portal"
+          aria-label="Im Portal öffnen"
+          label="Im Portal öffnen"
           as="a"
           :href="portalUrl(row.documentNumber)"
           target="_blank"
