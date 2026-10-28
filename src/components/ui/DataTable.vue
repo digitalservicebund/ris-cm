@@ -106,7 +106,7 @@ defineExpose({ focusRow })
         v-for="(column, index) in columns"
         :key="column.key"
         :class="{ 'md:pl-8': reducedFirstColumnPadding && index === 0 }"
-        class="typo-label1-bold flex min-h-48 items-center px-16 py-10"
+        class="ris-label2-bold flex min-h-48 items-center px-16 py-10"
       >
         {{ column.label }}
       </span>
