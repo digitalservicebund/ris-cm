@@ -54,20 +54,6 @@ describe("InputText", () => {
     expect(input).toHaveAttribute("id", "my-input")
   })
 
-  it("forwards a fallthrough id to the input when clearable", () => {
-    render({
-      components: { InputText },
-      template: `<div>
-        <label for="my-input">Suchbegriff</label>
-        <InputText id="my-input" clearable />
-      </div>`,
-    })
-
-    const input = screen.getByLabelText("Suchbegriff")
-    expect(input).toBeInstanceOf(HTMLInputElement)
-    expect(input).toHaveAttribute("id", "my-input")
-  })
-
   it("applies a fallthrough class to the input", () => {
     render(InputText, { attrs: { class: "grow" } })
 

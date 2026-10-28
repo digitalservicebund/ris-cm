@@ -5,9 +5,8 @@ import IcBaselineWarningAmber from "~icons/ic/baseline-warning-amber"
 import IcOutlineInfo from "~icons/ic/outline-info"
 import { tw } from "./tags"
 
-const { severity = "info", hideIcon = false } = defineProps<{
+const { severity = "info" } = defineProps<{
   severity?: Severity
-  hideIcon?: boolean
 }>()
 
 const variants: Record<
@@ -56,7 +55,6 @@ export type Severity = "success" | "info" | "warn" | "error"
     -->
     <div class="flex items-baseline gap-8">
       <span
-        v-if="!hideIcon"
         class="flex h-[1lh] flex-none items-center before:content-['\200b'] [&>svg]:size-20"
         :class="variant.iconColor"
       >
