@@ -81,7 +81,7 @@ async function fetchFromPortalApi(
       documentNumber: result.documentNumber ?? documentNumber,
     }
   } catch (error) {
-    throw new Error(`Search failed (adm vv-bund backend): ${error}`, {
+    throw new Error(`Search failed (portal): ${error}`, {
       cause: error,
     })
   }
