@@ -3,7 +3,7 @@ import { describe, it, expect } from "vitest"
 import { h } from "vue"
 import Message from "./Message.vue"
 
-const iconFor = (severity: "info" | "warning") =>
+const iconFor = (severity: "info" | "warn") =>
   render(Message, {
     props: { severity },
     slots: { default: () => "x" },
@@ -33,7 +33,7 @@ describe("Message", () => {
     expect(icon).toHaveAttribute("aria-hidden", "true")
   })
 
-  it.each(["success", "info", "warning", "error"] as const)(
+  it.each(["success", "info", "warn", "error"] as const)(
     "renders a default icon for the %s severity",
     (severity) => {
       const { container } = render(Message, {
@@ -46,7 +46,7 @@ describe("Message", () => {
   )
 
   it("renders a different default icon per severity", () => {
-    expect(iconFor("info")).not.toEqual(iconFor("warning"))
+    expect(iconFor("info")).not.toEqual(iconFor("warn"))
   })
 
   it("swaps the default icon when the severity changes", async () => {
@@ -57,7 +57,7 @@ describe("Message", () => {
 
     const asInfo = container.querySelector("svg")?.innerHTML
 
-    await rerender({ severity: "warning" })
+    await rerender({ severity: "warn" })
 
     expect(container.querySelector("svg")?.innerHTML).not.toEqual(asInfo)
   })
