@@ -10,7 +10,7 @@
 
 import { computed, ref, watch } from "vue"
 import { useRouter } from "vue-router"
-import Message from "primevue/message"
+import Message from "./ui/Message.vue"
 import Button from "./ui/Button.vue"
 import IconArrowBack from "~icons/ic/baseline-arrow-back"
 import IconArrowForward from "~icons/ic/baseline-arrow-forward"

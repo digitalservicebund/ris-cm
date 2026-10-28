@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onMounted, watch } from "vue"
 import { useRoute, useRouter } from "vue-router"
-import Message from "primevue/message"
+import Message from "@/components/ui/Message.vue"
 import SearchForm from "@/components/SearchForm.vue"
 import ResultListCaselaw from "@/components/ResultListCaselaw.vue"
 import { search, withdraw } from "@/lib/caselaw"
