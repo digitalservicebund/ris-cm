@@ -6,10 +6,10 @@ import type { WithdrawResult } from "@/lib/useWithdraw"
 const mockGetEnv = vi.fn<() => Promise<Env>>().mockResolvedValue({
   environment: "local",
   portalBaseUrl: "https://portal.example.com",
-  caselawSearchUrl: "https://example.com/api/v1/search",
-  caselawWithdrawUrl: "https://example.com/api/v1/withdraw",
-  admVVBundSearchUrl: "https://example.com/api/v1/adm-search",
-  admVVBundWithdrawUrl: "https://example.com/api/v1/adm-withdraw",
+  caselawSearchUrl: "http://caselaw.example.com/api/v1/search",
+  caselawWithdrawUrl: "http://caselaw.example.com/api/v1/withdraw",
+  admVVBundSearchUrl: "http://adm-vvbund.example.com/api/v1/search",
+  admVVBundWithdrawUrl: "http://adm-vvbund.example.com/api/v1/withdraw",
 })
 
 vi.mock("@/lib/env", () => ({
@@ -48,10 +48,10 @@ describe("search", () => {
     mockGetEnv.mockResolvedValue({
       environment: "local",
       portalBaseUrl: "https://portal.example.com",
-      caselawSearchUrl: "https://example.com/api/v1/search",
-      caselawWithdrawUrl: "https://example.com/api/v1/withdraw",
-      admVVBundSearchUrl: "https://example.com/api/v1/adm-search",
-      admVVBundWithdrawUrl: "https://example.com/api/v1/adm-withdraw",
+      caselawSearchUrl: "http://caselaw.example.com/api/v1/search",
+      caselawWithdrawUrl: "http://caselaw.example.com/api/v1/withdraw",
+      admVVBundSearchUrl: "http://adm-vvbund.example.com/api/v1/search",
+      admVVBundWithdrawUrl: "http://adm-vvbund.example.com/api/v1/withdraw",
     })
     mockFetchWithBasicAuth.mockReset()
   })
@@ -75,7 +75,7 @@ describe("search", () => {
     const results = await search("KORE500102022")
 
     expect(fetch).toHaveBeenCalledWith(
-      "https://example.com/api/v1/search?document-number=KORE500102022",
+      "http://caselaw.example.com/api/v1/search?document-number=KORE500102022",
       expect.anything(),
     )
     expect(fetch).toHaveBeenCalledWith(
@@ -158,10 +158,10 @@ describe("search", () => {
     mockGetEnv.mockResolvedValue({
       environment: "local",
       portalBaseUrl: "https://portal.example.com",
-      caselawSearchUrl: "https://example.com/api/v1/search",
-      caselawWithdrawUrl: "https://example.com/api/v1/withdraw",
-      admVVBundSearchUrl: "https://example.com/api/v1/adm-search",
-      admVVBundWithdrawUrl: "https://example.com/api/v1/adm-withdraw",
+      caselawSearchUrl: "http://caselaw.example.com/api/v1/search",
+      caselawWithdrawUrl: "http://caselaw.example.com/api/v1/withdraw",
+      admVVBundSearchUrl: "http://adm-vvbund.example.com/api/v1/search",
+      admVVBundWithdrawUrl: "http://adm-vvbund.example.com/api/v1/withdraw",
       portalBasicAuth: true,
     })
     mockFetchWithBasicAuth.mockResolvedValue({
@@ -204,7 +204,7 @@ describe("withdraw", () => {
     const result = (await withdraw("KORE500102022")) as WithdrawResult
 
     expect(fetch).toHaveBeenCalledWith(
-      "https://example.com/api/v1/withdraw",
+      "http://caselaw.example.com/api/v1/withdraw",
       expect.objectContaining({
         method: "POST",
         body: "KORE500102022",

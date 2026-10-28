@@ -1,10 +1,9 @@
 import { test as base } from "@playwright/test"
 
-export const CASELAW_SEARCH_URL = "http://localhost:9000/api/v1/search"
-export const CASELAW_WITHDRAW_URL = "http://localhost:9000/api/v1/withdraw"
-export const ADM_SEARCH_URL = "http://localhost:9000/api/v1/adm-vv-bund/search"
-export const ADM_WITHDRAW_URL =
-  "http://localhost:9000/api/v1/adm-vv-bund/withdraw"
+export const CASELAW_SEARCH_URL = "http://caselaw.example.com/api/v1/search"
+export const CASELAW_WITHDRAW_URL = "http://caselaw.example.com/api/v1/withdraw"
+export const ADM_SEARCH_URL = "http://adm-vvbund.example.com/api/v1/search"
+export const ADM_WITHDRAW_URL = "http://adm-vvbund.example.com/api/v1/withdraw"
 export const PORTAL_BASE_URL = "https://testphase.rechtsinformationen.bund.de"
 
 export const test = base.extend({
