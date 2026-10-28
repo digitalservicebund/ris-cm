@@ -46,7 +46,9 @@ test.describe("basic a11y test (withdraw administrative directive)", () => {
       "/zurueckziehen/verwaltungsvorschriften?dokumentnummer=KANR100001405",
     )
     await injectAxe(page)
-    await page.getByRole("button", { name: "Zurückziehen" }).click()
+    await page
+      .getByRole("button", { name: "Zurückziehen", exact: true })
+      .click()
     await page.getByRole("button", { name: "Dokument zurückziehen" }).click()
   })
 

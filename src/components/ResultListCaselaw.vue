@@ -5,7 +5,6 @@ import DataTable, {
   type DataTableColumn,
   type DataTableRow,
 } from "./ui/DataTable.vue"
-import { useConfirm } from "primevue/useconfirm"
 import IconOpenInNew from "~icons/ic/baseline-open-in-new"
 import IconVisibilityOff from "~icons/ic/baseline-visibility-off"
 import { useEnv } from "@/lib/env"
@@ -28,7 +27,6 @@ const columns: DataTableColumn<Row>[] = [
 ]
 
 const { env } = useEnv()
-const confirm = useConfirm()
 
 function portalUrl(documentNumber: string): string | undefined {
   if (!env.value) return undefined
@@ -51,35 +49,29 @@ const rows = computed<Row[]>(
 const emit = defineEmits<{
   withdraw: [documentNumber: string]
 }>()
-
-function confirmWithdraw(documentNumber: string) {
-  confirm.require({
-    group: "withdraw",
-    header: "Dokument zurückziehen",
-    message: documentNumber,
-    acceptLabel: "Dokument zurückziehen",
-    rejectLabel: "Abbrechen",
-    accept: () => emit("withdraw", documentNumber),
-  })
-}
 </script>
 
 <template>
-  <WithdrawConfirmDialog />
-
   <DataTable :columns="columns" :rows="rows">
     <template #cell-visibleInPortal="{ row }">
       {{ row.visibleInPortal ? "Ja" : "Nein" }}
     </template>
     <template #cell-actions="{ row }">
       <div class="flex flex-row justify-end gap-8">
+        <WithdrawConfirmDialog
+          dialog-id="confirm-withdraw"
+          :document-number="row.documentNumber"
+          @confirm="$emit('withdraw', row.documentNumber)"
+        />
+
         <Button
           v-if="!props.readonly"
           aria-label="Zurückziehen"
           label="Zurückziehen"
           severity="secondary"
           size="small"
-          @click="confirmWithdraw(row.documentNumber)"
+          command="show-modal"
+          commandfor="confirm-withdraw"
         >
           <template #icon>
             <IconVisibilityOff />

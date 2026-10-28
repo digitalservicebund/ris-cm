@@ -54,7 +54,9 @@ test.describe("basic a11y test (withdraw caselaw)", () => {
       "/zurueckziehen/rechtsprechung?dokumentnummer=KORE123456789",
     )
     await injectAxe(page)
-    await page.getByRole("button", { name: "Zurückziehen" }).click()
+    await page
+      .getByRole("button", { name: "Zurückziehen", exact: true })
+      .click()
     await page.getByRole("button", { name: "Dokument zurückziehen" }).click()
   })
 

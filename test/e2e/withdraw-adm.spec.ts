@@ -97,7 +97,7 @@ test.describe(
       )
       await expectCellInFirstRowOfColumn(table, "Sichtbar im Portal", "Ja")
       await expect(
-        page.getByRole("button", { name: "Zurückziehen" }),
+        page.getByRole("button", { name: "Zurückziehen", exact: true }),
       ).toBeVisible()
       await expect(page.getByLabel("Portal")).toBeVisible()
     })
@@ -144,7 +144,7 @@ test.describe(
         "KANR100001405",
       )
       await expect(
-        page.getByRole("button", { name: "Zurückziehen" }),
+        page.getByRole("button", { name: "Zurückziehen", exact: true }),
       ).toBeVisible()
       await expect(page.getByLabel("Portal")).toBeVisible()
     })
@@ -226,7 +226,7 @@ test.describe(
       )
       await expectCellInFirstRowOfColumn(table, "Sichtbar im Portal", "Nein")
       await expect(
-        page.getByRole("button", { name: "Zurückziehen" }),
+        page.getByRole("button", { name: "Zurückziehen", exact: true }),
       ).toBeVisible()
       await expect(page.getByLabel("Portal")).toBeVisible()
     })
@@ -290,7 +290,9 @@ test.describe(
         "KANR100001405",
       )
 
-      await page.getByRole("button", { name: "Zurückziehen" }).click()
+      await page
+        .getByRole("button", { name: "Zurückziehen", exact: true })
+        .click()
 
       await expect(
         page.getByRole("alertdialog", { name: "Dokument zurückziehen" }),
@@ -317,7 +319,9 @@ test.describe(
         "KANR100001405",
       )
 
-      await page.getByRole("button", { name: "Zurückziehen" }).click()
+      await page
+        .getByRole("button", { name: "Zurückziehen", exact: true })
+        .click()
       await expect(
         page.getByRole("alertdialog", { name: "Dokument zurückziehen" }),
       ).toBeVisible()
@@ -351,7 +355,9 @@ test.describe(
       await page.goto(
         "/zurueckziehen/verwaltungsvorschriften?dokumentnummer=KANR100001405",
       )
-      await page.getByRole("button", { name: "Zurückziehen" }).click()
+      await page
+        .getByRole("button", { name: "Zurückziehen", exact: true })
+        .click()
       await page.getByRole("button", { name: "Dokument zurückziehen" }).click()
 
       await expect(page.getByRole("alert")).toContainText(
@@ -367,7 +373,7 @@ test.describe(
         page.getByRole("button", { name: "Startseite" }),
       ).toBeVisible()
       await expect(
-        page.getByRole("button", { name: "Zurück" }),
+        page.getByRole("button", { name: "Zurück", exact: true }),
       ).not.toBeVisible()
     })
 
@@ -388,14 +394,18 @@ test.describe(
       await page.goto(
         "/zurueckziehen/verwaltungsvorschriften?dokumentnummer=KANR100001405",
       )
-      await page.getByRole("button", { name: "Zurückziehen" }).click()
+      await page
+        .getByRole("button", { name: "Zurückziehen", exact: true })
+        .click()
       await page.getByRole("button", { name: "Dokument zurückziehen" }).click()
 
       await expect(page.getByRole("alert")).toContainText("Nicht gefunden")
       await expect(page.getByRole("alert")).toContainText(
         "Das Dokument konnte nicht gefunden werden.",
       )
-      await expect(page.getByRole("button", { name: "Zurück" })).toBeVisible()
+      await expect(
+        page.getByRole("button", { name: "Zurück", exact: true }),
+      ).toBeVisible()
     })
 
     test("withdraw shows error message on 500 error", async ({ page }) => {
@@ -412,7 +422,9 @@ test.describe(
       await page.goto(
         "/zurueckziehen/verwaltungsvorschriften?dokumentnummer=KANR100001405",
       )
-      await page.getByRole("button", { name: "Zurückziehen" }).click()
+      await page
+        .getByRole("button", { name: "Zurückziehen", exact: true })
+        .click()
       await page.getByRole("button", { name: "Dokument zurückziehen" }).click()
 
       await expect(page.getByRole("alert")).toContainText(
@@ -421,7 +433,9 @@ test.describe(
       await expect(page.getByRole("alert")).toContainText(
         "Das Dokument konnte nicht aus dem Portal entfernt werden: Internal Server Error",
       )
-      await expect(page.getByRole("button", { name: "Zurück" })).toBeVisible()
+      await expect(
+        page.getByRole("button", { name: "Zurück", exact: true }),
+      ).toBeVisible()
     })
 
     test("result page is not reachable by direct URL navigation", async ({
