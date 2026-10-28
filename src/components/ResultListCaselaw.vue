@@ -57,7 +57,7 @@ const emit = defineEmits<{
       {{ row.visibleInPortal ? "Ja" : "Nein" }}
     </template>
     <template #cell-actions="{ row }">
-      <div class="flex flex-row justify-end gap-8">
+      <div class="w-full flex flex-row justify-end gap-8">
         <WithdrawConfirmDialog
           dialog-id="confirm-withdraw"
           :document-number="row.documentNumber"
