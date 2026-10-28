@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/vue"
+import { render, screen, waitFor, within } from "@testing-library/vue"
 import { ref } from "vue"
 import { createRouter, createWebHistory } from "vue-router"
 import { describe, test, expect, vi, beforeEach } from "vitest"
@@ -6,8 +6,9 @@ import WithdrawAdm from "@/views/WithdrawAdm.vue"
 import { userEvent } from "@testing-library/user-event"
 import type { AdministrativeDirectiveSearchResult } from "@/lib/administrativeDirective"
 import type { useEnv } from "@/lib/env"
-import PrimeVue from "primevue/config"
-import ConfirmationService from "primevue/confirmationservice"
+
+// We use hidden: true for various elements within dialogs as jsdom does not evaluate
+// command and commandfor attributes and therefor never displays the dialog.
 
 vi.mock("@/lib/administrativeDirective", () => ({
   search: vi
@@ -50,7 +51,7 @@ const router = createRouter({
 
 function renderComponent() {
   return render(WithdrawAdm, {
-    global: { plugins: [router, PrimeVue, ConfirmationService] },
+    global: { plugins: [router] },
   })
 }
 
@@ -101,7 +102,7 @@ describe("WithdrawAdm", () => {
     await user.click(screen.getByRole("button", { name: "Suche starten" }))
 
     await waitFor(() => {
-      expect(screen.getByText("KANR100001405")).toBeInTheDocument()
+      expect(screen.getAllByText("KANR100001405")).toBeTruthy()
     })
   })
 
@@ -118,12 +119,19 @@ describe("WithdrawAdm", () => {
     await user.click(screen.getByRole("button", { name: "Suche starten" }))
 
     await waitFor(() => {
-      expect(screen.getByText("KANR100001405")).toBeInTheDocument()
+      expect(screen.getAllByText("KANR100001405")).toBeTruthy()
     })
 
     await user.click(screen.getByRole("button", { name: "Zurückziehen" }))
+
+    const dialog = screen
+      .getAllByRole("alertdialog", { hidden: true })
+      .find((candidate) => within(candidate).queryByText("KANR100001405"))!
     await user.click(
-      screen.getByRole("button", { name: "Dokument zurückziehen" }),
+      within(dialog).getByRole("button", {
+        name: "Dokument zurückziehen",
+        hidden: true,
+      }),
     )
 
     await waitFor(() => {
@@ -143,12 +151,19 @@ describe("WithdrawAdm", () => {
     )
     await user.click(screen.getByRole("button", { name: "Suche starten" }))
     await waitFor(() =>
-      expect(screen.getByText("KANR100001405")).toBeInTheDocument(),
+      expect(screen.getAllByText("KANR100001405")).toBeTruthy(),
     )
 
     await user.click(screen.getByRole("button", { name: "Zurückziehen" }))
+
+    const dialog = screen
+      .getAllByRole("alertdialog", { hidden: true })
+      .find((candidate) => within(candidate).queryByText("KANR100001405"))!
     await user.click(
-      screen.getByRole("button", { name: "Dokument zurückziehen" }),
+      within(dialog).getByRole("button", {
+        name: "Dokument zurückziehen",
+        hidden: true,
+      }),
     )
 
     await waitFor(() => {
@@ -179,12 +194,19 @@ describe("WithdrawAdm", () => {
     )
     await user.click(screen.getByRole("button", { name: "Suche starten" }))
     await waitFor(() =>
-      expect(screen.getByText("KANR100001405")).toBeInTheDocument(),
+      expect(screen.getAllByText("KANR100001405")).toBeTruthy(),
     )
 
     await user.click(screen.getByRole("button", { name: "Zurückziehen" }))
+    const dialog = screen
+      .getAllByRole("alertdialog", { hidden: true })
+      .find((candidate) => within(candidate).queryByText("KANR100001405"))!
+
     await user.click(
-      screen.getByRole("button", { name: "Dokument zurückziehen" }),
+      within(dialog).getByRole("button", {
+        name: "Dokument zurückziehen",
+        hidden: true,
+      }),
     )
 
     await waitFor(() => {
