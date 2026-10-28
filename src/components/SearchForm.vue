@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import Button from "./ui/Button.vue"
-import RadioButton from "primevue/radiobutton"
+import RadioButton from "./ui/RadioButton.vue"
 import InputText from "primevue/inputtext"
 import { useRouter, useRoute } from "vue-router"
 import type { ComputedRef } from "vue"
@@ -10,7 +10,7 @@ const router = useRouter()
 const route = useRoute()
 
 const documentType = computed({
-  get: () => route.name,
+  get: () => route.name?.toString(),
   set: (newValue) => {
     router.push({
       name: newValue,
