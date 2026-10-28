@@ -18,14 +18,7 @@ async function expectCellInFirstRowOfColumn(
   columnHeader: string,
   value: string,
 ): Promise<void> {
-  await expect(
-    table.getByRole("columnheader", { name: columnHeader }),
-  ).toBeVisible()
-  const headers = await table.getByRole("columnheader").allTextContents()
-  const colIndex = headers.findIndex((h) => h.trim() === columnHeader)
-  await expect(
-    table.getByRole("row").nth(1).getByRole("cell").nth(colIndex),
-  ).toContainText(value)
+  await expect(table).toContainText(columnHeader + ": " + value)
 }
 
 async function mockEnv(page: Page): Promise<void> {
@@ -96,7 +89,7 @@ test.describe(
         .fill("KANR100001405")
       await page.getByRole("button", { name: "Suche starten" }).click()
 
-      const table = page.getByRole("table")
+      const table = page.getByRole("list")
       await expectCellInFirstRowOfColumn(
         table,
         "Dokumentnummer",
@@ -144,7 +137,7 @@ test.describe(
         "/zurueckziehen/verwaltungsvorschriften?dokumentnummer=KANR100001405",
       )
 
-      const table = page.getByRole("table")
+      const table = page.getByRole("list")
       await expectCellInFirstRowOfColumn(
         table,
         "Dokumentnummer",
@@ -225,7 +218,7 @@ test.describe(
         .fill("KANR100001405")
       await page.getByRole("button", { name: "Suche starten" }).click()
 
-      const table = page.getByRole("table")
+      const table = page.getByRole("list")
       await expectCellInFirstRowOfColumn(
         table,
         "Dokumentnummer",
@@ -290,7 +283,7 @@ test.describe(
         .getByRole("textbox", { name: "Dokumentnummer" })
         .fill("KANR100001405")
       await page.getByRole("button", { name: "Suche starten" }).click()
-      const table = page.getByRole("table")
+      const table = page.getByRole("list")
       await expectCellInFirstRowOfColumn(
         table,
         "Dokumentnummer",
@@ -317,7 +310,7 @@ test.describe(
         .getByRole("textbox", { name: "Dokumentnummer" })
         .fill("KANR100001405")
       await page.getByRole("button", { name: "Suche starten" }).click()
-      const table = page.getByRole("table")
+      const table = page.getByRole("list")
       await expectCellInFirstRowOfColumn(
         table,
         "Dokumentnummer",
@@ -364,7 +357,7 @@ test.describe(
       await expect(page.getByRole("alert")).toContainText(
         "Erfolgreich zurückgezogen.",
       )
-      const table = page.getByRole("table")
+      const table = page.getByRole("list")
       await expectCellInFirstRowOfColumn(
         table,
         "Dokumentnummer",

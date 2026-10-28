@@ -1,13 +1,27 @@
 <script lang="ts" setup>
+import { computed } from "vue"
 import Button from "./ui/Button.vue"
-import Column from "primevue/column"
-import DataTable from "primevue/datatable"
+import DataTable, {
+  type DataTableColumn,
+  type DataTableRow,
+} from "./ui/DataTable.vue"
 import { useConfirm } from "primevue/useconfirm"
 import IconOpenInNew from "~icons/ic/baseline-open-in-new"
 import IconVisibilityOff from "~icons/ic/baseline-visibility-off"
 import { useEnv } from "@/lib/env"
 import { AdministrativeDirectiveSearchResult } from "@/lib/administrativeDirective"
 import WithdrawConfirmDialog from "@/components/WithdrawConfirmDialog.vue"
+
+type Row = DataTableRow &
+  AdministrativeDirectiveSearchResult & {
+    actions?: never
+  }
+
+const columns: DataTableColumn<Row>[] = [
+  { key: "documentNumber", label: "Dokumentnummer" },
+  { key: "visibleInPortal", label: "Sichtbar im Portal" },
+  { key: "actions", label: "" },
+]
 
 const { env } = useEnv()
 const confirm = useConfirm()
@@ -21,6 +35,14 @@ const props = defineProps<{
   entries?: AdministrativeDirectiveSearchResult[]
   readonly?: boolean
 }>()
+
+const rows = computed<Row[]>(
+  () =>
+    props.entries?.map((entry) => ({
+      ...entry,
+      key: entry.documentNumber,
+    })) ?? [],
+)
 
 const emit = defineEmits<{
   withdraw: [documentNumber: string]
@@ -41,51 +63,45 @@ function confirmWithdraw(documentNumber: string) {
 <template>
   <WithdrawConfirmDialog />
 
-  <div
-    v-if="props.entries == null || props.entries.length == 0"
-    class="grid items-center justify-items-center bg-white grow"
-  >
-    Starten Sie die Suche.
-  </div>
-  <DataTable v-else :value="props.entries" class="w-full">
-    <Column field="documentNumber" header="Dokumentnummer" />
-    <Column field="visibleInPortal" header="Sichtbar im Portal">
-      <template #body="{ data }">
-        {{ data.visibleInPortal ? "Ja" : "Nein" }}
-      </template>
-    </Column>
-    <Column header="Aktionen" header-class="sr-only" class="text-right">
-      <template #body="{ data }">
-        <div class="flex flex-row justify-end gap-8">
-          <Button
-            v-if="!props.readonly"
-            v-tooltip.bottom="'Aus Portal entfernen'"
-            aria-label="Zurückziehen"
-            label="Zurückziehen"
-            severity="secondary"
-            size="small"
-            @click="confirmWithdraw(data.documentNumber)"
-          >
-            <template #icon>
-              <IconVisibilityOff />
-            </template>
-          </Button>
-          <Button
-            v-tooltip.bottom="'Portal'"
-            aria-label="Portal"
-            as="a"
-            :href="portalUrl(data.documentNumber)"
-            target="_blank"
-            rel="noopener"
-            severity="secondary"
-            size="small"
-          >
-            <template #icon>
-              <IconOpenInNew />
-            </template>
-          </Button>
-        </div>
-      </template>
-    </Column>
+  <DataTable :columns="columns" :rows="rows">
+    <template #cell-visibleInPortal="{ row }">
+      {{ row.visibleInPortal ? "Ja" : "Nein" }}
+    </template>
+    <template #cell-actions="{ row }">
+      <div class="flex flex-row justify-end gap-8">
+        <Button
+          v-if="!props.readonly"
+          v-tooltip.bottom="'Aus Portal entfernen'"
+          aria-label="Zurückziehen"
+          label="Zurückziehen"
+          severity="secondary"
+          size="small"
+          @click="confirmWithdraw(row.documentNumber)"
+        >
+          <template #icon>
+            <IconVisibilityOff />
+          </template>
+        </Button>
+        <Button
+          v-tooltip.bottom="'Portal'"
+          aria-label="Portal"
+          as="a"
+          :href="portalUrl(row.documentNumber)"
+          target="_blank"
+          rel="noopener"
+          severity="secondary"
+          size="small"
+        >
+          <template #icon>
+            <IconOpenInNew />
+          </template>
+        </Button>
+      </div>
+    </template>
+    <template #empty>
+      <div class="grid items-center justify-items-center bg-white grow">
+        Starten Sie die Suche.
+      </div>
+    </template>
   </DataTable>
 </template>
