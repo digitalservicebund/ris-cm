@@ -1,30 +1,17 @@
 <script setup lang="ts">
 import { useAuthentication } from "@/lib/auth"
 import IconPermIdentity from "~icons/ic/baseline-perm-identity"
-import { computed, ref } from "vue"
-import Menu from "primevue/menu"
+import { ref } from "vue"
 import Button from "./ui/Button.vue"
-import type { MenuItem } from "primevue/menuitem"
 
 const { getUsername, getLogoutLink, getAccountLink, isConfigured } =
   useAuthentication()
 const username = getUsername()
-const userMenu = ref<any>()
+const userMenu = ref<boolean>(false)
 
 function toggleUserMenu(event: MouseEvent) {
-  userMenu.value?.toggle(event)
+  userMenu.value = !userMenu.value
 }
-
-const userMenuIcons = computed<MenuItem[]>(() => [
-  {
-    label: "Konto verwalten (Bare.ID)",
-    url: getAccountLink(),
-  },
-  {
-    label: "Ausloggen",
-    url: getLogoutLink(),
-  },
-])
 </script>
 
 <template>
@@ -37,5 +24,13 @@ const userMenuIcons = computed<MenuItem[]>(() => [
   >
     <template #icon><IconPermIdentity /></template>
   </Button>
-  <Menu ref="userMenu" :model="userMenuIcons" popup />
+
+  <div v-if="userMenu" class="absolute block bg-white">
+    <Button as="a" class="w-full" severity="info" :href="getAccountLink()"
+      >Konto verwalten (Bare.ID)</Button
+    >
+    <Button as="a" class="w-full" severity="info" :href="getLogoutLink()"
+      >Ausloggen</Button
+    >
+  </div>
 </template>
