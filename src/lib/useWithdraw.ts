@@ -44,7 +44,7 @@ export type WithdrawResult =
 export type StatusMessage = {
   title: string
   detail: string
-  severity: "error" | "success" | "info" | "warning"
+  severity: "error" | "success" | "info" | "warn"
 }
 
 export interface UseWithdrawOptions<T> {

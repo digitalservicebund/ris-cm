@@ -24,7 +24,7 @@ const variants: Record<
     root: tw`border-l-blue-800 bg-white`,
     iconColor: tw`text-blue-800`,
   },
-  warning: {
+  warn: {
     icon: IcBaselineWarningAmber,
     root: tw`border-l-yellow-800 bg-yellow-200`,
     iconColor: tw`text-orange-700`,
@@ -40,11 +40,14 @@ const variant = computed(() => variants[severity])
 </script>
 
 <script lang="ts">
-export type Severity = "success" | "info" | "warning" | "error"
+export type Severity = "success" | "info" | "warn" | "error"
 </script>
 
 <template>
-  <div :class="['typo-label2-regular border-l-4 p-16', variant.root]">
+  <div
+    :class="['typo-label2-regular border-l-4 p-16', variant.root]"
+    role="alert"
+  >
     <!--
       The zero-width ::before gives the icon box a text baseline, so the icon
       can align to the baseline of the first line of content. This keeps it
