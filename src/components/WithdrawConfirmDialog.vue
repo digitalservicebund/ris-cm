@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import Chip from "primevue/chip"
 import ConfirmDialog from "primevue/confirmdialog"
 import IconFile from "~icons/ic/baseline-insert-drive-file"
 </script>
@@ -9,11 +8,12 @@ import IconFile from "~icons/ic/baseline-insert-drive-file"
     <template #message="{ message }">
       <div>
         <p>Sind Sie sicher, dass Sie dieses Dokument zurückziehen wollen?</p>
-        <Chip class="w-fit my-4" :label="message.message">
-          <template #icon>
-            <IconFile />
-          </template>
-        </Chip>
+        <div
+          class="w-fit my-4 mr-6 inline-flex items-center rounded-full bg-blue-300 px-12 py-4"
+        >
+          <IconFile />
+          <span>{{ message.message }}</span>
+        </div>
         <p>
           Das Dokument wird aus dem Portal entfernt. Dieser Schritt kann nicht
           rückgängig gemacht werden. Eine Neuveröffentlichung kann dann nur über
