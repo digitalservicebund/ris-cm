@@ -98,7 +98,7 @@ defineExpose({ focusRow })
     <!-- Decorative: every row repeats the column labels for assistive
          technology, so exposing them here as well would only add noise. -->
     <li
-      v-if="columns.length && !hideHeader"
+      v-if="columns.length && !hideHeader && rows.length"
       class="hidden border-b border-gray-400 md:col-span-full md:grid md:grid-cols-subgrid"
       aria-hidden="true"
     >
