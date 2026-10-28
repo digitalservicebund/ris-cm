@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import Button from "primevue/button"
+import Button from "./ui/Button.vue"
 import Column from "primevue/column"
 import DataTable from "primevue/datatable"
 import { useConfirm } from "primevue/useconfirm"

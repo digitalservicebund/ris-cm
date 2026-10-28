@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import Button from "primevue/button"
+import Button from "./ui/Button.vue"
 import RadioButton from "primevue/radiobutton"
 import InputText from "primevue/inputtext"
 import { useRouter, useRoute } from "vue-router"
