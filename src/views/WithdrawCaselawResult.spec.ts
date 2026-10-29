@@ -2,8 +2,6 @@ import { ref } from "vue"
 import { render, waitFor } from "@testing-library/vue"
 import { createRouter, createWebHistory } from "vue-router"
 import { describe, test, expect, vi, beforeEach } from "vitest"
-import PrimeVue from "primevue/config"
-import ConfirmationService from "primevue/confirmationservice"
 import WithdrawCaselawResult from "@/views/WithdrawCaselawResult.vue"
 import type { CaselawSearchResult } from "@/lib/caselaw"
 import { search } from "@/lib/caselaw"
@@ -43,7 +41,7 @@ const router = createRouter({
 function renderWithState(state: Record<string, unknown>) {
   globalThis.history.replaceState({ ...globalThis.history.state, ...state }, "")
   return render(WithdrawCaselawResult, {
-    global: { plugins: [router, PrimeVue, ConfirmationService] },
+    global: { plugins: [router] },
   })
 }
 
@@ -62,7 +60,7 @@ describe("WithdrawCaselawResult", () => {
       )
     })
 
-    test("does not redirect when withdrawResult is set", async () => {
+    test("does not redirect when withdrawResult is set", () => {
       renderWithState({
         withdrawResult: JSON.stringify({
           status: "ERROR",

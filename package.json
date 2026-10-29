@@ -27,7 +27,6 @@
     "check": "npm run typecheck && npm run style:check && npm test && npm run test:e2e && npm run test:a11y"
   },
   "dependencies": {
-    "@digitalservicebund/ris-ui": "^4.7.0",
     "@sentry/vue": "^11.8.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@vueuse/core": "^15.0.0",

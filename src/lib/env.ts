@@ -11,6 +11,8 @@ export type Env = {
   portalBaseUrl: string
   caselawSearchUrl: string
   caselawWithdrawUrl: string
+  admVVBundSearchUrl: string
+  admVVBundWithdrawUrl: string
   portalBasicAuth?: boolean
   sentry?: BrowserOptions
 }
@@ -31,6 +33,12 @@ export const getEnv: () => Promise<Env> = () => {
       }
       if (!env.caselawWithdrawUrl) {
         throw new Error("Missing required config field: caselawWithdrawUrl")
+      }
+      if (!env.admVVBundSearchUrl) {
+        throw new Error("Missing required config field: admVVBundSearchUrl")
+      }
+      if (!env.admVVBundWithdrawUrl) {
+        throw new Error("Missing required config field: admVVBundWithdrawUrl")
       }
       return env as Env
     })

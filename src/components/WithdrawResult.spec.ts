@@ -3,8 +3,6 @@ import { render, screen, waitFor } from "@testing-library/vue"
 import { userEvent } from "@testing-library/user-event"
 import { createRouter, createWebHistory } from "vue-router"
 import { describe, test, expect, vi, beforeEach } from "vitest"
-import PrimeVue from "primevue/config"
-import ConfirmationService from "primevue/confirmationservice"
 import WithdrawResult from "@/components/WithdrawResult.vue"
 import type { CaselawSearchResult } from "@/lib/caselaw"
 import type { WithdrawResult as WithdrawResultType } from "@/lib/useWithdraw"
@@ -52,7 +50,7 @@ function renderComponent(withdrawResult: WithdrawResultType) {
         return entries.map((a) => a.documentNumber).join()
       },
     },
-    global: { plugins: [router, PrimeVue, ConfirmationService] },
+    global: { plugins: [router] },
   })
 }
 

@@ -1,10 +1,11 @@
 import type { RouteRecordRaw } from "vue-router"
 import { createRouter, createWebHistory } from "vue-router"
 import WithdrawCaselaw from "@/views/WithdrawCaselaw.vue"
-import Withdraw from "@/views/Withdraw.vue"
 import WithdrawCaselawResult from "@/views/WithdrawCaselawResult.vue"
 import TranslationsNorms from "@/views/TranslationsNorms.vue"
 import NotFound from "@/views/404NotFound.vue"
+import WithdrawAdm from "@/views/WithdrawAdm.vue"
+import WithdrawAdmResult from "@/views/WithdrawAdmResult.vue"
 
 const routes: readonly RouteRecordRaw[] = [
   {
@@ -28,14 +29,14 @@ const routes: readonly RouteRecordRaw[] = [
         component: WithdrawCaselawResult,
       },
       {
-        path: "literatur",
-        name: "withdraw-literature",
-        component: Withdraw,
-      },
-      {
         path: "verwaltungsvorschriften",
         name: "withdraw-adm",
-        component: Withdraw,
+        component: WithdrawAdm,
+      },
+      {
+        path: "verwaltungsvorschriften/ergebnis",
+        name: "withdraw-adm-result",
+        component: WithdrawAdmResult,
       },
     ],
   },

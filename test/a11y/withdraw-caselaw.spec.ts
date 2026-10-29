@@ -47,7 +47,9 @@ test.describe("basic a11y test (withdraw caselaw)", () => {
 
   test("simple accessibility run", async ({ page }) => {
     await checkA11y(page)
-    await page.getByRole("button", { name: "Zurückziehen" }).click()
+    await page
+      .getByRole("button", { name: "Zurückziehen", exact: true })
+      .click()
     await checkA11y(page)
   })
 
@@ -62,7 +64,9 @@ test.describe("basic a11y test (withdraw caselaw)", () => {
         },
       },
     })
-    await page.getByRole("button", { name: "Zurückziehen" }).click()
+    await page
+      .getByRole("button", { name: "Zurückziehen", exact: true })
+      .click()
     await checkA11y(page, undefined, {
       axeOptions: {
         runOnly: {

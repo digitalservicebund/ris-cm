@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import Button from "primevue/button"
-import RadioButton from "primevue/radiobutton"
-import InputText from "primevue/inputtext"
+import Button from "./ui/Button.vue"
+import RadioButton from "./ui/RadioButton.vue"
+import InputText from "./ui/InputText.vue"
 import { useRouter, useRoute } from "vue-router"
 import type { ComputedRef } from "vue"
 import { computed } from "vue"
@@ -10,7 +10,7 @@ const router = useRouter()
 const route = useRoute()
 
 const documentType = computed({
-  get: () => route.name,
+  get: () => route.name?.toString(),
   set: (newValue) => {
     router.push({
       name: newValue,
@@ -19,13 +19,13 @@ const documentType = computed({
   },
 })
 
-const documentNumber: ComputedRef<string | null> = computed({
+const documentNumber: ComputedRef<string | undefined> = computed({
   get: () => {
     const dokumentNumberQueryParameter = route.query?.dokumentnummer
     if (Array.isArray(dokumentNumberQueryParameter)) {
-      return dokumentNumberQueryParameter[0]
+      return dokumentNumberQueryParameter[0] ?? undefined
     }
-    return dokumentNumberQueryParameter
+    return dokumentNumberQueryParameter ?? undefined
   },
   set: (newValue) => {
     router.push({ query: { dokumentnummer: newValue } })
@@ -69,7 +69,6 @@ const handleSearch = () => {
             size="small"
             value="withdraw-adm"
             v-model="documentType"
-            disabled
           />
           <label for="adm-button" class="ml-12">Verwaltungsvorschriften</label>
         </div>
