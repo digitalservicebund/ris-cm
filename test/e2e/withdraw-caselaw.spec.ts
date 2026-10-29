@@ -1,8 +1,8 @@
 import type { Locator, Page } from "@playwright/test"
 import { test, expect } from "@playwright/test"
 
-const CASELAW_SEARCH_URL = "http://localhost:9000/api/v1/search"
-const CASELAW_WITHDRAW_URL = "http://localhost:9000/api/v1/withdraw"
+const CASELAW_SEARCH_URL = "http://caselaw.example.com/api/v1/search"
+const CASELAW_WITHDRAW_URL = "http://caselaw.example.com/api/v1/withdraw"
 const PORTAL_BASE_URL = "https://testphase.rechtsinformationen.bund.de"
 
 const mockDocument = {
@@ -62,6 +62,8 @@ async function mockEnv(page: Page): Promise<void> {
         portalBaseUrl: PORTAL_BASE_URL,
         caselawSearchUrl: CASELAW_SEARCH_URL,
         caselawWithdrawUrl: CASELAW_WITHDRAW_URL,
+        admVVBundSearchUrl: "http://adm-vvbund.example.com/api/v1/search",
+        admVVBundWithdrawUrl: "http://adm-vvbund.example.com/api/v1/withdraw",
       }),
     }),
   )
