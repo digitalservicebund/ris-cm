@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@digitalservicebund/ris-ui": "^4.7.0",
-    "@sentry/vue": "^11.9.0",
+    "@sentry/vue": "^11.10.0",
     "@tailwindcss/postcss": "^4.3.3",
     "@vueuse/core": "^15.0.0",
     "keycloak-js": "^26.2.5",
@@ -39,12 +39,12 @@
     "@iconify-json/ic": "^1.2.4",
     "@playwright-testing-library/test": "^4.5.0",
     "@playwright/test": "^1.64.1",
-    "@sentry/vite-plugin": "^11.9.0",
+    "@sentry/vite-plugin": "^11.10.0",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/user-event": "^14.6.8",
     "@testing-library/vue": "^8.1.0",
-    "@types/node": "^26.6.5",
+    "@types/node": "^26.6.6",
     "@vitejs/plugin-vue": "^6.0.10",
     "@vitest/coverage-istanbul": "^5.0.5",
     "@vitest/ui": "^5.0.1",
@@ -63,7 +63,7 @@
     "unplugin-icons": "^24.0.0",
     "vite": "^8.3.5",
     "vitest": "^5.0.1",
-    "vue-tsc": "^3.3.13"
+    "vue-tsc": "^3.3.14"
   },
   "overrides": {
     "brace-expansion": "2.1.6"
