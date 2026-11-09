@@ -19,7 +19,7 @@ const withdrawResult = computed<WithdrawResultType | null>(() => {
 
 onMounted(() => {
   if (!state.withdrawResult) {
-    router.replace({ name: "withdraw" })
+    void router.replace({ name: "withdraw" })
   }
 })
 </script>

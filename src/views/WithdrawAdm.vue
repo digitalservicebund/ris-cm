@@ -22,7 +22,7 @@ const {
 })
 
 function navigateToResult(result: typeof withdrawResult.value) {
-  router.push({
+  void router.push({
     name: "withdraw-adm-result",
     state: {
       withdrawResult: result ? JSON.stringify(result) : null,
@@ -38,7 +38,7 @@ onMounted(() => {
   const param = route.query["dokumentnummer"]
   const documentNumber = Array.isArray(param) ? param[0] : param
   if (documentNumber) {
-    handleSearch(documentNumber)
+    void handleSearch(documentNumber)
   }
 })
 </script>
