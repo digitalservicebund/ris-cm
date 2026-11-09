@@ -27,31 +27,31 @@
     "check": "npm run typecheck && npm run style:check && npm test && npm run test:e2e && npm run test:a11y"
   },
   "dependencies": {
-    "@sentry/vue": "^11.9.0",
-    "@tailwindcss/postcss": "^4.3.3",
+    "@sentry/vue": "^11.11.0",
+    "@tailwindcss/postcss": "^4.3.5",
     "@vueuse/core": "^15.0.0",
     "keycloak-js": "^26.2.5",
-    "vue": "^3.5.44",
+    "vue": "^3.5.45",
     "vue-router": "^5.4.0"
   },
   "devDependencies": {
     "@iconify-json/ic": "^1.2.4",
     "@playwright-testing-library/test": "^4.5.0",
-    "@playwright/test": "^1.64.1",
-    "@sentry/vite-plugin": "^11.9.0",
+    "@playwright/test": "^1.65.0",
+    "@sentry/vite-plugin": "^11.11.0",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/user-event": "^14.6.8",
     "@testing-library/vue": "^8.1.0",
-    "@types/node": "^26.6.5",
+    "@types/node": "^26.6.6",
     "@vitejs/plugin-vue": "^6.0.10",
-    "@vitest/coverage-istanbul": "^5.0.5",
+    "@vitest/coverage-istanbul": "^5.1.0",
     "@vitest/ui": "^5.0.1",
     "autoprefixer": "^10.6.2",
     "axe-playwright": "^2.2.2",
     "jsdom": "^30.1.3",
     "license-checker-rseidelsohn": "^5.0.1",
-    "oxlint": "^1.90.0",
+    "oxlint": "^1.92.0",
     "playwright": "^1.58.2",
     "postcss": "^8.5.32",
     "prettier": "3.9.10",
@@ -60,9 +60,9 @@
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3",
     "unplugin-icons": "^24.0.0",
-    "vite": "^8.3.5",
+    "vite": "^8.3.6",
     "vitest": "^5.0.1",
-    "vue-tsc": "^3.3.13"
+    "vue-tsc": "^3.3.14"
   },
   "overrides": {
     "brace-expansion": "2.1.6"
