@@ -42,14 +42,7 @@ async function expectCellInFirstRowOfColumn(
   columnHeader: string,
   value: string,
 ): Promise<void> {
-  await expect(
-    table.getByRole("columnheader", { name: columnHeader }),
-  ).toBeVisible()
-  const headers = await table.getByRole("columnheader").allTextContents()
-  const colIndex = headers.findIndex((h) => h.trim() === columnHeader)
-  await expect(
-    table.getByRole("row").nth(1).getByRole("cell").nth(colIndex),
-  ).toContainText(value)
+  await expect(table).toContainText(columnHeader + ": " + value)
 }
 
 async function mockEnv(page: Page): Promise<void> {
@@ -210,7 +203,7 @@ test.describe(
         .fill("KORE123456789")
       await page.getByRole("button", { name: "Suche starten" }).click()
 
-      const table = page.getByRole("table")
+      const table = page.getByRole("list")
       await expectCellInFirstRowOfColumn(
         table,
         "Dokumentnummer",
@@ -225,7 +218,7 @@ test.describe(
       )
       await expectCellInFirstRowOfColumn(table, "Aktenzeichen", "IV ZR 123/23")
       await expect(
-        page.getByRole("button", { name: "Zurückziehen" }),
+        page.getByRole("button", { name: "Zurückziehen", exact: true }),
       ).toBeVisible()
       await expect(page.getByLabel("Portal")).toBeVisible()
 
@@ -248,7 +241,7 @@ test.describe(
       )
       await expectCellInFirstRowOfColumn(table, "Aktenzeichen", "III ZV 16/025")
       await expect(
-        page.getByRole("button", { name: "Zurückziehen" }),
+        page.getByRole("button", { name: "Zurückziehen", exact: true }),
       ).toBeVisible()
       await expect(page.getByLabel("Portal")).toBeVisible()
     })
@@ -288,7 +281,7 @@ test.describe(
         "/zurueckziehen/rechtsprechung?dokumentnummer=KORE123456789",
       )
 
-      const table = page.getByRole("table")
+      const table = page.getByRole("list")
       await expectCellInFirstRowOfColumn(
         table,
         "Dokumentnummer",
@@ -303,7 +296,7 @@ test.describe(
       )
       await expectCellInFirstRowOfColumn(table, "Aktenzeichen", "IV ZR 123/23")
       await expect(
-        page.getByRole("button", { name: "Zurückziehen" }),
+        page.getByRole("button", { name: "Zurückziehen", exact: true }),
       ).toBeVisible()
       await expect(page.getByLabel("Portal")).toBeVisible()
     })
@@ -389,7 +382,7 @@ test.describe(
         .fill("KORE123456789")
       await page.getByRole("button", { name: "Suche starten" }).click()
 
-      const table = page.getByRole("table")
+      const table = page.getByRole("list")
       await expectCellInFirstRowOfColumn(
         table,
         "Dokumentnummer",
@@ -405,7 +398,7 @@ test.describe(
       await expectCellInFirstRowOfColumn(table, "Aktenzeichen", "IV ZR 123/23")
       await expectCellInFirstRowOfColumn(table, "Sichtbar im Portal", "Nein")
       await expect(
-        page.getByRole("button", { name: "Zurückziehen" }),
+        page.getByRole("button", { name: "Zurückziehen", exact: true }),
       ).toBeVisible()
       await expect(page.getByLabel("Portal")).toBeVisible()
     })
@@ -446,7 +439,7 @@ test.describe(
         .fill("KORE123456789")
       await page.getByRole("button", { name: "Suche starten" }).click()
 
-      const table = page.getByRole("table")
+      const table = page.getByRole("list")
       await expectCellInFirstRowOfColumn(
         table,
         "Dokumentnummer",
@@ -462,7 +455,7 @@ test.describe(
       await expectCellInFirstRowOfColumn(table, "Aktenzeichen", "IV ZR 123/23")
       await expectCellInFirstRowOfColumn(table, "Sichtbar im Portal", "Ja")
       await expect(
-        page.getByRole("button", { name: "Zurückziehen" }),
+        page.getByRole("button", { name: "Zurückziehen", exact: true }),
       ).toBeVisible()
       await expect(page.getByLabel("Portal")).toBeVisible()
     })
@@ -519,14 +512,16 @@ test.describe(
         .getByRole("textbox", { name: "Dokumentnummer" })
         .fill("KORE123456789")
       await page.getByRole("button", { name: "Suche starten" }).click()
-      const table = page.getByRole("table")
+      const table = page.getByRole("list")
       await expectCellInFirstRowOfColumn(
         table,
         "Dokumentnummer",
         "KORE123456789",
       )
 
-      await page.getByRole("button", { name: "Zurückziehen" }).click()
+      await page
+        .getByRole("button", { name: "Zurückziehen", exact: true })
+        .click()
 
       await expect(
         page.getByRole("alertdialog", { name: "Dokument zurückziehen" }),
@@ -549,14 +544,16 @@ test.describe(
         .getByRole("textbox", { name: "Dokumentnummer" })
         .fill("KORE123456789")
       await page.getByRole("button", { name: "Suche starten" }).click()
-      const table = page.getByRole("table")
+      const table = page.getByRole("list")
       await expectCellInFirstRowOfColumn(
         table,
         "Dokumentnummer",
         "KORE123456789",
       )
 
-      await page.getByRole("button", { name: "Zurückziehen" }).click()
+      await page
+        .getByRole("button", { name: "Zurückziehen", exact: true })
+        .click()
       await expect(
         page.getByRole("alertdialog", { name: "Dokument zurückziehen" }),
       ).toBeVisible()
@@ -590,13 +587,15 @@ test.describe(
       await page.goto(
         "/zurueckziehen/rechtsprechung?dokumentnummer=KORE123456789",
       )
-      await page.getByRole("button", { name: "Zurückziehen" }).click()
+      await page
+        .getByRole("button", { name: "Zurückziehen", exact: true })
+        .click()
       await page.getByRole("button", { name: "Dokument zurückziehen" }).click()
 
       await expect(page.getByRole("alert")).toContainText(
         "Erfolgreich zurückgezogen.",
       )
-      const table = page.getByRole("table")
+      const table = page.getByRole("list")
       await expectCellInFirstRowOfColumn(
         table,
         "Dokumentnummer",
@@ -606,7 +605,7 @@ test.describe(
         page.getByRole("button", { name: "Startseite" }),
       ).toBeVisible()
       await expect(
-        page.getByRole("button", { name: "Zurück" }),
+        page.getByRole("button", { name: "Zurück", exact: true }),
       ).not.toBeVisible()
 
       await page.getByRole("button", { name: "Startseite" }).click()
@@ -633,13 +632,15 @@ test.describe(
       await page.goto(
         "/zurueckziehen/rechtsprechung?dokumentnummer=KORE123456789",
       )
-      await page.getByRole("button", { name: "Zurückziehen" }).click()
+      await page
+        .getByRole("button", { name: "Zurückziehen", exact: true })
+        .click()
       await page.getByRole("button", { name: "Dokument zurückziehen" }).click()
 
       await expect(page.getByRole("alert")).toContainText(
         "Erfolgreich zurückgezogen.",
       )
-      const table = page.getByRole("table")
+      const table = page.getByRole("list")
       await expectCellInFirstRowOfColumn(
         table,
         "Dokumentnummer",
@@ -649,7 +650,7 @@ test.describe(
         page.getByRole("button", { name: "Startseite" }),
       ).toBeVisible()
       await expect(
-        page.getByRole("button", { name: "Zurück" }),
+        page.getByRole("button", { name: "Zurück", exact: true }),
       ).not.toBeVisible()
     })
 
@@ -669,7 +670,9 @@ test.describe(
       await page.goto(
         "/zurueckziehen/rechtsprechung?dokumentnummer=KORE123456789",
       )
-      await page.getByRole("button", { name: "Zurückziehen" }).click()
+      await page
+        .getByRole("button", { name: "Zurückziehen", exact: true })
+        .click()
       await page.getByRole("button", { name: "Dokument zurückziehen" }).click()
 
       await expect(page.getByRole("alert")).toContainText(
@@ -681,18 +684,20 @@ test.describe(
       await expect(
         page.getByText("Folgendes Dokument konnte nicht zurückgezogen werden:"),
       ).toBeVisible()
-      const table = page.getByRole("table")
+      const table = page.getByRole("list")
       await expectCellInFirstRowOfColumn(
         table,
         "Dokumentnummer",
         "KORE123456789",
       )
-      await expect(page.getByRole("button", { name: "Zurück" })).toBeVisible()
+      await expect(
+        page.getByRole("button", { name: "Zurück", exact: true }),
+      ).toBeVisible()
       await expect(
         page.getByRole("button", { name: "Startseite" }),
       ).not.toBeVisible()
 
-      await page.getByRole("button", { name: "Zurück" }).click()
+      await page.getByRole("button", { name: "Zurück", exact: true }).click()
 
       await expect(page).toHaveURL(
         /\/zurueckziehen\/rechtsprechung\?dokumentnummer=KORE123456789$/,
@@ -716,14 +721,18 @@ test.describe(
       await page.goto(
         "/zurueckziehen/rechtsprechung?dokumentnummer=KORE123456789",
       )
-      await page.getByRole("button", { name: "Zurückziehen" }).click()
+      await page
+        .getByRole("button", { name: "Zurückziehen", exact: true })
+        .click()
       await page.getByRole("button", { name: "Dokument zurückziehen" }).click()
 
       await expect(page.getByRole("alert")).toContainText("Nicht gefunden")
       await expect(page.getByRole("alert")).toContainText(
         "Das Dokument konnte nicht gefunden werden.",
       )
-      await expect(page.getByRole("button", { name: "Zurück" })).toBeVisible()
+      await expect(
+        page.getByRole("button", { name: "Zurück", exact: true }),
+      ).toBeVisible()
     })
 
     test("withdraw shows error message on 500 error", async ({ page }) => {
@@ -740,7 +749,9 @@ test.describe(
       await page.goto(
         "/zurueckziehen/rechtsprechung?dokumentnummer=KORE123456789",
       )
-      await page.getByRole("button", { name: "Zurückziehen" }).click()
+      await page
+        .getByRole("button", { name: "Zurückziehen", exact: true })
+        .click()
       await page.getByRole("button", { name: "Dokument zurückziehen" }).click()
 
       await expect(page.getByRole("alert")).toContainText(
@@ -749,7 +760,9 @@ test.describe(
       await expect(page.getByRole("alert")).toContainText(
         "Das Dokument konnte nicht aus dem Portal entfernt werden: Internal Server Error",
       )
-      await expect(page.getByRole("button", { name: "Zurück" })).toBeVisible()
+      await expect(
+        page.getByRole("button", { name: "Zurück", exact: true }),
+      ).toBeVisible()
     })
 
     test("result page is not reachable by direct URL navigation", async ({

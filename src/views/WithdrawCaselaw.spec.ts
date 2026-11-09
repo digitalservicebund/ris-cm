@@ -6,8 +6,9 @@ import WithdrawCaselaw from "@/views/WithdrawCaselaw.vue"
 import { userEvent } from "@testing-library/user-event"
 import type { CaselawSearchResult } from "@/lib/caselaw"
 import type { useEnv } from "@/lib/env"
-import PrimeVue from "primevue/config"
-import ConfirmationService from "primevue/confirmationservice"
+
+// We use hidden: true for various elements within dialogs as jsdom does not evaluate
+// command and commandfor attributes and therefor never displays the dialog.
 
 vi.mock("@/lib/caselaw", () => ({
   search: vi.fn<() => Promise<CaselawSearchResult[]>>().mockResolvedValue([
@@ -52,7 +53,7 @@ const router = createRouter({
 
 function renderComponent() {
   return render(WithdrawCaselaw, {
-    global: { plugins: [router, PrimeVue, ConfirmationService] },
+    global: { plugins: [router] },
   })
 }
 
@@ -103,7 +104,7 @@ describe("WithdrawCaselaw", () => {
     await user.click(screen.getByRole("button", { name: "Suche starten" }))
 
     await waitFor(() => {
-      expect(screen.getByText("KORE500102022")).toBeInTheDocument()
+      expect(screen.getAllByText("KORE500102022")).toBeTruthy()
     })
   })
 
@@ -120,12 +121,15 @@ describe("WithdrawCaselaw", () => {
     await user.click(screen.getByRole("button", { name: "Suche starten" }))
 
     await waitFor(() => {
-      expect(screen.getByText("KORE500102022")).toBeInTheDocument()
+      expect(screen.getAllByText("KORE500102022")).toBeTruthy()
     })
 
     await user.click(screen.getByRole("button", { name: "Zurückziehen" }))
     await user.click(
-      screen.getByRole("button", { name: "Dokument zurückziehen" }),
+      screen.getByRole("button", {
+        name: "Dokument zurückziehen",
+        hidden: true,
+      }),
     )
 
     await waitFor(() => {
@@ -145,12 +149,15 @@ describe("WithdrawCaselaw", () => {
     )
     await user.click(screen.getByRole("button", { name: "Suche starten" }))
     await waitFor(() =>
-      expect(screen.getByText("KORE500102022")).toBeInTheDocument(),
+      expect(screen.getAllByText("KORE500102022")).toBeTruthy(),
     )
 
     await user.click(screen.getByRole("button", { name: "Zurückziehen" }))
     await user.click(
-      screen.getByRole("button", { name: "Dokument zurückziehen" }),
+      screen.getByRole("button", {
+        name: "Dokument zurückziehen",
+        hidden: true,
+      }),
     )
 
     await waitFor(() => {
@@ -181,12 +188,15 @@ describe("WithdrawCaselaw", () => {
     )
     await user.click(screen.getByRole("button", { name: "Suche starten" }))
     await waitFor(() =>
-      expect(screen.getByText("KORE500102022")).toBeInTheDocument(),
+      expect(screen.getAllByText("KORE500102022")).toBeTruthy(),
     )
 
     await user.click(screen.getByRole("button", { name: "Zurückziehen" }))
     await user.click(
-      screen.getByRole("button", { name: "Dokument zurückziehen" }),
+      screen.getByRole("button", {
+        name: "Dokument zurückziehen",
+        hidden: true,
+      }),
     )
 
     await waitFor(() => {

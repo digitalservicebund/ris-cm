@@ -53,6 +53,10 @@ fileignoreconfig:
       - Passwort
       - password
       - STORAGE_KEY
+  - filename: src/styles/fonts/BundesSansWeb-BoldItalic.woff
+    checksum: 016072b794d85688652bdd54ec86b67f8517286521258e8ec4d644a50baf2cdf
+  - filename: src/styles/fonts/BundesSerifWeb-Italic.woff
+    checksum: 15a1037eb433504d942a4a90941daffa885e5e04fad83058fa8ca16d578cb873
 scopeconfig:
   - scope: node
 allowed_patterns:
@@ -69,3 +73,5 @@ allowed_patterns:
   - https://portal.example.com/gerichtsentscheidungen/BSGE112233445
   - KORE234567890
   - KORE123456789
+  - key
+  - passe

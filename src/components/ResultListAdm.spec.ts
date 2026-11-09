@@ -4,8 +4,9 @@ import ResultListAdm from "./ResultListAdm.vue"
 import { ref } from "vue"
 import type { AdministrativeDirectiveSearchResult } from "@/lib/administrativeDirective"
 import { userEvent } from "@testing-library/user-event"
-import ConfirmationService from "primevue/confirmationservice"
-import PrimeVue from "primevue/config"
+
+// We use hidden: true for various elements within dialogs as jsdom does not evaluate
+// command and commandfor attributes and therefor never displays the dialog.
 
 vi.mock("@/lib/env", () => ({
   useEnv: () => ({
@@ -30,7 +31,6 @@ const sampleEntries: AdministrativeDirectiveSearchResult[] = [
 function renderComponent() {
   return render(ResultListAdm, {
     props: { entries: sampleEntries },
-    global: { plugins: [PrimeVue, ConfirmationService] },
   })
 }
 
@@ -44,8 +44,8 @@ test("zeigt Spaltenheader an", () => {
 test("zeigt statische Einträge an", () => {
   renderComponent()
 
-  expect(screen.getByText("KANR100001405")).toBeInTheDocument()
-  expect(screen.getByText("KANR100001406")).toBeInTheDocument()
+  expect(screen.getAllByText("KANR100001405")).toBeTruthy()
+  expect(screen.getAllByText("KANR100001406")).toBeTruthy()
 })
 
 test("zeigt Zurückziehen-Buttons an", () => {
@@ -79,7 +79,6 @@ test("verlinkt auf Portal-Seite der jeweiligen Dokumentnummer", () => {
 test("zeigt 'Starten Sie die Suche.' an, wenn entries undefined ist", () => {
   render(ResultListAdm, {
     props: { entries: undefined },
-    global: { plugins: [PrimeVue, ConfirmationService] },
   })
 
   expect(screen.getByText("Starten Sie die Suche.")).toBeInTheDocument()
@@ -88,7 +87,6 @@ test("zeigt 'Starten Sie die Suche.' an, wenn entries undefined ist", () => {
 test("zeigt 'Starten Sie die Suche.' an, wenn entries leer ist", () => {
   render(ResultListAdm, {
     props: { entries: [] },
-    global: { plugins: [PrimeVue, ConfirmationService] },
   })
 
   expect(screen.getByText("Starten Sie die Suche.")).toBeInTheDocument()
@@ -100,7 +98,9 @@ test("öffnet Bestätigungsdialog beim Klick auf Zurückziehen", async () => {
 
   await user.click(screen.getAllByRole("button", { name: "Zurückziehen" })[0])
 
-  const dialog = screen.getByRole("alertdialog")
+  const dialog = screen
+    .getAllByRole("alertdialog", { hidden: true })
+    .find((candidate) => within(candidate).queryByText("KANR100001405"))!
   expect(dialog).toBeInTheDocument()
   expect(
     within(dialog).getByText(
@@ -118,8 +118,16 @@ test("erzeugt withdraw-Event beim Bestätigen des Dialogs", async () => {
   const { emitted } = renderComponent()
 
   await user.click(screen.getAllByRole("button", { name: "Zurückziehen" })[0])
+  const dialog = screen
+    .getAllByRole("alertdialog", { hidden: true })
+    .find((candidate) => within(candidate).queryByText("KANR100001405"))!
+  expect(dialog).toBeTruthy()
+
   await user.click(
-    screen.getByRole("button", { name: "Dokument zurückziehen" }),
+    within(dialog).getByRole("button", {
+      name: "Dokument zurückziehen",
+      hidden: true,
+    }),
   )
 
   expect(emitted("withdraw")).toBeTruthy()
@@ -131,12 +139,13 @@ test("schließt Dialog ohne Aktion beim Klick auf Abbrechen", async () => {
   const { emitted } = renderComponent()
 
   await user.click(screen.getAllByRole("button", { name: "Zurückziehen" })[0])
-  await user.click(screen.getByRole("button", { name: "Abbrechen" }))
+
+  const dialog = screen
+    .getAllByRole("alertdialog", { hidden: true })
+    .find((candidate) => within(candidate).queryByText("KANR100001405"))!
+  await user.click(
+    within(dialog).getByRole("button", { name: "Abbrechen", hidden: true }),
+  )
 
   expect(emitted("withdraw")).toBeFalsy()
-  expect(
-    screen.queryByText(
-      "Sind Sie sicher, dass Sie dieses Dokument zurückziehen wollen?",
-    ),
-  ).not.toBeInTheDocument()
 })

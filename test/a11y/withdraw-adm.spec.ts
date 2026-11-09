@@ -43,12 +43,14 @@ test.describe("basic a11y test (withdraw administrative directive)", () => {
       "/zurueckziehen/verwaltungsvorschriften?dokumentnummer=KANR100001405",
     )
     await injectAxe(page)
-    await expect(page.getByText("KANR100001405")).toBeVisible()
+    await expect(page.getByText("KANR100001405").first()).toBeVisible()
   })
 
   test("simple accessibility run", async ({ page }) => {
     await checkA11y(page)
-    await page.getByRole("button", { name: "Zurückziehen" }).click()
+    await page
+      .getByRole("button", { name: "Zurückziehen", exact: true })
+      .click()
     await checkA11y(page)
   })
 
@@ -63,7 +65,9 @@ test.describe("basic a11y test (withdraw administrative directive)", () => {
         },
       },
     })
-    await page.getByRole("button", { name: "Zurückziehen" }).click()
+    await page
+      .getByRole("button", { name: "Zurückziehen", exact: true })
+      .click()
     await checkA11y(page, undefined, {
       axeOptions: {
         runOnly: {
