@@ -92,7 +92,7 @@ async function fetchFromPortalApi(
       fileNumber: result.fileNumbers?.[0] ?? "",
     }
   } catch (error) {
-    throw new Error(`Search failed (caselaw backend): ${error}`, {
+    throw new Error(`Search failed (portal): ${error}`, {
       cause: error,
     })
   }

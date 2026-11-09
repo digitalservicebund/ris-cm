@@ -62,7 +62,7 @@ describe("WithdrawCaselawResult", () => {
       )
     })
 
-    test("does not redirect when withdrawResult is set", async () => {
+    test("does not redirect when withdrawResult is set", () => {
       renderWithState({
         withdrawResult: JSON.stringify({
           status: "ERROR",
