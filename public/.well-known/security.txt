@@ -1,8 +1,8 @@
 Contact: mailto:security@digitalservice.bund.de
-Expires: 2026-12-01T23:59:59.000Z
+Expires: 2027-12-01T23:59:59.000Z
 Preferred-Languages: en, de
 Policy: https://raw.githubusercontent.com/digitalservicebund/ris-cm/main/SECURITY.md
-Canonical: https://content-management.ris.bund.de/.well-known/security.txt
+Canonical: https://content-management.rechtsinformationen.bund.de/.well-known/security.txt
 Canonical: https://ris-content-management.uat.tech.digitalservice.dev/.well-known/security.txt
 Canonical: https://ris-content-management.staging.tech.digitalservice.dev/.well-known/security.txt
 Hiring: https://digitalservice.bund.de/en/careers
