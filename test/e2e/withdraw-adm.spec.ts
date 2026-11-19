@@ -43,10 +43,10 @@ test.describe(
   {
     annotation: {
       description:
-        "https://digitalservicebund.atlassian.net/browse/RISDEV-10676",
+        "https://digitalservicebund.atlassian.net/browse/RISDEV-12792",
       type: "epic",
     },
-    tag: ["@RISDEV-10676"],
+    tag: ["@RISDEV-12792"],
   },
   () => {
     test.beforeEach(async ({ page }) => {
@@ -238,10 +238,10 @@ test.describe(
   {
     annotation: {
       description:
-        "https://digitalservicebund.atlassian.net/browse/RISDEV-10675",
+        "https://digitalservicebund.atlassian.net/browse/RISDEV-11120",
       type: "epic",
     },
-    tag: ["@RISDEV-10675"],
+    tag: ["@RISDEV-11120"],
   },
   () => {
     test.beforeEach(async ({ page }) => {
