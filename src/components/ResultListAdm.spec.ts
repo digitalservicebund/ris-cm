@@ -20,12 +20,12 @@ vi.mock("@/lib/env", () => ({
 const sampleEntries: AdministrativeDirectiveSearchResult[] = [
   {
     documentNumber: "KANR100001405",
-    typ: "VV Bund",
+    type: "VV Bund",
     visibleInPortal: true,
   },
   {
     documentNumber: "KANR100001406",
-    typ: "VV Bund",
+    type: "VV Bund",
     visibleInPortal: false,
   },
 ]

@@ -7,7 +7,7 @@ const PORTAL_BASE_URL = "https://testphase.rechtsinformationen.bund.de"
 
 const mockDocument = {
   documentNumber: "KANR100001405",
-  typ: "VV Bund",
+  type: "VV Bund",
 }
 
 const mockPortalDocument = {

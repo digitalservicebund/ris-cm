@@ -16,7 +16,7 @@ vi.mock("@/lib/administrativeDirective", () => ({
     .mockResolvedValue([
       {
         documentNumber: "KANR100001405",
-        typ: "VV Bund",
+        type: "VV Bund",
         visibleInPortal: true,
       },
     ]),

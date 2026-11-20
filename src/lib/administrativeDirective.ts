@@ -5,7 +5,7 @@ import type { WithdrawResult } from "@/lib/useWithdraw"
 
 interface AdministrativeDirectiveDocument {
   documentNumber: string
-  typ: string
+  type: string
 }
 
 interface PortalApiResponse {
@@ -81,7 +81,7 @@ async function fetchFromPortalApi(
 
     return {
       documentNumber: result.documentNumber ?? documentNumber,
-      typ: result.typ ?? "",
+      type: result.typ ?? "",
     }
   } catch (error) {
     throw new Error(`Search failed (portal): ${error}`, {
