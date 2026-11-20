@@ -5,10 +5,12 @@ import type { WithdrawResult } from "@/lib/useWithdraw"
 
 interface AdministrativeDirectiveDocument {
   documentNumber: string
+  typ: string
 }
 
 interface PortalApiResponse {
   documentNumber?: string
+  typ?: string
 }
 
 export type AdministrativeDirectiveSearchResult =
@@ -79,6 +81,7 @@ async function fetchFromPortalApi(
 
     return {
       documentNumber: result.documentNumber ?? documentNumber,
+      typ: result.typ ?? "",
     }
   } catch (error) {
     throw new Error(`Search failed (portal): ${error}`, {

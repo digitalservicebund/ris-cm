@@ -18,6 +18,7 @@ type Row = DataTableRow &
 
 const columns: DataTableColumn<Row>[] = [
   { key: "documentNumber", label: "Dokumentnummer" },
+  { key: "typ", label: "Typ" },
   { key: "visibleInPortal", label: "Sichtbar im Portal" },
   { key: "actions", label: "" },
 ]
