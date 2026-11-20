@@ -7,6 +7,7 @@ const PORTAL_BASE_URL = "https://testphase.rechtsinformationen.bund.de"
 
 const mockDocument = {
   documentNumber: "KANR100001405",
+  type: "VV Bund",
 }
 
 const mockPortalDocument = {
@@ -95,6 +96,7 @@ test.describe(
         "Dokumentnummer",
         "KANR100001405",
       )
+      await expectCellInFirstRowOfColumn(table, "Typ", "VV Bund")
       await expectCellInFirstRowOfColumn(table, "Sichtbar im Portal", "Ja")
       await expect(
         page.getByRole("button", { name: "Zurückziehen", exact: true }),

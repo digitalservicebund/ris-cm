@@ -20,10 +20,12 @@ vi.mock("@/lib/env", () => ({
 const sampleEntries: AdministrativeDirectiveSearchResult[] = [
   {
     documentNumber: "KANR100001405",
+    type: "VV Bund",
     visibleInPortal: true,
   },
   {
     documentNumber: "KANR100001406",
+    type: "VV Bund",
     visibleInPortal: false,
   },
 ]
@@ -38,6 +40,7 @@ test("zeigt Spaltenheader an", () => {
   renderComponent()
 
   expect(screen.getByText("Dokumentnummer")).toBeInTheDocument()
+  expect(screen.getByText("Typ")).toBeInTheDocument()
   expect(screen.getByText("Sichtbar im Portal")).toBeInTheDocument()
 })
 
@@ -46,6 +49,7 @@ test("zeigt statische Einträge an", () => {
 
   expect(screen.getAllByText("KANR100001405")).toBeTruthy()
   expect(screen.getAllByText("KANR100001406")).toBeTruthy()
+  expect(screen.getAllByText("VV Bund")).toHaveLength(2)
 })
 
 test("zeigt Zurückziehen-Buttons an", () => {
