@@ -414,6 +414,9 @@ test.describe(
       await expect(page.getByRole("alert")).toContainText(
         "Erfolgreich zurückgezogen.",
       )
+      await expect(page.getByRole("alert")).toContainText(
+        "Das Dokument wurde erfolgreich aus dem Portal entfernt.",
+      )
       const table = page.getByRole("list")
       await expectCellInFirstRowOfColumn(
         table,
