@@ -186,6 +186,55 @@ test.describe(
       )
     })
 
+    test("submitting without a document number shows validation error", async ({
+      page,
+    }) => {
+      await page.goto("/zurueckziehen/verwaltungsvorschriften")
+
+      await page.getByRole("button", { name: "Suche starten" }).click()
+
+      await expect(page.getByRole("alert")).toHaveText(
+        "Dokumentnummer fehlt. Um die Suche starten zu können, müssen Sie eine Dokumentnummer eingeben.",
+      )
+    })
+
+    test("searching with a caselaw document number shows no results", async ({
+      page,
+    }) => {
+      await page.route(
+        `${ADM_SEARCH_URL}?document-number=KORE123456789`,
+        (route) =>
+          route.fulfill({
+            status: 404,
+          }),
+      )
+      await page.route(
+        `${PORTAL_BASE_URL}/v1/administrative-directive/KORE123456789`,
+        (route) =>
+          route.fulfill({
+            status: 404,
+          }),
+      )
+      await page.route(
+        `${PORTAL_BASE_URL}/v1/administrative-directive/KORE123456789.xml`,
+        (route) =>
+          route.fulfill({
+            status: 404,
+          }),
+      )
+
+      await page.goto("/zurueckziehen/verwaltungsvorschriften")
+
+      await page
+        .getByRole("textbox", { name: "Dokumentnummer" })
+        .fill("KORE123456789")
+      await page.getByRole("button", { name: "Suche starten" }).click()
+
+      await expect(page.getByRole("alert")).toHaveText(
+        "Kein Treffer. Die Suche hat keinen Treffer erzielt. Überprüfen Sie Ihre Eingaben.",
+      )
+    })
+
     test("document found only in search API shows data and not visibleInPortal", async ({
       page,
     }) => {
